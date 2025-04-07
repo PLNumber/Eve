@@ -1,16 +1,22 @@
 import 'package:eve/View/Pages/quiz_page.dart';
 import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:eve/View/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import 'View/Pages/login_page.dart';
+import 'ViewModel/login_view_model.dart';
 /*메인 페이지*/
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // 시스템 전 초기화
+
+  await Firebase.initializeApp();
 
   // //화면 고정
   // await SystemChrome.setPreferredOrientations([
@@ -26,12 +32,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LexiUp',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return ChangeNotifierProvider(
+      create: (_) => LoginViewModel(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Consumer<LoginViewModel>(
+          builder: (context, loginVM, child) {
+            return loginVM.user != null ? MainPage() : LoginPage();
+          },
+        ),
       ),
-      home:  MainPage(),
     );
   }
 }
