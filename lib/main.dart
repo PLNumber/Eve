@@ -3,6 +3,8 @@ import 'package:eve/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'Pages/optionPage.dart';
+
 
 //메인 페이지
 
@@ -72,16 +74,44 @@ class _MainPage extends State<MainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FeatureCard(
-                icon: Icons.quiz,
-                title: "퀴즈",
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => QuizPage())
-                  );
-                },
+              GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+
+                children: [
+
+
+                  //퀴즈 화면
+                  FeatureCard(
+                    icon: Icons.quiz,
+                    title: "퀴즈",
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => QuizPage())
+                      );
+                    },
+                  ),
+
+                  //옵션화면
+                  FeatureCard(
+                    icon: Icons.settings_outlined,
+                    title: "설정",
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => OptionPage())
+                      );
+                    },
+                  ),
+                ],
               )
+
+
+
             ],
           ),
         ),

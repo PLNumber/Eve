@@ -1,7 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 
+
+// 메인화면 카드
 class FeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
