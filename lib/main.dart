@@ -1,4 +1,5 @@
 import 'package:eve/Pages/quizPage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:eve/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,9 @@ import 'Pages/optionPage.dart';
 
 //메인 페이지
 
-void main() {
+void main() async{
+
+  await dotenv.load(fileName: 'assets/config/.env');
   runApp(const MyApp());
 }
 
@@ -66,23 +69,36 @@ class _MainPage extends State<MainPage> {
       },
 
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text("MainScreen"),
-        // ),
+
+        appBar: AppBar(
+          title: Text("메인 페이지임"),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => OptionPage())
+                  );
+                }
+              );
+            }
+          ),
+        ),
 
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
 
                 children: [
-
 
                   //퀴즈 화면
                   FeatureCard(
@@ -96,25 +112,14 @@ class _MainPage extends State<MainPage> {
                     },
                   ),
 
-                  //옵션화면
-                  FeatureCard(
-                    icon: Icons.settings_outlined,
-                    title: "설정",
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => OptionPage())
-                      );
-                    },
-                  ),
                 ],
               )
-
-
 
             ],
           ),
         ),
+
+
       ),
     );
     throw UnimplementedError();

@@ -1,3 +1,4 @@
+import 'package:eve/main.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,12 +19,26 @@ class _OptionPage extends State<OptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('문해력 퀴즈'),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.teal,
-      // ),
-      body: Center(child: CircularProgressIndicator()),
+      
+      appBar: AppBar(
+        title: Text("옵션 페이지임"),
+        leading: Builder(
+            builder: (context) {
+              return IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainPage())
+                    );
+                  }
+              );
+            }
+        ),
+      ),
+      
+      // body: Center(child: CircularProgressIndicator()),
+      body: Text("여기 옵션페이지임"),
     );
   }
 }

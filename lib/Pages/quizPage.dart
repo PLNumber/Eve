@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 //퀴즈 페이지
 
 class QuizPage extends StatefulWidget {
@@ -18,11 +17,12 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('문해력 퀴즈'),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.teal,
-      // ),
+      appBar: AppBar(
+        title: Text('퀴즈페이지임'),
+        centerTitle: true,
+        backgroundColor: Colors.teal,
+      ),
+
       body: Center(child: CircularProgressIndicator()),
     );
   }
