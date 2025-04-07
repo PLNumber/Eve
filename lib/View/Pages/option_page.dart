@@ -1,5 +1,8 @@
+import 'package:eve/View/Widgets/back_util.dart';
 import 'package:eve/main.dart';
 import 'package:flutter/material.dart';
+
+import '../Widgets/snack_util.dart';
 
 //퀴즈 페이지
 
@@ -22,20 +25,8 @@ class _OptionPage extends State<OptionPage> {
         if (didPop) return;
 
         // 🔽 SnackBar로 메시지 보여주기
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('저장되었습니다!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-
         // 🔽 잠깐 보여주고 나서 페이지 뒤로 가기
-        Future.delayed(Duration(milliseconds: 1000), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
-        });
+        showSnackAndNavigateBack(context);
       },
 
       child: Scaffold(
@@ -43,23 +34,14 @@ class _OptionPage extends State<OptionPage> {
           title: Text("옵션 페이지임"),
           leading: Builder(
             builder: (context) {
+
               return IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('저장되었습니다!'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-
+                  // 🔽 SnackBar로 메시지 보여주기
                   // 🔽 잠깐 보여주고 나서 페이지 뒤로 가기
-                  Future.delayed(Duration(milliseconds: 1000), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainPage()),
-                    );
-                  });
+                  showSnackAndNavigateBack(context);
+
                 },
               );
             },
