@@ -46,10 +46,20 @@ class _OptionPage extends State<OptionPage> {
               return IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainPage()),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('저장되었습니다!'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
+
+                  // 🔽 잠깐 보여주고 나서 페이지 뒤로 가기
+                  Future.delayed(Duration(milliseconds: 1000), () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainPage()),
+                    );
+                  });
                 },
               );
             },

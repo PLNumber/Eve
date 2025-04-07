@@ -1,4 +1,5 @@
 import 'package:eve/View/Pages/quiz_page.dart';
+import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:eve/View/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
@@ -50,26 +51,15 @@ class _MainPage extends State<MainPage> {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (didPop) return;
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("종료"),
-            content: const Text("정말 앱을 종료하시겠습니까?"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false), // 취소
-                child: const Text("취소"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true); // 확인
-                  // 앱 종료
-                  SystemNavigator.pop();
-                },
-                child: const Text("확인"),
-              ),
-            ],
-          ),
+        
+        //앱 종료
+        showConfirmDialog(
+            context,
+            title: "앱 종료",
+            content: '정말 앱을 종료하시겠습니까?',
+            onConfirm: () {
+              SystemNavigator.pop();
+            }
         );
       },
 
