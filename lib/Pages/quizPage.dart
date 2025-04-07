@@ -18,14 +18,12 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('문해력 퀴즈'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-      ),
+      // appBar: AppBar(
+      //   title: Text('문해력 퀴즈'),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.teal,
+      // ),
       body: Center(child: CircularProgressIndicator()),
     );
   }
-
-
 }

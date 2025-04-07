@@ -1,4 +1,5 @@
 import 'package:eve/Pages/quizPage.dart';
+import 'package:eve/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:  QuizPage(),
+      home:  MainPage(),
     );
   }
 }
@@ -35,7 +36,57 @@ class _MainPage extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
 
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("종료"),
+            content: const Text("정말 앱을 종료하시겠습니까?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false), // 취소
+                child: const Text("취소"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true); // 확인
+                  // 앱 종료
+                  SystemNavigator.pop();
+                },
+                child: const Text("확인"),
+              ),
+            ],
+          ),
+        );
+      },
+
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: Text("MainScreen"),
+        // ),
+
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FeatureCard(
+                icon: Icons.quiz,
+                title: "퀴즈",
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => QuizPage())
+                  );
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
     throw UnimplementedError();
   }
-  
 }
