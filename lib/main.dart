@@ -10,8 +10,8 @@ import 'package:flutter/services.dart';
 /*메인 페이지*/
 
 void main() async{
-  // WidgetsFlutterBinding.ensureInitialized();  // 시스템 전 초기화
-  //
+  WidgetsFlutterBinding.ensureInitialized();  // 시스템 전 초기화
+
   // //화면 고정
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,

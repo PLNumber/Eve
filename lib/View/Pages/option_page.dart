@@ -1,8 +1,5 @@
 import 'package:eve/View/Widgets/back_util.dart';
-import 'package:eve/main.dart';
 import 'package:flutter/material.dart';
-
-import '../Widgets/snack_util.dart';
 
 //퀴즈 페이지
 

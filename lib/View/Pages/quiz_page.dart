@@ -1,5 +1,4 @@
 import 'package:eve/View/Widgets/back_dialog.dart';
-import 'package:eve/main.dart';
 import 'package:flutter/material.dart';
 
 class QuizPage extends StatefulWidget {
