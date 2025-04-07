@@ -4,12 +4,19 @@ import 'package:eve/View/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
+import 'package:flutter/services.dart';
 
 /*메인 페이지*/
 
 void main() async{
+  // WidgetsFlutterBinding.ensureInitialized();  // 시스템 전 초기화
+  //
+  // //화면 고정
+  // await SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  // ]);
 
-  await dotenv.load(fileName: 'assets/config/.env');
+  //await dotenv.load(fileName: 'assets/config/.env');
   runApp(const MyApp());
 }
 
@@ -86,11 +93,16 @@ class _MainPage extends State<MainPage> {
         ),
 
         body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              Text("퀴즈를 선택해보세요", style: TextStyle(fontSize: 20)),
+              const SizedBox(height: 16),
+
               GridView.count(
-                crossAxisCount: 3,
+                crossAxisCount: 1,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 shrinkWrap: true,

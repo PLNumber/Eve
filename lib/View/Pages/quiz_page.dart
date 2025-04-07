@@ -8,9 +8,6 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-
-
-
   @override
   void dispose() {
     super.dispose();
@@ -18,14 +15,20 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('퀴즈페이지임'),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+      },
 
-      body: Center(child: CircularProgressIndicator()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('퀴즈페이지 임'),
+          centerTitle: true,
+        ),
+
+        body: Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }
