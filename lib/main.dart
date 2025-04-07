@@ -1,13 +1,11 @@
-import 'package:eve/Pages/quizPage.dart';
+import 'package:eve/View/Pages/quiz_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:eve/Widgets/featureCard.dart';
+import 'package:eve/View/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:eve/View/Pages/option_page.dart';
 
-import 'Pages/optionPage.dart';
-
-
-//메인 페이지
+/*메인 페이지*/
 
 void main() async{
 
