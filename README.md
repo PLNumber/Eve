@@ -1,10 +1,14 @@
+View
+
+ViewModel
+
+Service
+
 Repository
 
 Model
 
-Service
 
-ViewModel
 
-View
+
 
