@@ -1,5 +1,4 @@
-Page는 UI에 해당하므로 View
+Service
 
-Function은 viewModel
+Repository
 
-Model은 Model
