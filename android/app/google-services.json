@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "404879421737",
+    "project_id": "lexiup-7815b",
+    "storage_bucket": "lexiup-7815b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404879421737:android:0fba988a957af4a62ec738",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbBzYT4iuurDn5LWF21EVR-exOawqT0Yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404879421737:android:bef981d658e3d6312ec738",
+        "android_client_info": {
+          "package_name": "kr.ac.kumoh.s20180665.www.eve"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbBzYT4iuurDn5LWF21EVR-exOawqT0Yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
