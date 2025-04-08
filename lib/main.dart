@@ -1,3 +1,4 @@
+import 'package:eve/View/Pages/login_page.dart';
 import 'package:eve/View/Pages/quiz_page.dart';
 import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: MainPage(),
+      home:LoginPage(),
+      // home: MainPage(),
     );
   }
 }
