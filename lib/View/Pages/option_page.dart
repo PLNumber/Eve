@@ -1,8 +1,9 @@
+//lib/View/Pages/option_page.dart
+
 import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:eve/View/Widgets/back_util.dart';
 import 'package:flutter/material.dart';
 import '../../Services/auth_service.dart';
-import 'login_page.dart';
 
 //퀴즈 페이지
 
@@ -13,11 +14,6 @@ class OptionPage extends StatefulWidget {
 
 class _OptionPage extends State<OptionPage> {
   AuthService _authService = AuthService();
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +48,14 @@ class _OptionPage extends State<OptionPage> {
         // body: Center(child: CircularProgressIndicator()),
         body: ListView(
           children: [
+
+            // 이름 변경 구현
+            ListTile(
+              title: Text("이름 변경"),
+              onTap: () {
+                
+              },
+            ),
 
             //로그아웃 기능 일단 구현
             ListTile(

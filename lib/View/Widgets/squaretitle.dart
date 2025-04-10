@@ -1,3 +1,5 @@
+// lib/View/Widgets/squaretitle.dart
+
 import 'package:flutter/material.dart';
 
 class SquareTitle extends StatelessWidget {
