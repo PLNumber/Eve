@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'ViewModel/login_view_model.dart';
+import 'ViewModel/quiz_view_model.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +22,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  
+  await dotenv.load(fileName: "assets/config/.env");
+  final String openAIApiKey = dotenv.env['openAIApiKey'] ?? "";
+
   // //화면 고정
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
@@ -34,6 +36,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => QuizViewModel(openAIApiKey: openAIApiKey)),
       ],
       child: const MyApp(),
     ),
