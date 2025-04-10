@@ -8,9 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'View/Pages/set_name_page.dart';
 import 'ViewModel/login_view_model.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // 추가
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 
 
@@ -46,6 +50,28 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<Widget> _getStartPage() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const LoginPage();
+    }
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .get();
+
+    final nickname = snapshot.data()?["nickname"];
+
+    // 닉네임이 없거나, uid 그대로인 경우 → SetUserPage로
+    if (nickname == null || nickname == user.uid || nickname.toString().trim().isEmpty) {
+      return SetUserPage();
+    }
+
+    return const MainPage(); // 닉네임이 정상적으로 설정된 경우
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -53,8 +79,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:LoginPage(),
-      // home: MainPage(),
+      home: FutureBuilder<Widget>(
+        future: _getStartPage(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          } else {
+            return snapshot.data!;
+          }
+        },
+      ),
     );
   }
 }
