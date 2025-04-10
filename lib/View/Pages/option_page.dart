@@ -52,6 +52,7 @@ class _OptionPage extends State<OptionPage> {
         // body: Center(child: CircularProgressIndicator()),
         body: ListView(
           children: [
+
             //로그아웃 기능 일단 구현
             ListTile(
               title: Text("로그아웃"),
@@ -66,6 +67,10 @@ class _OptionPage extends State<OptionPage> {
                 );
               },
             ),
+
+
+
+
           ],
         ),
       ),
