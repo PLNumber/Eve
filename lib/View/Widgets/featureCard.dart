@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+/* lib/View/Widgets/featureCard.dart */
 
+import 'package:flutter/material.dart';
 
 // 메인화면 카드
 class FeatureCard extends StatelessWidget {
