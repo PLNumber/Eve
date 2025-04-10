@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 
 // 메인화면 카드
 class FeatureCard extends StatelessWidget {
-  final IconData icon;
+  final String imagePath;
   final String title;
   final VoidCallback onTap;
 
   const FeatureCard({
     Key? key,
-    required this.icon,
+    required this.imagePath,
     required this.title,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    var imageWidth = screenSize.width * 0.25; // 화면 너비의 25%를 이미지 너비로 사용
+    var imageHeight = imageWidth; // 너비와 높이를 같게 설정
+
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -25,7 +29,7 @@ class FeatureCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Colors.teal),
+            Image.asset(imagePath, width: imageWidth, height: imageHeight),
             SizedBox(height: 8),
             Text(
               title,

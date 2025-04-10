@@ -19,12 +19,12 @@ class QuizQuestion {
 
   Map<String, dynamic> toMap() {
     return {
-      "question": question,
-      "answer": answer,
-      "hint": hint,
-      "distractors": distractors,
-      "feedback": feedback,
-      "difficulty": difficulty,
+      "question": question, // 문제
+      "answer": answer,   // 어휘
+      "hint": hint,   // 힌트
+      "distractors": distractors, // 예시 오답
+      "feedback": feedback,   //피드백
+      "difficulty": difficulty, //난이도
     };
   }
 }

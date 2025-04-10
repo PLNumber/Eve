@@ -1,6 +1,4 @@
 //lib/View/Pages/option_page.dart
-
-import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:eve/View/Widgets/back_util.dart';
 import 'package:eve/View/Widgets/option_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +28,7 @@ class _OptionPage extends State<OptionPage> {
 
       child: Scaffold(
         appBar: AppBar(
-          title: Text("옵션"),
+          title: Text("설정"),
           centerTitle: true,
           leading: Builder(
             builder: (context) {
@@ -49,6 +47,60 @@ class _OptionPage extends State<OptionPage> {
         // body: Center(child: CircularProgressIndicator()),
         body: ListView(
           children: [
+
+            // 소리 설정
+            ListTile(
+              title: Text("소리 설정"),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("소리 설정은 나중에 업데이트 예정!"),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
+
+            // 초기화 설정
+            ListTile(
+              title: Text("초기화 설정"),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("초기화 설정은 나중에 업데이트 예정!"),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
+
+            //배경 설정
+            ListTile(
+              title: Text("배경 설정"),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("배경 설정은 나중에 업데이트 예정!"),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
+            
+            // 언어 설정
+            ListTile(
+              title: Text("언어 설정"),
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("언어 설정은 나중에 업데이트 예정!"),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
+
+
 
             // 이름 변경 구현
             ListTile(
@@ -72,9 +124,6 @@ class _OptionPage extends State<OptionPage> {
                 );
               },
             ),
-
-
-
 
           ],
         ),

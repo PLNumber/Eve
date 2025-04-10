@@ -1,7 +1,6 @@
 import 'package:eve/Services/auth_service.dart';
 import 'package:eve/View/Pages/login_page.dart';
 import 'package:eve/View/Pages/quiz_page.dart';
-import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:eve/View/Widgets/featureCard.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'View/Pages/set_name_page.dart';
+import 'View/Widgets/back_util.dart';
 import 'ViewModel/login_view_model.dart';
 import 'ViewModel/quiz_view_model.dart';
 import 'firebase_options.dart';
@@ -174,8 +174,8 @@ class _MainPage extends State<MainPage> {
                 children: [
                   //퀴즈 화면
                   FeatureCard(
-                    icon: Icons.quiz,
-                    title: "퀴즈",
+                    imagePath: 'assets/images/korean_quiz.png',
+                    title: "   ",
                     onTap: () {
                       Navigator.push(
                         context,
