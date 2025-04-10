@@ -1,27 +1,30 @@
-// viewmodels/login_view_model.dart
-import 'package:flutter/foundation.dart';
+// lib/view_model/login_view_model.dart
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
+
+import '../Services/auth_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
-  User? _user;
 
-  User? get user => _user;
+  bool isLoading = false;
+  String errorMessage = '';
 
-  LoginViewModel() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      _user = user;
+  /// 구글 로그인을 호출하는 메서드
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      isLoading = true;
+      errorMessage = '';
       notifyListeners();
-    });
-  }
 
-  Future<bool> loginWithGoogle() async {
-    final userCredential = await _authService.signInWithGoogle();
-    return userCredential != null;
-  }
-
-  Future<void> logout() async {
-    await _authService.signOut();
+      final userCredential = await _authService.signInWithGoogle();
+      return userCredential;
+    } catch (e) {
+      errorMessage = e.toString();
+      return null;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 }

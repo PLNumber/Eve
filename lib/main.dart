@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:eve/View/Pages/option_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'ViewModel/login_view_model.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 
 /*메인 페이지*/
@@ -30,7 +32,14 @@ void main() async {
   
   
   //await dotenv.load(fileName: 'assets/config/.env');
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
