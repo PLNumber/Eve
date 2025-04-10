@@ -62,6 +62,26 @@ class AuthService {
     }
   }
 
+  //닉네임 가져오는 함수
+  Future<String> getNickname() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final snapshot = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      return snapshot.data()?['nickname'] ?? '닉네임 없음';
+    }
+    return '로그인 안 됨';
+  }
+
+  // 닉네임 업데이트 함수
+  Future<void> updateNickname(String newNickname) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        'nickname': newNickname,
+      });
+    }
+  }
+
   Future<void> signOutAndExit() async {
     try {
       await _firebaseAuth.signOut();

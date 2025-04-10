@@ -2,6 +2,7 @@
 
 import 'package:eve/View/Widgets/back_dialog.dart';
 import 'package:eve/View/Widgets/back_util.dart';
+import 'package:eve/View/Widgets/option_widget.dart';
 import 'package:flutter/material.dart';
 import '../../Services/auth_service.dart';
 
@@ -53,7 +54,7 @@ class _OptionPage extends State<OptionPage> {
             ListTile(
               title: Text("이름 변경"),
               onTap: () {
-                
+                NicknameDialog.show(context);
               },
             ),
 

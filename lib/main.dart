@@ -1,3 +1,4 @@
+import 'package:eve/Services/auth_service.dart';
 import 'package:eve/View/Pages/login_page.dart';
 import 'package:eve/View/Pages/quiz_page.dart';
 import 'package:eve/View/Widgets/back_dialog.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'ViewModel/login_view_model.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
+
 
 
 /*메인 페이지*/
@@ -65,6 +67,22 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  String nickname = "불러오는 중 . . .";
+  final AuthService _authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNickname();
+  }
+
+  void _loadNickname() async {
+    final nick = await _authService.getNickname();
+    setState(() {
+      nickname = nick;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -85,7 +103,7 @@ class _MainPage extends State<MainPage> {
 
       child: Scaffold(
         appBar: AppBar(
-          title: Text("메인 페이지임"),
+          title: Text("환영합니다, $nickname님"), // 닉네임을 제목에 표시
           leading: Builder(
             builder: (context) {
               return IconButton(
