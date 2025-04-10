@@ -1,14 +1,17 @@
 // lib/service/auth_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance; // FirebaseAuth 인스턴스 추가
+  final GoogleSignIn _googleSignIn = GoogleSignIn(); // GoogleSignIn 인스턴스 추가
 
   Future<UserCredential> signInWithGoogle() async {
     // 구글 로그인 UI 호출
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     if (googleUser == null) {
       throw Exception("사용자가 구글 로그인을 취소했습니다.");
     }
@@ -23,7 +26,7 @@ class AuthService {
     );
 
     // Firebase 로그인 수행
-    final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    final userCredential = await _firebaseAuth.signInWithCredential(credential);
 
     // 로그인 후 Firestore에 사용자 정보 저장
     await _createOrUpdateUser(userCredential.user);
@@ -56,6 +59,16 @@ class AuthService {
       await userDoc.update({
         "lastLogin": FieldValue.serverTimestamp(),
       });
+    }
+  }
+
+  Future<void> signOutAndExit() async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+      SystemNavigator.pop(); // 앱 종료
+    } catch (error) {
+      print("로그아웃 실패: $error");
     }
   }
 }
