@@ -30,7 +30,6 @@ void main() async {
   // ]);
 
   
-  
   //await dotenv.load(fileName: 'assets/config/.env');
   runApp(
     MultiProvider(
