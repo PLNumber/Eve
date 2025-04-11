@@ -13,8 +13,10 @@ import '../l10n/app_localizations.dart'; // 또는 정확한 상대경로
 
 
 
+import 'View/Pages/quiz_test_version_page.dart';
 import 'ViewModel/login_view_model.dart';
 import 'ViewModel/option_view_model.dart';
+import 'ViewModel/quiz_test_version_view_model.dart';
 import 'ViewModel/quiz_view_model.dart';
 import 'firebase_options.dart';
 import 'view/pages/login_page.dart';
@@ -49,6 +51,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
+        ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),//테스트용
         ChangeNotifierProvider(
           create: (_) => QuizViewModel(
             QuizService(
@@ -189,7 +192,7 @@ class _MainPage extends State<MainPage> {
                     title: "   ",
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => QuizPage()),
+                      MaterialPageRoute(builder: (context) => QuizPage()),//SolveQuizPage
                     ),
                   ),
                 ],
