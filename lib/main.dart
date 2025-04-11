@@ -1,4 +1,4 @@
-// lib/main.dart
+// ✅ lib/main.dart (다국어 적용된 MainPage 포함)
 
 import 'package:eve/provider/local_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +9,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import '../l10n/app_localizations.dart'; // 또는 정확한 상대경로
-
-
 
 import 'View/Pages/quiz_test_version_page.dart';
 import 'ViewModel/login_view_model.dart';
@@ -19,6 +16,7 @@ import 'ViewModel/option_view_model.dart';
 import 'ViewModel/quiz_test_version_view_model.dart';
 import 'ViewModel/quiz_view_model.dart';
 import 'firebase_options.dart';
+import 'l10n/gen_l10n/app_localizations.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quiz_page.dart';
 import 'view/pages/option_page.dart';
@@ -38,20 +36,13 @@ void main() async {
   await dotenv.load(fileName: "assets/config/.env");
   final String openAIApiKey = dotenv.env['openAIApiKey'] ?? "";
 
-  // //화면 고정
-  // await SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  // ]);
-
-  //await dotenv.load(fileName: 'assets/config/.env');
-
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
-        ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),//테스트용
+        ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),  //테스트용
         ChangeNotifierProvider(
           create: (_) => QuizViewModel(
             QuizService(
@@ -92,21 +83,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-
-      //언어 설정
       locale: provider.locale,
       supportedLocales: const [
         Locale('en'),
         Locale('ko'),
       ],
-      localizationsDelegates: const[
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
-
       home: FutureBuilder<Widget>(
         future: _getStartPage(),
         builder: (context, snapshot) {
@@ -155,14 +142,14 @@ class _MainPage extends State<MainPage> {
         if (didPop) return;
         showConfirmDialog(
           context,
-          title: "앱 종료",
-          content: '정말 앱을 종료하시겠습니까?',
+          title: AppLocalizations.of(context)!.title,
+          content: AppLocalizations.of(context)!.confirm_logout,
           onConfirm: () => SystemNavigator.pop(),
         );
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("환영합니다, $nickname님"),
+          title: Text("${AppLocalizations.of(context)!.title}, $nickname님"),
           leading: Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.menu),
@@ -178,21 +165,21 @@ class _MainPage extends State<MainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("퀴즈를 선택해보세요", style: TextStyle(fontSize: 20)),
+              Text(AppLocalizations.of(context)!.settings, style: const TextStyle(fontSize: 20)),
               const SizedBox(height: 16),
               GridView.count(
                 crossAxisCount: 1,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   FeatureCard(
                     imagePath: 'assets/images/korean_quiz.png',
                     title: "   ",
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => QuizPage()),//SolveQuizPage
+                      MaterialPageRoute(builder: (context) => QuizPage()),
                     ),
                   ),
                 ],

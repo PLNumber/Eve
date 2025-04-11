@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "kr.ac.kumoh.s20180665.www.eve"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"//flutter.ndkVersion
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

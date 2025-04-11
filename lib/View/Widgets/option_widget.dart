@@ -1,8 +1,55 @@
 // lib/View/Widgets/option_widget.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../l10n/gen_l10n/app_localizations.dart';
+import '../../provider/local_provider.dart';
 import 'nav_util.dart';
 import '../../ViewModel/option_view_model.dart';
+
+//옵션 타일
+class OptionTile extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const OptionTile({super.key, required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: onTap,
+    );
+  }
+}
+
+// 언어 다이얼로그
+class LanguageDialog {
+  static void show(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => SimpleDialog(
+        title: Text(AppLocalizations.of(context)!.language_selection),
+        children: [
+          SimpleDialogOption(
+            child: Text(AppLocalizations.of(context)!.korean),
+            onPressed: () {
+              Provider.of<LocaleProvider>(context, listen: false).setLocale("ko");
+              Navigator.pop(context);
+            },
+          ),
+          SimpleDialogOption(
+            child: Text(AppLocalizations.of(context)!.english),
+            onPressed: () {
+              Provider.of<LocaleProvider>(context, listen: false).setLocale("en");
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 class NicknameDialog {
   static void show(BuildContext context) {
