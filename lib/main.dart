@@ -8,8 +8,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'View/Pages/quiz_test_version_page.dart';
 import 'ViewModel/login_view_model.dart';
 import 'ViewModel/option_view_model.dart';
+import 'ViewModel/quiz_test_version_view_model.dart';
 import 'ViewModel/quiz_view_model.dart';
 import 'firebase_options.dart';
 import 'view/pages/login_page.dart';
@@ -43,6 +45,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
+        ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),//테스트용
         ChangeNotifierProvider(
           create: (_) => QuizViewModel(
             QuizService(
@@ -166,7 +169,7 @@ class _MainPage extends State<MainPage> {
                     title: "   ",
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => QuizPage()),
+                      MaterialPageRoute(builder: (context) => QuizPage()),//SolveQuizPage
                     ),
                   ),
                 ],
