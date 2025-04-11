@@ -1,5 +1,6 @@
 // lib/main.dart
 
+import 'package:eve/provider/local_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import '../l10n/app_localizations.dart'; // 또는 정확한 상대경로
+
+
 
 import 'ViewModel/login_view_model.dart';
 import 'ViewModel/option_view_model.dart';
@@ -41,6 +46,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
         ChangeNotifierProvider(
@@ -76,11 +82,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
       title: 'LexiUp',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+
+      //언어 설정
+      locale: provider.locale,
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ko'),
+      ],
+      localizationsDelegates: const[
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+
       home: FutureBuilder<Widget>(
         future: _getStartPage(),
         builder: (context, snapshot) {

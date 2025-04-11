@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "title": "Welcome",
+  "settings": "Settings",
+  "change_language": "Change Language",
+  "nickname_change": "Change Nickname",
+  "logout": "Logout",
+  "confirm_logout": "Do you really want to logout?",
+  "language_selection": "Select Language",
+  "korean": "Korean",
+  "english": "English"
+}

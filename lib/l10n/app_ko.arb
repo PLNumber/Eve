@@ -1,0 +1,12 @@
+{
+  "@@locale": "ko",
+  "title": "환영합니다",
+  "settings": "설정",
+  "change_language": "언어 변경",
+  "nickname_change": "닉네임 변경",
+  "logout": "로그아웃",
+  "confirm_logout": "정말로 로그아웃을 하시겠습니까?",
+  "language_selection": "언어 선택",
+  "korean": "한국어",
+  "english": "영어"
+}

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart'; // 또는 정확한 상대경로
+
 
 import '../../ViewModel/option_view_model.dart';
+import '../../provider/local_provider.dart';
 import '../Widgets/nav_util.dart';
 import '../Widgets/option_widget.dart';
 
@@ -42,8 +45,33 @@ class OptionPage extends StatelessWidget {
               onTap: () => _showSimpleSnack(context, "배경 설정은 나중에 업데이트 예정!"),
             ),
             ListTile(
-              title: Text("언어 설정"),
-              onTap: () => _showSimpleSnack(context, "언어 설정은 나중에 업데이트 예정!"),
+              title: Text(AppLocalizations.of(context)!.change_language),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => SimpleDialog(
+                    title: Text("언어 선택"),
+                    children: [
+                      SimpleDialogOption(
+                        child: Text("한국어"),
+                        onPressed: () {
+                          Provider.of<LocaleProvider>(context, listen: false)
+                              .setLocale("ko");
+                          Navigator.pop(context);
+                        },
+                      ),
+                      SimpleDialogOption(
+                        child: Text("English"),
+                        onPressed: () {
+                          Provider.of<LocaleProvider>(context, listen: false)
+                              .setLocale("en");
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
             ListTile(
               title: Text("이름 변경"),
