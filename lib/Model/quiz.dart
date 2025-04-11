@@ -1,4 +1,5 @@
 //firebase에서 가져올 예정
+//lib/Model/quiz.dart
 
 class QuizQuestion {
   final String question;

@@ -1,39 +1,24 @@
 // lib/View/Widgets/option_widget.dart
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../Services/auth_service.dart';
-import 'back_util.dart';
+import 'package:provider/provider.dart';
+import 'nav_util.dart';
+import '../../ViewModel/option_view_model.dart';
 
 class NicknameDialog {
   static void show(BuildContext context) {
     final TextEditingController _controller = TextEditingController();
-    final AuthService _authService = AuthService();
+    final viewModel = Provider.of<OptionViewModel>(context, listen: false);
+
     String message = '';
     bool? isAvailable;
 
     void checkNickname(BuildContext dialogContext) async {
       final nickname = _controller.text.trim();
+      final result = await viewModel.checkNicknameAvailable(nickname);
 
-      final isValid = RegExp(r'^[가-힣a-zA-Z0-9]{2,10}$').hasMatch(nickname);
-      if (!isValid) {
-        isAvailable = null;
-        message = "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.";
-        (dialogContext as Element).markNeedsBuild(); // 강제 리빌드
-        return;
-      }
-
-      final query = await FirebaseFirestore.instance
-          .collection('users')
-          .where('nickname', isEqualTo: nickname)
-          .get();
-
-      final currentUid = FirebaseAuth.instance.currentUser?.uid;
-      final taken = query.docs.any((doc) => doc.id != currentUid);
-
-      isAvailable = !taken;
-      message = taken ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다!";
-      (dialogContext as Element).markNeedsBuild();
+      isAvailable = result == null;
+      message = result ?? "사용 가능한 닉네임입니다!";
+      (dialogContext as Element).markNeedsBuild(); // 강제 리빌드
     }
 
     showDialog(
@@ -83,7 +68,8 @@ class NicknameDialog {
                 showSavedSnackBar(context, message: "닉네임 확인을 완료해주세요.");
                 return;
               }
-              await _authService.updateNickname(nickname);
+
+              await viewModel.updateNickname(nickname);
               Navigator.pop(context);
               showSavedSnackBar(context, message: "닉네임이 변경되었습니다!");
             },

@@ -1,49 +1,45 @@
-// lib/service/auth_service.dart
+// lib/Services/auth_service.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance; // FirebaseAuth 인스턴스 추가
-  final GoogleSignIn _googleSignIn = GoogleSignIn(); // GoogleSignIn 인스턴스 추가
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  /// ✅ 구글 로그인 및 사용자 등록 처리
   Future<UserCredential> signInWithGoogle() async {
-    // 구글 로그인 UI 호출
+    // 1. 구글 로그인 UI 호출
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     if (googleUser == null) {
       throw Exception("사용자가 구글 로그인을 취소했습니다.");
     }
 
-    // 구글 인증 정보 획득
+    // 2. 구글 인증 정보 획득
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    // Firebase에 전달할 자격증명 생성
+    // 3. Firebase 자격증명 생성
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    // Firebase 로그인 수행
+    // 4. Firebase 로그인 수행
     final userCredential = await _firebaseAuth.signInWithCredential(credential);
+    final user = userCredential.user;
+    if (user == null) throw Exception("Firebase 사용자 정보가 없습니다.");
 
-    // 로그인 후 Firestore에 사용자 정보 저장
-    await _createOrUpdateUser(userCredential.user);
-    return userCredential;
-  }
-
-  Future<void> _createOrUpdateUser(User? user) async {
-    if (user == null) return;
-
+    // 5. Firestore에 사용자 정보 등록 또는 업데이트
     final userDoc = _firestore.collection("users").doc(user.uid);
-
-    // 사용자가 이미 존재하는지 확인
     final snapshot = await userDoc.get();
+
     if (!snapshot.exists) {
-      // 신규 사용자 생성 시, 기본 닉네임은 user.uid로 설정
+      // 신규 사용자: 초기 데이터 등록
       await userDoc.set({
-        "nickname": user.uid, // 구글 계정 UID를 닉네임으로 사용
+        "nickname": user.uid,
         "level": 1,
         "experience": 0,
         "totalSolved": 0,
@@ -55,33 +51,36 @@ class AuthService {
         "createdAt": FieldValue.serverTimestamp(),
       });
     } else {
-      // 기존 사용자라면 마지막 로그인 시간만 업데이트
+      // 기존 사용자: 마지막 로그인 시간만 갱신
       await userDoc.update({
         "lastLogin": FieldValue.serverTimestamp(),
       });
     }
+
+    return userCredential;
   }
 
-  //닉네임 가져오는 함수
-  Future<String> getNickname() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final snapshot = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      return snapshot.data()?['nickname'] ?? '닉네임 없음';
-    }
-    return '로그인 안 됨';
-  }
-
-  // 닉네임 업데이트 함수
+  /// ✅ 닉네임 업데이트
   Future<void> updateNickname(String newNickname) async {
-    final user = FirebaseAuth.instance.currentUser;
+    final user = _firebaseAuth.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      await _firestore.collection('users').doc(user.uid).update({
         'nickname': newNickname,
       });
     }
   }
 
+  /// ✅ 현재 사용자 닉네임 가져오기
+  Future<String> getNickname() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null) {
+      final snapshot = await _firestore.collection('users').doc(user.uid).get();
+      return snapshot.data()?['nickname'] ?? '닉네임 없음';
+    }
+    return '로그인 안 됨';
+  }
+
+  /// ✅ 로그아웃 및 앱 종료
   Future<void> signOutAndExit() async {
     try {
       await _firebaseAuth.signOut();

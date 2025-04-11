@@ -1,14 +1,9 @@
-View
+앱
 
-ViewModel
+컨트롤러
 
-Service
+서비스
 
-Repository
+레포지토리
 
-Model
-
-
-
-
-
+데이터베이스
