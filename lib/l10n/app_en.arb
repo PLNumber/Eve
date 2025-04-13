@@ -1,37 +1,46 @@
 {
   "@@locale": "en",
+
   "waiting": "Loading . . . ",
   "title": "Welcome",
+
   "settings": "Settings",
   "sound" : "Sound",
+  "sound_settings": "Sound Settings",
+  "sound_on": "Enable Sound",
+  "volume_level": "Volume",
+  "select_music": "Choose Music",
+
   "reset_history" : "Reset History",
+
   "change_background": "Change Background",
   "default_background" : "White(Default)",
   "dark_background" : "Dark",
+
   "change_language": "Change Language",
+  "language_selection": "Select Language",
+  "korean": "Korean",
+  "english": "English",
+
   "nickname_change": "Change Nickname",
   "nickname_invalid": "Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.",
   "nickname_taken": "This nickname is already taken.",
   "nickname_available": "This nickname is available!",
-  "logout": "Logout",
-  "confirm_logout": "Do you really want to logout?",
-  "language_selection": "Select Language",
-  "korean": "Korean",
-  "english": "English",
-  "confirm": "Confirm",
-  "cancel": "Cancel",
   "check_duplicate": "Check Duplicate",
   "change_nickname": "Change Nickname",
   "nickname_placeholder": "Enter new nickname",
   "nickname_success": "Nickname changed successfully!",
   "nickname_check_prompt": "Please complete the nickname check.",
+
+  "logout": "Logout",
+  "confirm_logout": "Do you really want to logout?",
+
+  "confirm": "Confirm",
+  "cancel": "Cancel",
   "saved_message": "Saved successfully!",
+  "close": "Close",
+
   "exit": "Exit",
   "confirm_exit_quiz": "Are you sure you want to quit the quiz?",
-  "confirm_exit" : "Are you sure want to exit?",
-  "sound_settings": "Sound Settings",
-  "sound_on": "Enable Sound",
-  "volume_level": "Volume",
-  "close": "Close",
-  "select_music": "Choose Music"
+  "confirm_exit" : "Are you sure want to exit?"
 }

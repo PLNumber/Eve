@@ -21,6 +21,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sound => 'Sound';
 
   @override
+  String get sound_settings => 'Sound Settings';
+
+  @override
+  String get sound_on => 'Enable Sound';
+
+  @override
+  String get volume_level => 'Volume';
+
+  @override
+  String get select_music => 'Choose Music';
+
+  @override
   String get reset_history => 'Reset History';
 
   @override
@@ -36,6 +48,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get change_language => 'Change Language';
 
   @override
+  String get language_selection => 'Select Language';
+
+  @override
+  String get korean => 'Korean';
+
+  @override
+  String get english => 'English';
+
+  @override
   String get nickname_change => 'Change Nickname';
 
   @override
@@ -46,27 +67,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nickname_available => 'This nickname is available!';
-
-  @override
-  String get logout => 'Logout';
-
-  @override
-  String get confirm_logout => 'Do you really want to logout?';
-
-  @override
-  String get language_selection => 'Select Language';
-
-  @override
-  String get korean => 'Korean';
-
-  @override
-  String get english => 'English';
-
-  @override
-  String get confirm => 'Confirm';
-
-  @override
-  String get cancel => 'Cancel';
 
   @override
   String get check_duplicate => 'Check Duplicate';
@@ -84,7 +84,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nickname_check_prompt => 'Please complete the nickname check.';
 
   @override
+  String get logout => 'Logout';
+
+  @override
+  String get confirm_logout => 'Do you really want to logout?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
   String get saved_message => 'Saved successfully!';
+
+  @override
+  String get close => 'Close';
 
   @override
   String get exit => 'Exit';
@@ -94,19 +109,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_exit => 'Are you sure want to exit?';
-
-  @override
-  String get sound_settings => 'Sound Settings';
-
-  @override
-  String get sound_on => 'Enable Sound';
-
-  @override
-  String get volume_level => 'Volume';
-
-  @override
-  String get close => 'Close';
-
-  @override
-  String get select_music => 'Choose Music';
 }

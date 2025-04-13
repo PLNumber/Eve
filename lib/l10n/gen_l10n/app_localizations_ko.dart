@@ -21,6 +21,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sound => '소리 설정';
 
   @override
+  String get sound_settings => '소리 설정';
+
+  @override
+  String get sound_on => '소리 켜기';
+
+  @override
+  String get volume_level => '음량';
+
+  @override
+  String get select_music => '음악 선택';
+
+  @override
   String get reset_history => '기록 초기화';
 
   @override
@@ -36,6 +48,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get change_language => '언어 변경';
 
   @override
+  String get language_selection => '언어 선택';
+
+  @override
+  String get korean => '한국어';
+
+  @override
+  String get english => '영어';
+
+  @override
   String get nickname_change => '닉네임 변경';
 
   @override
@@ -46,27 +67,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nickname_available => '사용 가능한 닉네임입니다!';
-
-  @override
-  String get logout => '로그아웃';
-
-  @override
-  String get confirm_logout => '정말로 로그아웃을 하시겠습니까?';
-
-  @override
-  String get language_selection => '언어 선택';
-
-  @override
-  String get korean => '한국어';
-
-  @override
-  String get english => '영어';
-
-  @override
-  String get confirm => '확인';
-
-  @override
-  String get cancel => '취소';
 
   @override
   String get check_duplicate => '중복 확인';
@@ -84,7 +84,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get nickname_check_prompt => '닉네임 확인을 완료해주세요.';
 
   @override
+  String get logout => '로그아웃';
+
+  @override
+  String get confirm_logout => '정말로 로그아웃을 하시겠습니까?';
+
+  @override
+  String get confirm => '확인';
+
+  @override
+  String get cancel => '취소';
+
+  @override
   String get saved_message => '저장되었습니다!';
+
+  @override
+  String get close => '닫기';
 
   @override
   String get exit => '종료';
@@ -94,19 +109,4 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get confirm_exit => '정말 종료하시겠습니까?';
-
-  @override
-  String get sound_settings => '소리 설정';
-
-  @override
-  String get sound_on => '소리 켜기';
-
-  @override
-  String get volume_level => '음량';
-
-  @override
-  String get close => '닫기';
-
-  @override
-  String get select_music => '음악 선택';
 }

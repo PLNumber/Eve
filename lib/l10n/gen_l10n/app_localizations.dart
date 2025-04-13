@@ -119,6 +119,30 @@ abstract class AppLocalizations {
   /// **'Sound'**
   String get sound;
 
+  /// No description provided for @sound_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound Settings'**
+  String get sound_settings;
+
+  /// No description provided for @sound_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Sound'**
+  String get sound_on;
+
+  /// No description provided for @volume_level.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get volume_level;
+
+  /// No description provided for @select_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Music'**
+  String get select_music;
+
   /// No description provided for @reset_history.
   ///
   /// In en, this message translates to:
@@ -149,6 +173,24 @@ abstract class AppLocalizations {
   /// **'Change Language'**
   String get change_language;
 
+  /// No description provided for @language_selection.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get language_selection;
+
+  /// No description provided for @korean.
+  ///
+  /// In en, this message translates to:
+  /// **'Korean'**
+  String get korean;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
   /// No description provided for @nickname_change.
   ///
   /// In en, this message translates to:
@@ -172,48 +214,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This nickname is available!'**
   String get nickname_available;
-
-  /// No description provided for @logout.
-  ///
-  /// In en, this message translates to:
-  /// **'Logout'**
-  String get logout;
-
-  /// No description provided for @confirm_logout.
-  ///
-  /// In en, this message translates to:
-  /// **'Do you really want to logout?'**
-  String get confirm_logout;
-
-  /// No description provided for @language_selection.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Language'**
-  String get language_selection;
-
-  /// No description provided for @korean.
-  ///
-  /// In en, this message translates to:
-  /// **'Korean'**
-  String get korean;
-
-  /// No description provided for @english.
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get english;
-
-  /// No description provided for @confirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm'**
-  String get confirm;
-
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
 
   /// No description provided for @check_duplicate.
   ///
@@ -245,11 +245,41 @@ abstract class AppLocalizations {
   /// **'Please complete the nickname check.'**
   String get nickname_check_prompt;
 
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @confirm_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you really want to logout?'**
+  String get confirm_logout;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
   /// No description provided for @saved_message.
   ///
   /// In en, this message translates to:
   /// **'Saved successfully!'**
   String get saved_message;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 
   /// No description provided for @exit.
   ///
@@ -268,36 +298,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure want to exit?'**
   String get confirm_exit;
-
-  /// No description provided for @sound_settings.
-  ///
-  /// In en, this message translates to:
-  /// **'Sound Settings'**
-  String get sound_settings;
-
-  /// No description provided for @sound_on.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable Sound'**
-  String get sound_on;
-
-  /// No description provided for @volume_level.
-  ///
-  /// In en, this message translates to:
-  /// **'Volume'**
-  String get volume_level;
-
-  /// No description provided for @close.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get close;
-
-  /// No description provided for @select_music.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Music'**
-  String get select_music;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

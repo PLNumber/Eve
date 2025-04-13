@@ -1,38 +1,46 @@
 {
   "@@locale": "ko",
+
   "waiting" : "불러오는 중 . . .",
   "title": "환영합니다",
+
   "settings": "설정",
   "sound" : "소리 설정",
+  "sound_settings": "소리 설정",
+  "sound_on": "소리 켜기",
+  "volume_level": "음량",
+  "select_music" : "음악 선택",
+
   "reset_history" : "기록 초기화",
+
   "change_background": "배경 변경",
   "default_background" : "밝음(기본)",
   "dark_background" : "어두움",
+
   "change_language": "언어 변경",
+  "language_selection": "언어 선택",
+  "korean": "한국어",
+  "english": "영어",
+
   "nickname_change": "닉네임 변경",
   "nickname_invalid": "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.",
   "nickname_taken": "이미 사용 중인 닉네임입니다.",
   "nickname_available": "사용 가능한 닉네임입니다!",
-  "logout": "로그아웃",
-  "confirm_logout": "정말로 로그아웃을 하시겠습니까?",
-  "language_selection": "언어 선택",
-  "korean": "한국어",
-  "english": "영어",
-  "confirm": "확인",
-  "cancel": "취소",
   "check_duplicate": "중복 확인",
   "change_nickname": "닉네임 변경",
   "nickname_placeholder": "새 닉네임 입력",
   "nickname_success": "닉네임이 변경되었습니다!",
   "nickname_check_prompt": "닉네임 확인을 완료해주세요.",
+
+  "logout": "로그아웃",
+  "confirm_logout": "정말로 로그아웃을 하시겠습니까?",
+
+  "confirm": "확인",
+  "cancel": "취소",
   "saved_message": "저장되었습니다!",
+  "close": "닫기",
+
   "exit": "종료",
   "confirm_exit_quiz": "정말 퀴즈를 종료하시겠습니까?",
-  "confirm_exit" : "정말 종료하시겠습니까?",
-  "sound_settings": "소리 설정",
-  "sound_on": "소리 켜기",
-  "volume_level": "음량",
-  "close": "닫기",
-  "select_music" : "음악 선택"
-
+  "confirm_exit" : "정말 종료하시겠습니까?"
 }
