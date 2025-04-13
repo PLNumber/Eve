@@ -39,6 +39,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nickname_change => 'Change Nickname';
 
   @override
+  String get nickname_invalid => 'Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.';
+
+  @override
+  String get nickname_taken => 'This nickname is already taken.';
+
+  @override
+  String get nickname_available => 'This nickname is available!';
+
+  @override
   String get logout => 'Logout';
 
   @override

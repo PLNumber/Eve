@@ -155,6 +155,24 @@ abstract class AppLocalizations {
   /// **'Change Nickname'**
   String get nickname_change;
 
+  /// No description provided for @nickname_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.'**
+  String get nickname_invalid;
+
+  /// No description provided for @nickname_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'This nickname is already taken.'**
+  String get nickname_taken;
+
+  /// No description provided for @nickname_available.
+  ///
+  /// In en, this message translates to:
+  /// **'This nickname is available!'**
+  String get nickname_available;
+
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:

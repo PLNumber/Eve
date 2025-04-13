@@ -39,6 +39,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get nickname_change => '닉네임 변경';
 
   @override
+  String get nickname_invalid => '닉네임은 2~10자, 한글/영문/숫자만 가능합니다.';
+
+  @override
+  String get nickname_taken => '이미 사용 중인 닉네임입니다.';
+
+  @override
+  String get nickname_available => '사용 가능한 닉네임입니다!';
+
+  @override
   String get logout => '로그아웃';
 
   @override

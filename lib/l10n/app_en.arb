@@ -9,7 +9,12 @@
   "default_background" : "White(Default)",
   "dark_background" : "Dark",
   "change_language": "Change Language",
+  
   "nickname_change": "Change Nickname",
+  "nickname_invalid": "Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.",
+  "nickname_taken": "This nickname is already taken.",
+  "nickname_available": "This nickname is available!",
+
   "logout": "Logout",
   "confirm_logout": "Do you really want to logout?",
   "language_selection": "Select Language",
