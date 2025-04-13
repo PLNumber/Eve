@@ -1,5 +1,6 @@
 {
   "@@locale": "ko",
+
   "waiting" : "불러오는 중 . . .",
   "title": "환영합니다",
   "settings": "설정",
@@ -17,5 +18,15 @@
   "confirm_logout": "정말로 로그아웃을 하시겠습니까?",
   "language_selection": "언어 선택",
   "korean": "한국어",
-  "english": "영어"
+  "english": "영어",
+  "confirm": "확인",
+  "cancel": "취소",
+  "check_duplicate": "중복 확인",
+  "change_nickname": "닉네임 변경",
+  "nickname_placeholder": "새 닉네임 입력",
+  "nickname_success": "닉네임이 변경되었습니다!",
+  "nickname_check_prompt": "닉네임 확인을 완료해주세요.",
+  "saved_message": "저장되었습니다!",
+  "exit": "종료",
+  "confirm_exit_quiz": "정말 퀴즈를 종료하시겠습니까?"
 }

@@ -61,4 +61,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get english => 'English';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get check_duplicate => 'Check Duplicate';
+
+  @override
+  String get change_nickname => 'Change Nickname';
+
+  @override
+  String get nickname_placeholder => 'Enter new nickname';
+
+  @override
+  String get nickname_success => 'Nickname changed successfully!';
+
+  @override
+  String get nickname_check_prompt => 'Please complete the nickname check.';
+
+  @override
+  String get saved_message => 'Saved successfully!';
+
+  @override
+  String get exit => 'Exit';
+
+  @override
+  String get confirm_exit_quiz => 'Are you sure you want to quit the quiz?';
 }

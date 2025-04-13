@@ -1,11 +1,14 @@
 /* lib/View/Widgets/nav_util.dart */
 import 'package:flutter/material.dart';
 import '../../main.dart';
+import '../../l10n/gen_l10n/app_localizations.dart';
+
 
 /// 공용 뒤로가기 SnackBar + 뒤로 이동 함수
-void showSnackAndNavigateBack(BuildContext context, {String message = '저장되었습니다!'}) {
-  showSavedSnackBar(context, message: message);
-  Future.delayed(Duration(milliseconds: 1000), () {
+void showSnackAndNavigateBack(BuildContext context, {String? message}) {
+  final local = AppLocalizations.of(context)!;
+  showSavedSnackBar(context, message: message ?? local.saved_message);
+  Future.delayed(const Duration(milliseconds: 1000), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MainPage()),
@@ -14,11 +17,12 @@ void showSnackAndNavigateBack(BuildContext context, {String message = '저장되
 }
 
 /// 공용 스낵바 출력 함수
-void showSavedSnackBar(BuildContext context, {String message = '저장되었습니다!'}) {
+void showSavedSnackBar(BuildContext context, {String? message}) {
+  final local = AppLocalizations.of(context)!;
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: 1),
+      content: Text(message ?? local.saved_message),
+      duration: const Duration(seconds: 1),
     ),
   );
 }
@@ -26,16 +30,17 @@ void showSavedSnackBar(BuildContext context, {String message = '저장되었습�
 
 /// 공용 뒤로가기/종료 다이얼로그
 Future<void> showExitDialog(BuildContext context) async {
+  final local = AppLocalizations.of(context)!;
+
   showDialog(
     context: context,
-    builder:
-        (context) => AlertDialog(
-      title: const Text("종료"),
-      content: const Text("정말 퀴즈를 종료하시겠습니까?"),
+    builder: (context) => AlertDialog(
+      title: Text(local.exit),
+      content: Text(local.confirm_exit_quiz),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text("취소"),
+          child: Text(local.cancel),
         ),
         TextButton(
           onPressed: () {
@@ -45,7 +50,7 @@ Future<void> showExitDialog(BuildContext context) async {
               MaterialPageRoute(builder: (context) => MainPage()),
             );
           },
-          child: const Text("확인"),
+          child: Text(local.confirm),
         ),
       ],
     ),
@@ -59,29 +64,29 @@ Future<void> showConfirmDialog(
       required String content,
       required VoidCallback onConfirm,
     }) async {
+  final local = AppLocalizations.of(context)!;
+
   showDialog(
     context: context,
-    builder:
-        (context) => AlertDialog(
+    builder: (context) => AlertDialog(
       title: Text(title),
       content: Text(content),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("취소"),
+          child: Text(local.cancel),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
             onConfirm();
           },
-          child: const Text("확인"),
+          child: Text(local.confirm),
         ),
       ],
     ),
   );
 }
-
 
 
 

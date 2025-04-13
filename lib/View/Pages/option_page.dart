@@ -79,6 +79,7 @@ class OptionPage extends StatelessWidget {
     );
   }
 
+  //임시용
   void _showSimpleSnack(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 1)),

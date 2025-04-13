@@ -1,6 +1,6 @@
 // ✅ lib/main.dart (다국어 적용된 MainPage 포함)
-
 import 'package:eve/provider/local_provider.dart';
+import 'package:eve/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -42,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),  //테스트용
         ChangeNotifierProvider(
           create: (_) => QuizViewModel(
@@ -77,12 +78,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
       title: 'LexiUp',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      themeMode: themeProvider.themeMode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       locale: provider.locale,
       supportedLocales: const [
         Locale('en'),
@@ -118,7 +120,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  String nickname = "불러오는 중 . . .";
+  String nickname = "  ";
   final AuthService _authService = AuthService();
 
   @override

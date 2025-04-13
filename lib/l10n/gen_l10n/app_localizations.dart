@@ -202,6 +202,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'English'**
   String get english;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @check_duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Duplicate'**
+  String get check_duplicate;
+
+  /// No description provided for @change_nickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Nickname'**
+  String get change_nickname;
+
+  /// No description provided for @nickname_placeholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new nickname'**
+  String get nickname_placeholder;
+
+  /// No description provided for @nickname_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname changed successfully!'**
+  String get nickname_success;
+
+  /// No description provided for @nickname_check_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete the nickname check.'**
+  String get nickname_check_prompt;
+
+  /// No description provided for @saved_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved successfully!'**
+  String get saved_message;
+
+  /// No description provided for @exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit;
+
+  /// No description provided for @confirm_exit_quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to quit the quiz?'**
+  String get confirm_exit_quiz;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

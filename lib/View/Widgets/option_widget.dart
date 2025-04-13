@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../provider/local_provider.dart';
+import '../../provider/theme_provider.dart';
 import 'nav_util.dart';
 import '../../ViewModel/option_view_model.dart';
 
@@ -54,6 +55,8 @@ class LanguageDialog {
 // 배경 다이얼로그
 class BackgroundDialog {
   static void show(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     showDialog(
       context: context,
       builder: (_) => SimpleDialog(
@@ -62,14 +65,14 @@ class BackgroundDialog {
           SimpleDialogOption(
             child: Text(AppLocalizations.of(context)!.default_background),
             onPressed: () {
-              //TODO : 배경 설정 해야함
+              themeProvider.setTheme(ThemeMode.light);
               Navigator.pop(context);
             },
           ),
           SimpleDialogOption(
             child: Text(AppLocalizations.of(context)!.dark_background),
             onPressed: () {
-              // TODO: 배경 설정해야함
+              themeProvider.setTheme(ThemeMode.dark);
               Navigator.pop(context);
             },
           ),
@@ -80,7 +83,7 @@ class BackgroundDialog {
 }
 
 
-
+// 닉네임 다이얼로그
 class NicknameDialog {
   static void show(BuildContext context) {
     final TextEditingController _controller = TextEditingController();
@@ -94,14 +97,14 @@ class NicknameDialog {
       final result = await viewModel.checkNicknameAvailable(nickname);
 
       isAvailable = result == null;
-      message = result ?? "사용 가능한 닉네임입니다!";
+      message = result ?? AppLocalizations.of(context)!.nickname_available;
       (dialogContext as Element).markNeedsBuild(); // 강제 리빌드
     }
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text("닉네임 변경"),
+        title: Text(AppLocalizations.of(context)!.change_nickname),
         content: StatefulBuilder(
           builder: (context, setState) {
             return Column(
@@ -109,15 +112,15 @@ class NicknameDialog {
               children: [
                 TextField(
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: "새 닉네임 입력",
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.nickname_placeholder,
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () => checkNickname(context),
-                  child: const Text("중복 확인"),
+                  child: Text(AppLocalizations.of(context)!.check_duplicate),
                 ),
                 const SizedBox(height: 6),
                 if (message.isNotEmpty)
@@ -134,21 +137,21 @@ class NicknameDialog {
         ),
         actions: [
           TextButton(
-            child: const Text("취소"),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
-            child: const Text("확인"),
+            child: Text(AppLocalizations.of(context)!.confirm),
             onPressed: () async {
               final nickname = _controller.text.trim();
               if (isAvailable != true) {
-                showSavedSnackBar(context, message: "닉네임 확인을 완료해주세요.");
+                showSavedSnackBar(context, message: AppLocalizations.of(context)!.nickname_check_prompt);
                 return;
               }
 
               await viewModel.updateNickname(nickname);
               Navigator.pop(context);
-              showSavedSnackBar(context, message: "닉네임이 변경되었습니다!");
+              showSavedSnackBar(context, message: AppLocalizations.of(context)!.nickname_success);
             },
           ),
         ],

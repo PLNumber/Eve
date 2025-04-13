@@ -61,4 +61,34 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get english => '영어';
+
+  @override
+  String get confirm => '확인';
+
+  @override
+  String get cancel => '취소';
+
+  @override
+  String get check_duplicate => '중복 확인';
+
+  @override
+  String get change_nickname => '닉네임 변경';
+
+  @override
+  String get nickname_placeholder => '새 닉네임 입력';
+
+  @override
+  String get nickname_success => '닉네임이 변경되었습니다!';
+
+  @override
+  String get nickname_check_prompt => '닉네임 확인을 완료해주세요.';
+
+  @override
+  String get saved_message => '저장되었습니다!';
+
+  @override
+  String get exit => '종료';
+
+  @override
+  String get confirm_exit_quiz => '정말 퀴즈를 종료하시겠습니까?';
 }
