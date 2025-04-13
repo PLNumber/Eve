@@ -28,5 +28,12 @@
   "nickname_check_prompt": "닉네임 확인을 완료해주세요.",
   "saved_message": "저장되었습니다!",
   "exit": "종료",
-  "confirm_exit_quiz": "정말 퀴즈를 종료하시겠습니까?"
+  "confirm_exit_quiz": "정말 퀴즈를 종료하시겠습니까?",
+  "confirm_exit" : "정말 종료하시겠습니까?",
+  "sound_settings": "소리 설정",
+  "sound_on": "소리 켜기",
+  "volume_level": "음량",
+  "close": "닫기",
+  "select_music" : "음악 선택"
+
 }

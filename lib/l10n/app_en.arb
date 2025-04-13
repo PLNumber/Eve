@@ -27,5 +27,11 @@
   "nickname_check_prompt": "Please complete the nickname check.",
   "saved_message": "Saved successfully!",
   "exit": "Exit",
-  "confirm_exit_quiz": "Are you sure you want to quit the quiz?"
+  "confirm_exit_quiz": "Are you sure you want to quit the quiz?",
+  "confirm_exit" : "Are you sure want to exit?",
+  "sound_settings": "Sound Settings",
+  "sound_on": "Enable Sound",
+  "volume_level": "Volume",
+  "close": "Close",
+  "select_music": "Choose Music"
 }

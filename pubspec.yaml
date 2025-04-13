@@ -50,6 +50,7 @@ dev_dependencies:
   cloud_firestore: ^5.6.6
   intl: ^0.19.0
   shared_preferences: ^2.5.3
+  audioplayers: ^6.4.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -75,6 +76,7 @@ flutter:
   assets:
     - assets/config/.env
     - assets/images/
+    - assets/audio/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

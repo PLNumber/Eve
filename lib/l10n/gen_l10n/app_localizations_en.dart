@@ -91,4 +91,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_exit_quiz => 'Are you sure you want to quit the quiz?';
+
+  @override
+  String get confirm_exit => 'Are you sure want to exit?';
+
+  @override
+  String get sound_settings => 'Sound Settings';
+
+  @override
+  String get sound_on => 'Enable Sound';
+
+  @override
+  String get volume_level => 'Volume';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get select_music => 'Choose Music';
 }

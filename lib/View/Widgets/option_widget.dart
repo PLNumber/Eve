@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
+import '../../provider/audio_provider.dart';
 import '../../provider/local_provider.dart';
 import '../../provider/theme_provider.dart';
 import 'nav_util.dart';
@@ -22,6 +23,73 @@ class OptionTile extends StatelessWidget {
     );
   }
 }
+
+// 소리 다이얼로그
+class SoundDialog {
+  static void show(BuildContext context) {
+    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+    final local = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(local.sound_settings),
+        content: Consumer<AudioProvider>(
+          builder: (context, audio, _) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                //소리 온오프
+                SwitchListTile(
+                  title: Text(local.sound_on),
+                  value: audio.isPlaying,
+                  onChanged: (_) => audio.togglePlay(),
+                ),
+                const SizedBox(height: 12),
+
+                //음악 선택
+                Text(local.select_music),
+                DropdownButton<String>(
+                  value: audio.currentMusic,
+                  isExpanded: true,
+                  items: audio.musicList.map((music) {
+                    return DropdownMenuItem<String>(
+                      value: music,
+                      child: Text(music.replaceAll('.mp3', '')),
+                    );
+                  }).toList(),
+                  onChanged: (newMusic) {
+                    if (newMusic != null) {
+                      audio.changeMusic(newMusic);
+                    }
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // ✅ 음량 조절
+                Text("${local.volume_level}: ${(audio.volume * 10).round()} / 10"),
+                Slider(
+                  value: audio.volume,
+                  min: 0,
+                  max: 1,
+                  divisions: 10,
+                  onChanged: (value) => audio.setVolume(value),
+                ),
+              ],
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            child: Text(local.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 // 언어 다이얼로그
 class LanguageDialog {

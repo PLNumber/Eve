@@ -91,4 +91,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get confirm_exit_quiz => '정말 퀴즈를 종료하시겠습니까?';
+
+  @override
+  String get confirm_exit => '정말 종료하시겠습니까?';
+
+  @override
+  String get sound_settings => '소리 설정';
+
+  @override
+  String get sound_on => '소리 켜기';
+
+  @override
+  String get volume_level => '음량';
+
+  @override
+  String get close => '닫기';
+
+  @override
+  String get select_music => '음악 선택';
 }

@@ -34,7 +34,7 @@ class OptionPage extends StatelessWidget {
             //소리 설정
             OptionTile(
               title: AppLocalizations.of(context)!.sound,
-              onTap: () => _showSimpleSnack(context, "소리 설정은 나중에 업데이트 예정!"),
+              onTap: () => SoundDialog.show(context),
             ),
             
             //초기화 설정

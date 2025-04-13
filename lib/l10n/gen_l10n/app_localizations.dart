@@ -262,6 +262,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to quit the quiz?'**
   String get confirm_exit_quiz;
+
+  /// No description provided for @confirm_exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure want to exit?'**
+  String get confirm_exit;
+
+  /// No description provided for @sound_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound Settings'**
+  String get sound_settings;
+
+  /// No description provided for @sound_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Sound'**
+  String get sound_on;
+
+  /// No description provided for @volume_level.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get volume_level;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @select_music.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Music'**
+  String get select_music;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

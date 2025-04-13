@@ -1,4 +1,5 @@
 // ✅ lib/main.dart (다국어 적용된 MainPage 포함)
+import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
+        ChangeNotifierProvider(create: (_) => AudioProvider()),
+
         ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),  //테스트용
         ChangeNotifierProvider(
           create: (_) => QuizViewModel(
@@ -79,6 +82,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
 
     return MaterialApp(
       title: 'LexiUp',
@@ -144,8 +148,8 @@ class _MainPage extends State<MainPage> {
         if (didPop) return;
         showConfirmDialog(
           context,
-          title: AppLocalizations.of(context)!.title,
-          content: AppLocalizations.of(context)!.confirm_logout,
+          title: AppLocalizations.of(context)!.exit,
+          content: AppLocalizations.of(context)!.confirm_exit,
           onConfirm: () => SystemNavigator.pop(),
         );
       },
