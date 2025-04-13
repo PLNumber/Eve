@@ -8,7 +8,7 @@ import '../../l10n/gen_l10n/app_localizations.dart';
 void showSnackAndNavigateBack(BuildContext context, {String? message}) {
   final local = AppLocalizations.of(context)!;
   showSavedSnackBar(context, message: message ?? local.saved_message);
-  Future.delayed(const Duration(milliseconds: 1000), () {
+  Future.delayed(const Duration(milliseconds: 500), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MainPage()),
@@ -22,7 +22,7 @@ void showSavedSnackBar(BuildContext context, {String? message}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message ?? local.saved_message),
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
     ),
   );
 }

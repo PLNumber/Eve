@@ -9,8 +9,8 @@ class AudioProvider with ChangeNotifier {
   final List<String> _musicList = [
     'Vivaldi_Spring.mp3',
     'Vivaldi_Summer.mp3',
-    'Vivaldi_Winter.mp3',
     'Vivaldi_fallen.mp3',
+    'Vivaldi_Winter.mp3',
   ];
 
   bool _isPlaying = false;

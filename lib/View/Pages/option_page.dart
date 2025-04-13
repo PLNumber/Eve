@@ -40,6 +40,7 @@ class OptionPage extends StatelessWidget {
             //초기화 설정
             OptionTile(
               title: AppLocalizations.of(context)!.reset_history,
+              //TODO: 초기화 관련 기능 설정
               onTap: () => _showSimpleSnack(context, "초기화 설정은 나중에 업데이트 예정!"),
             ),
             
