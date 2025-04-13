@@ -9,10 +9,28 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get waiting => 'Loading . . . ';
+
+  @override
   String get title => 'Welcome';
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get sound => 'Sound';
+
+  @override
+  String get reset_history => 'Reset History';
+
+  @override
+  String get change_background => 'Change Background';
+
+  @override
+  String get default_background => 'White(Default)';
+
+  @override
+  String get dark_background => 'Dark';
 
   @override
   String get change_language => 'Change Language';

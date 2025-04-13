@@ -9,10 +9,28 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get waiting => '불러오는 중 . . .';
+
+  @override
   String get title => '환영합니다';
 
   @override
   String get settings => '설정';
+
+  @override
+  String get sound => '소리 설정';
+
+  @override
+  String get reset_history => '기록 초기화';
+
+  @override
+  String get change_background => '배경 변경';
+
+  @override
+  String get default_background => '밝음(기본)';
+
+  @override
+  String get dark_background => '어두움';
 
   @override
   String get change_language => '언어 변경';

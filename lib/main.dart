@@ -149,7 +149,7 @@ class _MainPage extends State<MainPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("${AppLocalizations.of(context)!.title}, $nickname님"),
+          title: Text(nickname),
           leading: Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.menu),
@@ -160,12 +160,14 @@ class _MainPage extends State<MainPage> {
             ),
           ),
         ),
+
+
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.settings, style: const TextStyle(fontSize: 20)),
+              Text(AppLocalizations.of(context)!.title, style: const TextStyle(fontSize: 20)),
               const SizedBox(height: 16),
               GridView.count(
                 crossAxisCount: 1,

@@ -30,26 +30,38 @@ class OptionPage extends StatelessWidget {
         ),
         body: ListView(
           children: [
+            
+            //소리 설정
             OptionTile(
-              title: "소리 설정",
+              title: AppLocalizations.of(context)!.sound,
               onTap: () => _showSimpleSnack(context, "소리 설정은 나중에 업데이트 예정!"),
             ),
+            
+            //초기화 설정
             OptionTile(
-              title: "초기화 설정",
+              title: AppLocalizations.of(context)!.reset_history,
               onTap: () => _showSimpleSnack(context, "초기화 설정은 나중에 업데이트 예정!"),
             ),
+            
+            // 배경 설정
             OptionTile(
-              title: "배경 설정",
-              onTap: () => _showSimpleSnack(context, "배경 설정은 나중에 업데이트 예정!"),
+              title: AppLocalizations.of(context)!.change_background,
+              onTap: () => BackgroundDialog.show(context),
             ),
+            
+            //언어 설정
             OptionTile(
               title: AppLocalizations.of(context)!.change_language,
               onTap: () => LanguageDialog.show(context),
             ),
+            
+            // 이름 변경
             OptionTile(
               title: AppLocalizations.of(context)!.nickname_change,
               onTap: () => NicknameDialog.show(context),
             ),
+            
+            // 로그아웃
             OptionTile(
               title: AppLocalizations.of(context)!.logout,
               onTap: () {

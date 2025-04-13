@@ -1,7 +1,13 @@
 {
   "@@locale": "ko",
+  "waiting" : "불러오는 중 . . .",
   "title": "환영합니다",
   "settings": "설정",
+  "sound" : "소리 설정",
+  "reset_history" : "기록 초기화",
+  "change_background": "배경 변경",
+  "default_background" : "밝음(기본)",
+  "dark_background" : "어두움",
   "change_language": "언어 변경",
   "nickname_change": "닉네임 변경",
   "logout": "로그아웃",

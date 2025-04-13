@@ -51,6 +51,36 @@ class LanguageDialog {
 }
 
 
+// 배경 다이얼로그
+class BackgroundDialog {
+  static void show(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => SimpleDialog(
+        title: Text(AppLocalizations.of(context)!.change_background),
+        children: [
+          SimpleDialogOption(
+            child: Text(AppLocalizations.of(context)!.default_background),
+            onPressed: () {
+              //TODO : 배경 설정 해야함
+              Navigator.pop(context);
+            },
+          ),
+          SimpleDialogOption(
+            child: Text(AppLocalizations.of(context)!.dark_background),
+            onPressed: () {
+              // TODO: 배경 설정해야함
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
 class NicknameDialog {
   static void show(BuildContext context) {
     final TextEditingController _controller = TextEditingController();

@@ -95,6 +95,12 @@ abstract class AppLocalizations {
     Locale('ko')
   ];
 
+  /// No description provided for @waiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading . . . '**
+  String get waiting;
+
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
@@ -106,6 +112,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sound;
+
+  /// No description provided for @reset_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset History'**
+  String get reset_history;
+
+  /// No description provided for @change_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Background'**
+  String get change_background;
+
+  /// No description provided for @default_background.
+  ///
+  /// In en, this message translates to:
+  /// **'White(Default)'**
+  String get default_background;
+
+  /// No description provided for @dark_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark_background;
 
   /// No description provided for @change_language.
   ///
