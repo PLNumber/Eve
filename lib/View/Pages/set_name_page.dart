@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../main.dart';
 import '../Widgets/nav_util.dart';
 
@@ -113,7 +114,7 @@ class _SetUserPage extends State<SetUserPage> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _checkNicknameDuplicate,
-                child: Text("중복 확인"),
+                child: Text(AppLocalizations.of(context)!.check_duplicate),
               ),
               const SizedBox(height: 8),
               if (_checkMessage.isNotEmpty)
