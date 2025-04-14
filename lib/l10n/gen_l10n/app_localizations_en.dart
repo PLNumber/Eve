@@ -15,6 +15,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title => 'Welcome';
 
   @override
+  String get login => 'Login';
+
+  @override
+  String get google_login => 'Google Login';
+
+  @override
   String get settings => 'Settings';
 
   @override

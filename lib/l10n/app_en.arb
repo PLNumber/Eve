@@ -4,6 +4,9 @@
   "waiting": "Loading . . . ",
   "title": "Welcome",
 
+  "login": "Login",
+  "google_login" : "Google Login",
+
   "settings": "Settings",
   "sound" : "Sound",
   "sound_settings": "Sound Settings",

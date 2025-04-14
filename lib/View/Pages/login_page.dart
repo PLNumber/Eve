@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../viewmodel/login_view_model.dart';
 import 'set_name_page.dart';
 import '../../main.dart';
@@ -11,7 +12,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("로그인")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.login)),
       body: Center(
         child: Consumer<LoginViewModel>(
           builder: (context, viewModel, child) {
@@ -33,7 +34,7 @@ class LoginPage extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(viewModel.errorMessage)));
                 }
               },
-              child: const Text("구글 로그인"),
+              child: Text(AppLocalizations.of(context)!.google_login),
             );
           },
         ),

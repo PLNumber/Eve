@@ -107,6 +107,18 @@ abstract class AppLocalizations {
   /// **'Welcome'**
   String get title;
 
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @google_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Login'**
+  String get google_login;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:

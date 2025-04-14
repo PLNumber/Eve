@@ -4,6 +4,9 @@
   "waiting" : "불러오는 중 . . .",
   "title": "환영합니다",
 
+  "login": "로그인",
+  "google_login" : "구글 로그인",
+
   "settings": "설정",
   "sound" : "소리 설정",
   "sound_settings": "소리 설정",
