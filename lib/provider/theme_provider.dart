@@ -7,6 +7,7 @@ class ThemeProvider with ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
+  //배경 불러오기
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final mode = prefs.getString('theme_mode') ?? 'light';
@@ -14,6 +15,7 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //배경 설정하기
   Future<void> setTheme(ThemeMode mode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('theme_mode', mode == ThemeMode.dark ? 'dark' : 'light');

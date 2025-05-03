@@ -9,6 +9,7 @@ class QuizQuestion {
   final String feedback;
   final int difficulty;
 
+
   QuizQuestion({
     required this.question,
     required this.answer,
@@ -18,6 +19,8 @@ class QuizQuestion {
     required this.difficulty,
   });
 
+
+  //문제 데이터베이스 가져오는 함수
   Map<String, dynamic> toMap() {
     return {
       "question": question, // 문제

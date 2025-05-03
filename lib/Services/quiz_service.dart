@@ -23,4 +23,12 @@ class QuizService {
 
     await _quizRepo.saveQuiz(docId, quiz.toMap());
   }
+
+  //TODO :  퀴즈를 가져오는 함수인 getQuestion 함수를 구현 해야함
+
+  //TODO: checkAnswer 함수를 통해 해당하는 문제의 정답을 확인하는 함수를 구현 해야함
+
+  //TODO: compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수를 구현 해야함 (오답 일 경우 레포지토리의 requestFeedBack 함수를 호출?)
+
+  //TODO : 이후에 사용자의 통계를 갱신하는 함수인 updateStat 함수를 구현 해야함
 }

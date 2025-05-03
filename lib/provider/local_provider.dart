@@ -7,6 +7,7 @@ class LocaleProvider with ChangeNotifier {
 
   Locale get locale => _locale;
 
+  // 해당하는 언어 불러오기
   Future<void> loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final langCode = prefs.getString('language_code') ?? 'ko';
@@ -14,6 +15,7 @@ class LocaleProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 해당하는 언어 설정하기
   Future<void> setLocale(String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', languageCode);

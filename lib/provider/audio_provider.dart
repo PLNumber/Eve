@@ -26,6 +26,7 @@ class AudioProvider with ChangeNotifier {
     _initAudio();
   }
 
+  //음악 초기 설정
   Future<void> _initAudio() async {
     final prefs = await SharedPreferences.getInstance();
     _isPlaying = prefs.getBool('sound_enabled') ?? true;
@@ -41,6 +42,7 @@ class AudioProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //음악 설정
   Future<void> _setMusic(String filename) async {
     _currentMusic = filename;
     await _player.setSource(AssetSource('audio/$filename'));
@@ -48,6 +50,7 @@ class AudioProvider with ChangeNotifier {
     await _player.setVolume(_volume);
   }
 
+  // 음악 실행
   Future<void> togglePlay() async {
     final prefs = await SharedPreferences.getInstance();
     if (_isPlaying) {
@@ -61,6 +64,7 @@ class AudioProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 음량 설정
   Future<void> setVolume(double value) async {
     final prefs = await SharedPreferences.getInstance();
     _volume = value;
@@ -69,6 +73,7 @@ class AudioProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //음악 변경 설정
   Future<void> changeMusic(String filename) async {
     final prefs = await SharedPreferences.getInstance();
     await _player.stop(); // 현재 음악 멈춤
