@@ -33,36 +33,59 @@ class AudioProvider with ChangeNotifier {
     _volume = prefs.getDouble('sound_volume') ?? 0.5;
     _currentMusic = prefs.getString('music_filename') ?? 'Vivaldi_Spring.mp3';
 
-    await _setMusic(_currentMusic);
+    print("🎧 초기화: isPlaying=$_isPlaying, volume=$_volume, currentMusic=$_currentMusic");
 
-    if (_isPlaying) {
-      await _player.resume();
+    try {
+      await _setMusic(_currentMusic);
+      if (_isPlaying) {
+        print("▶️ 음악 재생 시도");
+        await _player.resume();
+      }
+    } catch (e) {
+      print("❌ _initAudio 오류: $e");
     }
 
     notifyListeners();
   }
+
 
   //음악 설정
   Future<void> _setMusic(String filename) async {
     _currentMusic = filename;
-    await _player.setSource(AssetSource('audio/$filename'));
-    await _player.setReleaseMode(ReleaseMode.loop);
-    await _player.setVolume(_volume);
+    print("🎼 음악 설정: $filename");
+
+    try {
+      await _player.setSource(AssetSource('audio/$filename'));
+      await _player.setReleaseMode(ReleaseMode.loop);
+      await _player.setVolume(_volume);
+    } catch (e) {
+      print("❌ _setMusic 오류: $e");
+    }
   }
+
 
   // 음악 실행
   Future<void> togglePlay() async {
     final prefs = await SharedPreferences.getInstance();
-    if (_isPlaying) {
-      await _player.pause();
-      await prefs.setBool('sound_enabled', false);
-    } else {
-      await _player.resume();
-      await prefs.setBool('sound_enabled', true);
+
+    try {
+      if (_isPlaying) {
+        print("⏸ 음악 일시 정지");
+        await _player.pause();
+        await prefs.setBool('sound_enabled', false);
+      } else {
+        print("▶️ 음악 재생");
+        await _player.resume();
+        await prefs.setBool('sound_enabled', true);
+      }
+      _isPlaying = !_isPlaying;
+    } catch (e) {
+      print("❌ togglePlay 오류: $e");
     }
-    _isPlaying = !_isPlaying;
+
     notifyListeners();
   }
+
 
   // 음량 설정
   Future<void> setVolume(double value) async {
