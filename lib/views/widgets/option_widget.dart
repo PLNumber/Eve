@@ -1,4 +1,4 @@
-// lib/View/Widgets/option_widget.dart
+// lib/views/widgets/option_widget.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
@@ -6,7 +6,7 @@ import '../../provider/audio_provider.dart';
 import '../../provider/local_provider.dart';
 import '../../provider/theme_provider.dart';
 import 'nav_util.dart';
-import '../../ViewModel/option_view_model.dart';
+import '../../viewModel/option_view_model.dart';
 
 //옵션 타일
 class OptionTile extends StatelessWidget {

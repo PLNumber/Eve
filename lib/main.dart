@@ -11,22 +11,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'View/Pages/quiz_test_version_page.dart';
-import 'ViewModel/login_view_model.dart';
-import 'ViewModel/option_view_model.dart';
-import 'ViewModel/quiz_test_version_view_model.dart';
-import 'ViewModel/quiz_view_model.dart';
+import 'Controller/quiz_controller.dart';
+import 'viewModel/login_view_model.dart';
+import 'viewModel/option_view_model.dart';
+
 import 'firebase_options.dart';
 import 'l10n/gen_l10n/app_localizations.dart';
-import 'view/pages/login_page.dart';
-import 'view/pages/quiz_page.dart';
-import 'view/pages/option_page.dart';
-import 'view/pages/set_name_page.dart';
-import 'view/widgets/feature_card.dart';
-import 'view/widgets/nav_util.dart';
+import 'views/pages/login_page.dart';
+import 'views/pages/quiz_page.dart';
+import 'views/pages/option_page.dart';
+import 'views/pages/set_name_page.dart';
+import 'views/widgets/feature_card.dart';
+import 'views/widgets/nav_util.dart';
 
 import 'services/auth_service.dart';
-import 'services/openai_service.dart';
+import 'Services/gemini_service.dart';
 import 'services/quiz_service.dart';
 import 'repository/quiz_repository.dart';
 
@@ -35,7 +34,7 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: "assets/config/.env");
-  final String openAIApiKey = dotenv.env['openAIApiKey'] ?? "";
+  final String geminiApiKey = dotenv.env['geminiApiKey'] ?? "";
 
   runApp(
     MultiProvider(
@@ -45,13 +44,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => OptionViewModel()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
-
-        ChangeNotifierProvider(create: (_) => SolveQuizViewModel()),  //테스트용
-        ChangeNotifierProvider(
-          create: (_) => QuizViewModel(
+        Provider(
+          create: (_) => QuizController(
             QuizService(
-              QuizRepository(),
-              OpenAIService(apiKey: openAIApiKey),
+              QuizRepository(
+                GeminiService(apiKey: geminiApiKey),
+              ),
             ),
           ),
         ),

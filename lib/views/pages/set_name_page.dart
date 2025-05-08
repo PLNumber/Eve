@@ -1,11 +1,11 @@
-//lib/View/Pages/set_name_page.dart
+//lib/views/pages/set_name_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../main.dart';
-import '../Widgets/nav_util.dart';
+import '../widgets/nav_util.dart';
 
 class SetUserPage extends StatefulWidget {
   @override

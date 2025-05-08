@@ -1,4 +1,4 @@
-// lib/ViewModel/option_view_model.dart
+// lib/viewModel/option_view_model.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

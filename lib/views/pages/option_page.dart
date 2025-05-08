@@ -1,12 +1,12 @@
-// ✅ lib/view/pages/option_page.dart 다국어 적용
+// ✅ lib/views/pages/option_page.dart 다국어 적용
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 
-import '../../ViewModel/option_view_model.dart';
+import '../../viewModel/option_view_model.dart';
 import '../../provider/local_provider.dart';
-import '../Widgets/nav_util.dart';
-import '../Widgets/option_widget.dart';
+import '../widgets/nav_util.dart';
+import '../widgets/option_widget.dart';
 
 class OptionPage extends StatelessWidget {
   @override

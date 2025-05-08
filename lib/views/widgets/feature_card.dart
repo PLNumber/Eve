@@ -1,4 +1,4 @@
-/* lib/View/Widgets/feature_card.dart */
+/* lib/views/widgets/feature_card.dart */
 
 import 'package:flutter/material.dart';
 

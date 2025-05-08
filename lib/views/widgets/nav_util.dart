@@ -1,4 +1,4 @@
-/* lib/View/Widgets/nav_util.dart */
+/* lib/views/widgets/nav_util.dart */
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
