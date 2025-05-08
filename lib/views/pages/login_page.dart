@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
-import '../../viewmodel/login_view_model.dart';
+import '../../viewModel/login_view_model.dart';
 import 'set_name_page.dart';
 import '../../main.dart';
 

@@ -2,6 +2,7 @@
 import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
+import 'package:eve/viewModel/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,7 +13,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'Controller/quiz_controller.dart';
-import 'viewModel/login_view_model.dart';
 import 'viewModel/option_view_model.dart';
 
 import 'firebase_options.dart';
@@ -98,17 +98,21 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: FutureBuilder<Widget>(
-        future: _getStartPage(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else {
-            return snapshot.data!;
-          }
-        },
+      home: Builder(
+        builder: (context) {
+          return FutureBuilder<Widget>(
+            future: _getStartPage(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else {
+                return snapshot.data!;
+              }
+            },
+          );
+        }
       ),
     );
   }
