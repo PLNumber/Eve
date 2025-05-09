@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eve/model/quiz.dart';
 import '../Services/gemini_service.dart';
 
-
 class QuizRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -72,12 +71,14 @@ class QuizRepository {
 
 ''';
 
-    final quiz = await geminiService.generateQuizQuestion(vocabData, promptTemplate);
+    final quiz = await geminiService.generateQuizQuestion(
+      vocabData,
+      promptTemplate,
+    );
     if (quiz == null) throw Exception("Gemini 퀴즈 생성 실패");
     await saveQuiz(vocabData['어휘'], quiz);
     return quiz;
   }
-
 
   // 해당 문제를 만든 후 저장하는 함수인 saveQuiz 함수를 구현
   // ✅ 4. 문제 저장
@@ -85,7 +86,7 @@ class QuizRepository {
     await _firestore.collection('quizzes').doc(word).set(quiz.toMap());
   }
 
-  // ✅ 5. 저장된 문제 불러오기
+  // ✅ 5. 저장된 문제 불러오기\
   Future<QuizQuestion> getSavedQuestion(String word) async {
     final doc = await _firestore.collection('quizzes').doc(word).get();
     final data = doc.data();
@@ -96,14 +97,13 @@ class QuizRepository {
       answer: data['answer'],
       hint: data['hint'],
       distractors: List<String>.from(data['distractors']),
-      feedbacks: List<String>.from(data['feedbacks']), // ✅ key & 타입 변경
+      feedbacks: List<String>.from(data['feedbacks']),
+      // ✅ key & 타입 변경
       difficulty: data['difficulty'],
     );
   }
 
-
-
-/*================================================================================*/
+  /*================================================================================*/
 
   //TODO : 해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x
 
@@ -111,7 +111,5 @@ class QuizRepository {
 
   //TODO : 만약 해당하는 오답의 피드백이 없을 경우 해당하는 오답의 피드백을 생성하는 generateFeedBack 함수를 구현해야함 (아니면 공용 피드백을 호출하는 방법도 괜찮을듯 함)
 
-  //TODO : 사용자의 정보를 변경하는 changeStat 함수를 구현 해야함 
-
-
+  //TODO : 사용자의 정보를 변경하는 changeStat 함수를 구현 해야함
 }
