@@ -225,7 +225,7 @@ class _QuizPageState extends State<QuizPage> {
                                   ),
                                   const SizedBox(width: 8),
                                   // 확인 버튼
-                                  //TODO: showdialog로 피드백 보여줘야됨(이건 service, repositroy에 구현)
+                                  //TODO: showdialog로 피드백 보여줘야됨 - 1)오답에 대한 피드백 있으면 그냥 보여줌 2)없는경우(이건 service, repositroy에 구현)
                                   ElevatedButton(
                                     onPressed: () async{
                                       final input = _answerCtrl.text.trim();
@@ -276,5 +276,5 @@ class _QuizPageState extends State<QuizPage> {
   }
 }
 
-//Todo: 오답시 피드백 불러오거나 없는경우 생성하는건 servie, repository에서 구현 필요
+//Todo: 오답시 피드백 없는경우 생성하는건 servie, repository에서 구현 필요
 //Todo: 사용자 정보 갱신도 servie, repository에서 구현 필요
