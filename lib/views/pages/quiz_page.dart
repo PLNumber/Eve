@@ -19,6 +19,9 @@ class _QuizPageState extends State<QuizPage> {
   // 1) 상태 변수 & 컨트롤러 초기화
   // ────────────────────────────────────────────────────────
 
+  // 답 입력 필드에 hintText에 들어갈 str
+  String answerHintText = '답 입력';
+
   // 비즈니스 로직을 담당하는 컨트롤러
   late final QuizController controller;
 
@@ -207,7 +210,7 @@ class _QuizPageState extends State<QuizPage> {
                                     child: TextField(
                                       controller: _answerCtrl,
                                       decoration: InputDecoration(
-                                        hintText: '답 입력', //TODO: 틀렸을때 '답 입력' 대신 정답 초성을 보여줘야 함 + 피드백 showdialog로 보여줘야됨(이건 service, repositroy에 구현)
+                                        hintText: answerHintText,
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(
                                             8,
@@ -222,9 +225,22 @@ class _QuizPageState extends State<QuizPage> {
                                   ),
                                   const SizedBox(width: 8),
                                   // 확인 버튼
+                                  //TODO: showdialog로 피드백 보여줘야됨(이건 service, repositroy에 구현)
                                   ElevatedButton(
-                                    onPressed: () {
-                                      // TODO: 정답 확인 & 다음 문제 로직 & 틀렸을떄 답 입력 필드에서 초성 보여줘야됨
+                                    onPressed: () async{
+                                      final input = _answerCtrl.text.trim();
+                                      //정답 확인
+                                      if (input == currentQuestion.answer){
+                                        // 맞았을 때: 입력 초기화, hintText 리셋, 다음 문제 로드
+                                        _answerCtrl.clear();
+                                        setState(()=> answerHintText = '답 입력');
+                                        await _generateQuiz();
+                                      } else{
+                                        // 틀렸을 때: 입력 초기화, 초성 hint로 변경
+                                        _answerCtrl.clear();
+                                        final initialHint = _extractInitialHint(currentQuestion.answer);
+                                        setState(()=> answerHintText = initialHint);
+                                      }
                                     },
                                     child: const Text('확인'),
                                     style: ElevatedButton.styleFrom(
@@ -246,7 +262,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   //초성 찾는 코드
-  String _extractHint(String text){
+  String _extractInitialHint(String text){
     const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
     return text.split('').map((c) {
       final code = c.codeUnitAt(0);
