@@ -1,4 +1,4 @@
-// ✅ lib/main.dart (다국어 적용된 MainPage 포함)
+// ✅ lib/main.dart (Fitness UI 스타일 적용된 MainPage 포함)
 import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
@@ -20,7 +20,6 @@ import 'views/pages/login_page.dart';
 import 'views/pages/quiz_page.dart';
 import 'views/pages/option_page.dart';
 import 'views/pages/set_name_page.dart';
-import 'views/widgets/feature_card.dart';
 import 'views/widgets/nav_util.dart';
 
 import 'Services/gemini_service.dart';
@@ -98,20 +97,20 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: Builder(
-        builder: (context) {
-          return FutureBuilder<Widget>(
-            future: _getStartPage(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              } else {
-                return snapshot.data!;
-              }
-            },
-          );
-        }
+          builder: (context) {
+            return FutureBuilder<Widget>(
+              future: _getStartPage(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                } else {
+                  return snapshot.data!;
+                }
+              },
+            );
+          }
       ),
     );
   }
@@ -125,7 +124,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  String nickname = "  ";
+  String nickname = "";
   final AuthService _authService = AuthService();
 
   @override
@@ -143,58 +142,95 @@ class _MainPage extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (didPop) return;
         showConfirmDialog(
           context,
-          title: AppLocalizations.of(context)!.exit,
-          content: AppLocalizations.of(context)!.confirm_exit,
+          title: local.exit,
+          content: local.confirm_exit,
           onConfirm: () => SystemNavigator.pop(),
         );
       },
       child: Scaffold(
+        backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          title: Text(nickname),
-          leading: Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OptionPage()),
-              ),
+          title: Text(nickname.isNotEmpty ? "$nickname님, 안녕하세요!" : "LexiUp"),
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => OptionPage()),
             ),
           ),
         ),
-
-
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppLocalizations.of(context)!.title, style: const TextStyle(fontSize: 20)),
-              const SizedBox(height: 16),
-              GridView.count(
-                crossAxisCount: 1,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+              Text(local.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  FeatureCard(
-                    imagePath: 'assets/images/korean_quiz.png',
-                    title: "   ",
-                    onTap: () => Navigator.push(
+                  //TODO : 학습 시간 및 정답률 공개
+                  _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: "45분"),
+                  _DashboardCard(icon: Icons.star, label: "정답률", value: "88%"),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.quiz),
+                  label: const Text("퀴즈 시작하기"),
+                  onPressed: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => QuizPage()),
-                    ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18),
                   ),
-                ],
+                ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DashboardCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _DashboardCard({required this.icon, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 140,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 32),
+            const SizedBox(height: 8),
+            Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 4),
+            Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+          ],
         ),
       ),
     );
