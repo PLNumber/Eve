@@ -207,7 +207,7 @@ class _QuizPageState extends State<QuizPage> {
                                     child: TextField(
                                       controller: _answerCtrl,
                                       decoration: InputDecoration(
-                                        hintText: '답 입력', //TODO: 틀렸을때 '답 입력' 대신 정답 초성을 보여줘야 함
+                                        hintText: '답 입력', //TODO: 틀렸을때 '답 입력' 대신 정답 초성을 보여줘야 함 + 피드백 showdialog로 보여줘야됨(이건 service, repositroy에 구현)
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(
                                             8,
@@ -245,3 +245,6 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
+
+//Todo: 오답시 피드백 불러오거나 없는경우 생성하는건 servie, repository에서 구현 필요
+//Todo: 사용자 정보 갱신도 servie, repository에서 구현 필요
