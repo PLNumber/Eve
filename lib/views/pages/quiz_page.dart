@@ -225,7 +225,6 @@ class _QuizPageState extends State<QuizPage> {
                                   ),
                                   const SizedBox(width: 8),
                                   // 확인 버튼
-                                  //TODO: showdialog로 피드백 보여줘야됨 - 1)오답에 대한 피드백 있으면 그냥 보여줌 2)없는경우(이건 service, repositroy에 구현)
                                   ElevatedButton(
                                     onPressed: () async{
                                       final input = _answerCtrl.text.trim();
@@ -236,16 +235,40 @@ class _QuizPageState extends State<QuizPage> {
                                         setState(()=> answerHintText = '답 입력');
                                         await _generateQuiz();
                                       } else{
-                                        // 틀렸을 때: 입력 초기화, 초성 hint로 변경
+                                        // 틀렸을 때: 입력 초기화
                                         _answerCtrl.clear();
+                                        //피드백 있는경우
+                                        final idx = currentQuestion.distractors.indexOf(input);
+                                        if(idx != -1 && idx < currentQuestion.feedbacks.length){
+                                          showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title: const Text('피드백'),
+                                              content: Text(
+                                                currentQuestion.feedbacks[idx],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                  Navigator.pop(ctx),
+                                                  child: const Text('확인'),
+                                                )
+                                              ],
+                                            ),
+                                            );
+                                        } else{
+                                          //TODO: 오답에 대한 피드백이 없는경우(이건 service, repositroy에 구현) - 생성하고 db 갱신하고 보여줘야됨
+                                        }
+
+                                        //초성 hint로 변경
                                         final initialHint = _extractInitialHint(currentQuestion.answer);
                                         setState(()=> answerHintText = initialHint);
                                       }
                                     },
-                                    child: const Text('확인'),
                                     style: ElevatedButton.styleFrom(
                                       minimumSize: const Size(60, 40),
                                     ),
+                                    child: const Text('확인'),
                                   ),
                                 ],
                               ),
