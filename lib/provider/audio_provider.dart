@@ -48,7 +48,6 @@ class AudioProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   //음악 설정
   Future<void> _setMusic(String filename) async {
     _currentMusic = filename;
@@ -62,7 +61,6 @@ class AudioProvider with ChangeNotifier {
       print("❌ _setMusic 오류: $e");
     }
   }
-
 
   // 음악 실행
   Future<void> togglePlay() async {
@@ -85,7 +83,6 @@ class AudioProvider with ChangeNotifier {
 
     notifyListeners();
   }
-
 
   // 음량 설정
   Future<void> setVolume(double value) async {

@@ -12,9 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'Controller/quiz_controller.dart';
+import 'controller/quiz_controller.dart';
 import 'viewModel/option_view_model.dart';
-
 import 'firebase_options.dart';
 import 'l10n/gen_l10n/app_localizations.dart';
 import 'views/pages/login_page.dart';
@@ -24,8 +23,8 @@ import 'views/pages/set_name_page.dart';
 import 'views/widgets/feature_card.dart';
 import 'views/widgets/nav_util.dart';
 
-import 'services/auth_service.dart';
 import 'Services/gemini_service.dart';
+import 'services/auth_service.dart';
 import 'services/quiz_service.dart';
 import 'repository/quiz_repository.dart';
 
