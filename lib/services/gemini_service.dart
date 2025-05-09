@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:eve/model/quiz.dart';
 
-
-
 class GeminiService {
   final String apiKey;
 
