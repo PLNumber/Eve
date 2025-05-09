@@ -244,6 +244,20 @@ class _QuizPageState extends State<QuizPage> {
       ),
     );
   }
+
+  //초성 찾는 코드
+  String _extractHint(String text){
+    const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    return text.split('').map((c) {
+      final code = c.codeUnitAt(0);
+      if(code >= 0xAC00 && code <= 0xD7A3){
+        final diff = code - 0xAC00;
+        final idx = diff ~/ (21 * 28);
+        return CHO[idx];
+      }
+      return c;
+    }).join();
+  }
 }
 
 //Todo: 오답시 피드백 불러오거나 없는경우 생성하는건 servie, repository에서 구현 필요
