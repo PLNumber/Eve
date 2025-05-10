@@ -31,7 +31,6 @@ class QuizController {
     );
   }
 
-// TODO : 사용자는 답안을 제출 한 후, requestAnswer 함수를 통해 해당 답안과 일치하는지 판별하는 것을 구현 해야함
 }
 
 
