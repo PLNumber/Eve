@@ -3,10 +3,11 @@
 // 로직 분리 대상: 문제 생성, 정답 제출 처리, 피드백 생성 → controller로 이동 예정
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/quiz_controller.dart';
+import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../model/quiz.dart';
 import '../widgets/nav_util.dart';
 
@@ -60,7 +61,21 @@ class _QuizPageState extends State<QuizPage> {
     if (result.isCorrect) {
       _answerCtrl.clear();
       setState(() => answerHintText = '답 입력');
-      await _loadQuiz();
+
+      await showContinueOrEndDialog(
+        context,
+        onContinue: () async {
+          final newQuiz = await controller.nextQuestion();
+          if (newQuiz != null) {
+            setState(() => currentQuestion = newQuiz);
+          } else {
+            setState(() => errorMessage = "다음 문제를 가져올 수 없습니다.");
+          }
+        },
+        onEnd: () {
+          controller.endQuiz(context);
+        },
+      );
     } else {
       _answerCtrl.clear();
 
@@ -108,20 +123,42 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('퀴즈 풀기'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+    final local = AppLocalizations.of(context)!;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+        showConfirmDialog(
+          context,
+          title: local.exit,
+          content: local.confirm_exit,
+          onConfirm: () => controller.endQuiz(context), // ✅ 메인페이지로 이동
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('퀴즈 풀기'),
+          automaticallyImplyLeading: false, // ⛔️ 기본 뒤로가기 버튼 제거
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              showConfirmDialog(
+                context,
+                title: local.exit,
+                content: local.confirm_exit,
+                onConfirm: () => controller.endQuiz(context), // ✅ 메인페이지로 이동
+              );
+            },
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : errorMessage.isNotEmpty
-            ? Center(child: Text(errorMessage, style: const TextStyle(color: Colors.red)))
-            : _buildQuizContent(),
+        body: SafeArea(
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage, style: const TextStyle(color: Colors.red)))
+              : _buildQuizContent(),
+        ),
       ),
     );
   }
@@ -145,16 +182,31 @@ class _QuizPageState extends State<QuizPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(8),
+                  //복습문제 뱃지 포함
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text('난이도 ${question.difficulty}', style: const TextStyle(fontSize: 12)),
                       ),
-                      child: Text('난이도 ${question.difficulty}', style: const TextStyle(fontSize: 12)),
-                    ),
+                      const SizedBox(width: 8),
+                      if (question.isReview)
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade200,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            '복습 문제',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   Expanded(

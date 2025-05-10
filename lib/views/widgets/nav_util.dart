@@ -89,4 +89,35 @@ Future<void> showConfirmDialog(
 }
 
 
+/// ✅ 퀴즈 완료 여부를 묻는 공통 다이얼로그
+Future<void> showContinueOrEndDialog(
+    BuildContext context, {
+      required VoidCallback onContinue,
+      required VoidCallback onEnd,
+    }) async {
+  await showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('정답입니다!'),
+      content: const Text('다음 문제를 계속 푸시겠습니까? 아니면 종료하시겠습니까?'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            onEnd();
+          },
+          child: const Text('종료'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+            onContinue();
+          },
+          child: const Text('계속'),
+        ),
+      ],
+    ),
+  );
+}
+
 

@@ -47,6 +47,7 @@ class AuthService {
         "consecutiveAttendance": 0,
         "wordHistory": [],
         "incorrectWords": [],
+        "reviewProgress": {},
         "email": user.email,
         "createdAt": FieldValue.serverTimestamp(),
       });

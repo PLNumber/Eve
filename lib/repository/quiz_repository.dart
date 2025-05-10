@@ -16,18 +16,32 @@ class QuizRepository {
 
   // 해당하는 단어를 선택하는  함수인 selectWord 함수를 구현
   // ✅ 1. 랜덤 단어 선택
-  Future<Map<String, dynamic>> selectWord() async {
+  Future<Map<String, dynamic>> selectWord(String uid) async {
+    // 1. 사용자의 wordHistory 불러오기
+    final userDoc = await _firestore.collection('users').doc(uid).get();
+    final wordHistory = List<String>.from(userDoc.data()?['wordHistory'] ?? []);
+
+    // 2. vocab4 컬렉션 전체 단어 가져오기
     final snapshot = await _firestore.collection('vocab4').get();
     final docs = snapshot.docs;
+
     if (docs.isEmpty) throw Exception("단어 데이터가 없습니다.");
 
-    final randomDoc = docs[Random().nextInt(docs.length)];
+    // 3. 아직 푼 적 없는 단어로 필터링
+    final remaining = docs.where((doc) {
+      final word = doc.data()['어휘'];
+      return !wordHistory.contains(word);
+    }).toList();
+
+    if (remaining.isEmpty) throw Exception("모든 단어를 푸셨습니다!");
+
+    // 4. 랜덤으로 하나 선택
+    final randomDoc = remaining[Random().nextInt(remaining.length)];
     final data = randomDoc.data();
 
     final word = data['어휘'];
     final meanings = List<String>.from(data['의미']);
     final selectedMeaning = meanings[Random().nextInt(meanings.length)];
-
     final partsOfSpeech = List<String>.from(data['품사']).join(', ');
     final level = data['등급'];
 
@@ -38,6 +52,7 @@ class QuizRepository {
       '등급': level,
     };
   }
+
 
   // 선택한 단어로 만든 문제 데이터베이스가 존재하는지 판별하는 isExist 함수를 구현
   // ✅ 2. 문제 존재 여부 확인
@@ -151,13 +166,61 @@ class QuizRepository {
       'feedbacks': FieldValue.arrayUnion([feedback]),
     });
   }
+
+  // 맞출시 통계 저장
+  Future<void> updateStatsOnCorrect(String uid, String word) async {
+    final userRef = _firestore.collection('users').doc(uid);
+    final userDoc = await userRef.get();
+
+    final reviewMap = Map<String, dynamic>.from(userDoc.data()?['reviewProgress'] ?? {});
+    final updates = <String, dynamic>{
+      'totalSolved': FieldValue.increment(1),
+      'correctSolved': FieldValue.increment(1),
+      'wordHistory': FieldValue.arrayUnion([word]),
+    };
+
+    if (reviewMap.containsKey(word)) {
+      final count = (reviewMap[word] ?? 0) + 1;
+
+      if (count > 2) {
+        updates['reviewProgress.$word'] = FieldValue.delete();
+        updates['incorrectWords'] = FieldValue.arrayRemove([word]);
+      } else {
+        updates['reviewProgress.$word'] = count; // ✅ 정상적으로 int 저장
+      }
+    }
+
+    await userRef.update(updates);
+  }
+
+
+  // 틀릴 시 통계 저장
+  Future<void> updateStatsOnIncorrect(String uid, String word) async {
+    final userRef = _firestore.collection('users').doc(uid);
+    await userRef.update({
+      'totalSolved': FieldValue.increment(1),
+      'incorrectWords': FieldValue.arrayUnion([word]),
+      'wordHistory': FieldValue.arrayUnion([word]),
+      'reviewProgress.$word': 0, // 틀리면 다시 초기화
+    });
+  }
+
+  // 복습문제 가져오기
+  Future<String?> getRandomIncorrectWord(String uid) async {
+    final userDoc = await _firestore.collection('users').doc(uid).get();
+    final incorrect = List<String>.from(userDoc.data()?['incorrectWords'] ?? []);
+    if (incorrect.isEmpty) return null;
+
+    final randomWord = incorrect[Random().nextInt(incorrect.length)];
+    return randomWord;
+  }
   /*================================================================================*/
 
   //TODO : 해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x
 
-  //TODO : 오답 일 경우, 해당 하는 정답의 피드백을 불러오는 requestFeedBack 함수를 구현 해야함
+  //오답 일 경우, 해당 하는 정답의 피드백을 불러오는 requestFeedBack 함수를 구현 해야함
 
-  //TODO : 만약 해당하는 오답의 피드백이 없을 경우 해당하는 오답의 피드백을 생성하는 generateFeedBack 함수를 구현해야함 (아니면 공용 피드백을 호출하는 방법도 괜찮을듯 함)
+  //만약 해당하는 오답의 피드백이 없을 경우 해당하는 오답의 피드백을 생성하는 generateFeedBack 함수를 구현해야함 (아니면 공용 피드백을 호출하는 방법도 괜찮을듯 함)
 
   //TODO : 사용자의 정보를 변경하는 changeStat 함수를 구현 해야함
 }
