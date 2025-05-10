@@ -4,7 +4,6 @@ import '../repository/quiz_repository.dart';
 import 'package:eve/model/quiz.dart';
 import '../controller/quiz_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuizService {
   final QuizRepository _repository;
