@@ -71,13 +71,13 @@ class QuizService {
         final incorrectList = List<String>.from(userDoc.data()?['incorrectWords'] ?? []);
         final wasIncorrect = incorrectList.contains(question.answer);
 
-        // ✅ 항상 시도 횟수는 증가
         await _repository.incrementTotalSolved(uid);
 
-        // ✅ 오답을 낸 적 없는 경우에만 정답률 반영
         if (!wasIncorrect) {
           await _repository.incrementCorrectSolved(uid);
         }
+
+        await _repository.updateStatsOnCorrect(uid, question.answer, question.difficulty); // ✅ 난이도 전달
       }
       return AnswerResult(isCorrect: true);
     }

@@ -1,5 +1,4 @@
-// lib/views/pages/option_page.dart
-
+// ✅ option_page.dart: 사용자 경험치 진행 바 + 레벨업 메시지 표시
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +16,9 @@ class OptionPage extends StatefulWidget {
 class _OptionPageState extends State<OptionPage> {
   String _nickname = "";
   String _email = "";
+  int _level = 1;
+  int _exp = 0;
+  final int _maxExp = 100;
 
   @override
   void initState() {
@@ -29,11 +31,23 @@ class _OptionPageState extends State<OptionPage> {
     if (user == null) return;
 
     final doc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final data = doc.data() ?? {};
 
     setState(() {
-      _nickname = doc.data()?['nickname'] ?? "닉네임 없음";
+      _nickname = data['nickname'] ?? "닉네임 없음";
       _email = user.email ?? "이메일 없음";
+      _level = data['level'] ?? 1;
+      _exp = data['experience'] ?? 0;
     });
+
+    // ✅ 레벨업 안내
+    if (mounted && data['level'] != null && data['level'] > _level) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("레벨업! 축하합니다.")),
+        );
+      });
+    }
   }
 
   @override
@@ -58,13 +72,14 @@ class _OptionPageState extends State<OptionPage> {
         children: [
           const SizedBox(height: 24),
           _buildProfileSection(textColor, subTextColor!),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
+          _buildExpBar(),
+          const SizedBox(height: 16),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _buildOptionCard(Icons.music_note, local.sound, () => SoundDialog.show(context), textColor),
-
                 _buildOptionCard(Icons.restore, local.reset_history, () async {
                   final confirm = await showDialog<bool>(
                     context: context,
@@ -83,9 +98,9 @@ class _OptionPageState extends State<OptionPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('기록이 초기화되었습니다.')),
                     );
+                    _loadUserInfo(); // ✅ 초기화 후 정보 재로딩
                   }
                 }, textColor),
-
                 _buildOptionCard(Icons.brightness_6, local.change_background,
                         () => BackgroundDialog.show(context), textColor),
                 _buildOptionCard(Icons.language, local.change_language,
@@ -121,11 +136,29 @@ class _OptionPageState extends State<OptionPage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
         ),
         const SizedBox(height: 4),
-        Text(
-          _email,
-          style: TextStyle(color: subTextColor),
-        ),
+        Text(_email, style: TextStyle(color: subTextColor)),
+        const SizedBox(height: 8),
+        Text("레벨 $_level", style: TextStyle(fontSize: 14, color: textColor)),
       ],
+    );
+  }
+
+  Widget _buildExpBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("경험치 ($_exp / $_maxExp)", style: const TextStyle(fontSize: 14)),
+          const SizedBox(height: 4),
+          LinearProgressIndicator(
+            value: _exp / _maxExp,
+            minHeight: 10,
+            backgroundColor: Colors.grey.shade300,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.indigoAccent),
+          ),
+        ],
+      ),
     );
   }
 
@@ -141,12 +174,6 @@ class _OptionPageState extends State<OptionPage> {
         trailing: Icon(Icons.arrow_forward_ios, size: 16, color: textColor),
         onTap: onTap,
       ),
-    );
-  }
-
-  void _showSimpleSnack(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
     );
   }
 }
