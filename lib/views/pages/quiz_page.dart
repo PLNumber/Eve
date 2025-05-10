@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -6,6 +8,9 @@ import '../../controller/quiz_controller.dart';
 import '../../model/quiz.dart';
 import '../../repository/quiz_repository.dart';
 import '../../services/quiz_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key}) : super(key: key);
@@ -226,43 +231,147 @@ class _QuizPageState extends State<QuizPage> {
                                   const SizedBox(width: 8),
                                   // 확인 버튼
                                   ElevatedButton(
-                                    onPressed: () async{
+                                    onPressed: () async {
                                       final input = _answerCtrl.text.trim();
                                       //정답 확인
-                                      if (input == currentQuestion.answer){
+                                      if (input == currentQuestion.answer) {
                                         // 맞았을 때: 입력 초기화, hintText 리셋, 다음 문제 로드
                                         _answerCtrl.clear();
-                                        setState(()=> answerHintText = '답 입력');
+                                        setState(() => answerHintText = '답 입력');
                                         await _generateQuiz();
-                                      } else{
+                                      } else {
                                         // 틀렸을 때: 입력 초기화
                                         _answerCtrl.clear();
                                         //피드백 있는경우
-                                        final idx = currentQuestion.distractors.indexOf(input);
-                                        if(idx != -1 && idx < currentQuestion.feedbacks.length){
+                                        final idx = currentQuestion.distractors
+                                            .indexOf(input);
+                                        if (idx != -1 &&
+                                            idx <
+                                                currentQuestion
+                                                    .feedbacks
+                                                    .length) {
                                           showDialog(
                                             context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              title: const Text('피드백'),
-                                              content: Text(
-                                                currentQuestion.feedbacks[idx],
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                  Navigator.pop(ctx),
-                                                  child: const Text('확인'),
-                                                )
-                                              ],
-                                            ),
+                                            builder:
+                                                (ctx) => AlertDialog(
+                                                  title: const Text('피드백'),
+                                                  content: Text(
+                                                    currentQuestion
+                                                        .feedbacks[idx],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed:
+                                                          () => Navigator.pop(
+                                                            ctx,
+                                                          ),
+                                                      child: const Text('확인'),
+                                                    ),
+                                                  ],
+                                                ),
+                                          );
+                                        } else {
+                                          //피드백 없는 경우
+                                          final gemini = GeminiService(
+                                            apiKey:
+                                                dotenv.env['geminiApiKey'] ??
+                                                "",
+                                          );
+                                          //프롬프트 변경필요
+                                          final prompt = '''
+                                          사용자가 잘못 입력한 오답 "$input"에 대해 설명하는 한 문장 피드백을 JSON 형식으로 {"feedback":"..."} 형태로 반환해주세요.
+                                          ''';
+                                          final url = Uri.parse(
+                                            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${dotenv.env['geminiApiKey']}',
+                                          );
+                                          final headers = {
+                                            'Content-Type': 'application/json',
+                                          };
+                                          final body = jsonEncode({
+                                            "contents": [
+                                              {
+                                                "parts": [
+                                                  {"text": prompt},
+                                                ],
+                                              },
+                                            ],
+                                          });
+                                          String newFeedback;
+                                          try {
+                                            final resp = await http.post(
+                                              url,
+                                              headers: headers,
+                                              body: body,
                                             );
-                                        } else{
-                                          //TODO: 오답에 대한 피드백이 없는경우(이건 service, repositroy에 구현) - 생성하고 db 갱신하고 보여줘야됨
+                                            final decoded = jsonDecode(
+                                              resp.body,
+                                            );
+                                            String raw =
+                                                decoded["candidates"][0]["content"]["parts"][0]["text"];
+                                            raw =
+                                                raw
+                                                    .replaceAll(
+                                                      RegExp(r'```json|```'),
+                                                      '',
+                                                    )
+                                                    .trim();
+                                            final parsed = jsonDecode(raw);
+                                            newFeedback =
+                                                parsed["feedback"] ??
+                                                "피드백 생성에 실패했습니다.";
+                                          } catch (_) {
+                                            newFeedback = "피드백 생성에 실패했습니다.";
+                                          }
+                                          //로컬 state 업데이트
+                                          setState(() {
+                                            currentQuestion.distractors.add(
+                                              input,
+                                            );
+                                            currentQuestion.feedbacks.add(
+                                              newFeedback,
+                                            );
+                                          });
+                                          //파이어스토어 업데이트
+                                          await FirebaseFirestore.instance
+                                              .collection('quizzes')
+                                              .doc(currentQuestion.answer)
+                                              .update({
+                                                'distractors':
+                                                    FieldValue.arrayUnion([
+                                                      input,
+                                                    ]),
+                                                'feedbacks':
+                                                    FieldValue.arrayUnion([
+                                                      newFeedback,
+                                                    ]),
+                                              });
+                                          //alert 다이얼로그로 표시
+                                          showDialog(
+                                            context: context,
+                                            builder:
+                                                (ctx) => AlertDialog(
+                                                  title: const Text('피드백'),
+                                                  content: Text(newFeedback),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed:
+                                                          () => Navigator.pop(
+                                                            ctx,
+                                                          ),
+                                                      child: const Text('확인'),
+                                                    ),
+                                                  ],
+                                                ),
+                                          );
                                         }
 
                                         //초성 hint로 변경
-                                        final initialHint = _extractInitialHint(currentQuestion.answer);
-                                        setState(()=> answerHintText = initialHint);
+                                        final initialHint = _extractInitialHint(
+                                          currentQuestion.answer,
+                                        );
+                                        setState(
+                                          () => answerHintText = initialHint,
+                                        );
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -285,11 +394,31 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   //초성 찾는 코드
-  String _extractInitialHint(String text){
-    const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  String _extractInitialHint(String text) {
+    const CHO = [
+      'ㄱ',
+      'ㄲ',
+      'ㄴ',
+      'ㄷ',
+      'ㄸ',
+      'ㄹ',
+      'ㅁ',
+      'ㅂ',
+      'ㅃ',
+      'ㅅ',
+      'ㅆ',
+      'ㅇ',
+      'ㅈ',
+      'ㅉ',
+      'ㅊ',
+      'ㅋ',
+      'ㅌ',
+      'ㅍ',
+      'ㅎ',
+    ];
     return text.split('').map((c) {
       final code = c.codeUnitAt(0);
-      if(code >= 0xAC00 && code <= 0xD7A3){
+      if (code >= 0xAC00 && code <= 0xD7A3) {
         final diff = code - 0xAC00;
         final idx = diff ~/ (21 * 28);
         return CHO[idx];
@@ -299,5 +428,5 @@ class _QuizPageState extends State<QuizPage> {
   }
 }
 
-//Todo: 오답시 피드백 없는경우 생성하는건 servie, repository에서 구현 필요
 //Todo: 사용자 정보 갱신도 servie, repository에서 구현 필요
+//TODO: 프롬프트 좀더 명확하게 작성할 필요 있음 가끔식 이상한 대답함 ex) 피드백에 정답을 포함한 대답 또는 잘못된 정답을 정답이라고 알려줌
