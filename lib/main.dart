@@ -149,7 +149,17 @@ class _MainPage extends State<MainPage> {
         .get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
     setState(() {
-      learningTime = "${(secs/60).floor()}분";
+      final days = secs ~/ 86400;
+      final hours = secs ~/ 3600;
+      final minutes = (secs % 3600) ~/ 60;
+      if (days > 0) {
+        learningTime = "$days일";
+      } else if (hours > 0) {
+        learningTime = "$hours시간";
+      } else {
+        learningTime = "$minutes분";
+      }
+
     }
     );
   }
