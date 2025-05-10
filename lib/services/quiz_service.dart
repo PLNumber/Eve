@@ -2,6 +2,7 @@
 
 import '../repository/quiz_repository.dart';
 import 'package:eve/model/quiz.dart';
+import '../controller/quiz_controller.dart';
 
 
 class QuizService {
@@ -22,11 +23,26 @@ class QuizService {
     return await _repository.getSavedQuestion(vocab['어휘']);
   }
 
+  //compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수
+  Future<AnswerResult> compareAnswer(QuizQuestion question, String userInput) async {
+    final isCorrect = userInput == question.answer;
+    if (isCorrect) return AnswerResult(isCorrect: true);
+
+    final idx = question.distractors.indexOf(userInput);
+    if (idx != -1 && idx < question.feedbacks.length) {
+      return AnswerResult(isCorrect: false, feedback: question.feedbacks[idx]);
+    }
+
+    final newFeedback = await _repository.generateFeedBack(question.answer, userInput);
+    await _repository.appendFeedback(question.answer, userInput, newFeedback);
+
+    return AnswerResult(isCorrect: false, feedback: newFeedback);
+  }
+
 
 /*===================================================*/
   //TODO: checkAnswer 함수를 통해 해당하는 문제의 정답을 확인하는 함수를 구현 해야함 x
 
-  //TODO: compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수를 구현 해야함 (오답 일 경우 레포지토리의 requestFeedBack 함수를 호출?)
 
   //TODO : 이후에 사용자의 통계를 갱신하는 함수인 updateStat 함수를 구현 해야함
 }

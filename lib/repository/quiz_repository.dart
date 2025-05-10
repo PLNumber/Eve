@@ -1,9 +1,11 @@
 // lib/repository/quiz_repository.dart
 
+import 'dart:convert';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eve/model/quiz.dart';
 import '../Services/gemini_service.dart';
+import 'package:http/http.dart' as http; // 추가 필요
 
 class QuizRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -103,6 +105,52 @@ class QuizRepository {
     );
   }
 
+  // 피드백 생성하기
+  Future<String> generateFeedBack(String answer, String wrongInput) async {
+    final prompt = '''
+사용자가 입력한 오답 "$wrongInput"에 대해 설명하는 한 문장 피드백을 JSON 형식으로 반환해주세요.
+형식: {"feedback": "..."}
+''';
+
+    final url = Uri.parse(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiService.apiKey}',
+    );
+
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      "contents": [
+        {
+          "parts": [
+            {"text": prompt}
+          ]
+        }
+      ]
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode != 200) {
+        throw Exception("Gemini 응답 실패: ${response.statusCode}");
+      }
+
+      String raw = jsonDecode(response.body)["candidates"][0]["content"]["parts"][0]["text"]
+          .replaceAll(RegExp(r'```json|```'), '')
+          .trim();
+
+      final parsed = jsonDecode(raw);
+      return parsed['feedback'] ?? "피드백 생성에 실패했습니다.";
+    } catch (e) {
+      return "피드백 생성에 실패했습니다.";
+    }
+  }
+
+  // 피드백 저장하기
+  Future<void> appendFeedback(String word, String input, String feedback) async {
+    await _firestore.collection('quizzes').doc(word).update({
+      'distractors': FieldValue.arrayUnion([input]),
+      'feedbacks': FieldValue.arrayUnion([feedback]),
+    });
+  }
   /*================================================================================*/
 
   //TODO : 해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x

@@ -1,16 +1,14 @@
-import 'dart:convert';
+// ✅ lib/view/pages/quiz_page.dart 분리 작업 후 구조
+// View: QuizPage
+// 로직 분리 대상: 문제 생성, 정답 제출 처리, 피드백 생성 → controller로 이동 예정
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
-import '../../Services/gemini_service.dart';
 import '../../controller/quiz_controller.dart';
 import '../../model/quiz.dart';
-import '../../repository/quiz_repository.dart';
-import '../../services/quiz_service.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../widgets/nav_util.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key}) : super(key: key);
@@ -20,401 +18,82 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  // ────────────────────────────────────────────────────────
-  // 1) 상태 변수 & 컨트롤러 초기화
-  // ────────────────────────────────────────────────────────
-
-  // 답 입력 필드에 hintText에 들어갈 str
-  String answerHintText = '답 입력';
-
-  // 비즈니스 로직을 담당하는 컨트롤러
   late final QuizController controller;
-
-  // 현재 화면에 표시할 문제 모델 (null 이면 아직 문제 없음)
-  //QuizQuestion? currentQuestion;
-  QuizQuestion currentQuestion = QuizQuestion(
-    question: '로딩중',
-    answer: '로딩중',
-    hint: '로딩중',
-    distractors: [],
-    feedbacks: [],
-    difficulty: 0,
-  );
-
-  // API 요청 중임을 표시할 플래그
+  QuizQuestion? currentQuestion;
   bool isLoading = false;
-
-  // 에러 발생 시 에러 메시지 보관
   String errorMessage = "";
-
-  //
+  String answerHintText = '답 입력';
   final TextEditingController _answerCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // controller 에 Service → Repository → GeminiService 순서로 주입
-    controller = QuizController(
-      QuizService(
-        QuizRepository(GeminiService(apiKey: dotenv.env['geminiApiKey'] ?? "")),
-      ),
-    );
-    _generateQuiz(); //들어오자마자 문제 생성 호출
+    controller = context.read<QuizController>();
+    _loadQuiz();
   }
 
-  // ────────────────────────────────────────────────────────
-  // 2) 문제 생성(데이터 요청) 로직
-  // ────────────────────────────────────────────────────────
-
-  Future<void> _generateQuiz() async {
+  Future<void> _loadQuiz() async {
     setState(() {
-      isLoading = true; // 로딩 시작
-      errorMessage = ""; // 이전 에러 초기화
+      isLoading = true;
+      errorMessage = "";
     });
 
-    try {
-      // 실제 문제 요청: 컨트롤러가 GeminiService 통해 AI(혹은 백엔드) 호출
-      final quiz = await controller.generateQuiz();
-      if (quiz == null) {
-        setState(() {
-          errorMessage = "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.";
-          isLoading = false;
-        });
-        return;
-      } else {
-        setState(() {
-          // 가져온 QuizQuestion 모델을 화면에 띄움
-          currentQuestion = quiz;
-        });
-      }
-    } catch (e) {
-      // 에러 발생 시 메시지 저장
+    final quiz = await controller.generateQuiz();
+    if (quiz == null) {
       setState(() {
-        errorMessage = "문제 생성 실패: ${e.toString()}";
-      });
-    } finally {
-      // 로딩 종료
-      setState(() {
+        errorMessage = "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.";
         isLoading = false;
       });
+      return;
+    }
+
+    setState(() {
+      currentQuestion = quiz;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _submitAnswer(String input) async {
+    if (currentQuestion == null) return;
+    final result = await controller.checkAnswer(currentQuestion!, input);
+
+    if (result.isCorrect) {
+      _answerCtrl.clear();
+      setState(() => answerHintText = '답 입력');
+      await _loadQuiz();
+    } else {
+      _answerCtrl.clear();
+
+      if (result.feedback != null) {
+        _showFeedbackDialog(result.feedback!);
+      }
+
+      final initialHint = _extractInitialHint(currentQuestion!.answer);
+      setState(() => answerHintText = initialHint);
     }
   }
 
-  //UI
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // // 키보드 올라올 때 자동으로 위로 올라가도록
-      // resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('퀴즈 풀기'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-
-      body: SafeArea(
-        child:
-            isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : errorMessage.isNotEmpty
-                ? Center(
-                  child: Text(
-                    errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                )
-                : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // 문제 영역
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // 난이도 레이블
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
-                                    horizontal: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade100,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '난이도 ${currentQuestion.difficulty}',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              // 문제 텍스트
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  child: Text(
-                                    currentQuestion.question,
-                                    style: const TextStyle(fontSize: 20),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              // 힌트 / 입력 / 확인
-                              Row(
-                                children: [
-                                  // 힌트 버튼
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder:
-                                            (context) => AlertDialog(
-                                              title: const Text('힌트'),
-                                              content: Text(
-                                                currentQuestion.hint,
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                      ),
-                                                  child: const Text('닫기'),
-                                                ),
-                                              ],
-                                            ),
-                                      );
-                                    },
-                                    child: const Text('힌트'),
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(60, 40),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  // 답 입력 필드
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _answerCtrl,
-                                      decoration: InputDecoration(
-                                        hintText: answerHintText,
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  // 확인 버튼
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      final input = _answerCtrl.text.trim();
-                                      //정답 확인
-                                      if (input == currentQuestion.answer) {
-                                        // 맞았을 때: 입력 초기화, hintText 리셋, 다음 문제 로드
-                                        _answerCtrl.clear();
-                                        setState(() => answerHintText = '답 입력');
-                                        await _generateQuiz();
-                                      } else {
-                                        // 틀렸을 때: 입력 초기화
-                                        _answerCtrl.clear();
-                                        //피드백 있는경우
-                                        final idx = currentQuestion.distractors
-                                            .indexOf(input);
-                                        if (idx != -1 &&
-                                            idx <
-                                                currentQuestion
-                                                    .feedbacks
-                                                    .length) {
-                                          showDialog(
-                                            context: context,
-                                            builder:
-                                                (ctx) => AlertDialog(
-                                                  title: const Text('피드백'),
-                                                  content: Text(
-                                                    currentQuestion
-                                                        .feedbacks[idx],
-                                                  ),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed:
-                                                          () => Navigator.pop(
-                                                            ctx,
-                                                          ),
-                                                      child: const Text('확인'),
-                                                    ),
-                                                  ],
-                                                ),
-                                          );
-                                        } else {
-                                          //피드백 없는 경우
-                                          final gemini = GeminiService(
-                                            apiKey:
-                                                dotenv.env['geminiApiKey'] ??
-                                                "",
-                                          );
-                                          //프롬프트 변경필요
-                                          final prompt = '''
-                                          사용자가 잘못 입력한 오답 "$input"에 대해 설명하는 한 문장 피드백을 JSON 형식으로 {"feedback":"..."} 형태로 반환해주세요.
-                                          ''';
-                                          final url = Uri.parse(
-                                            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${dotenv.env['geminiApiKey']}',
-                                          );
-                                          final headers = {
-                                            'Content-Type': 'application/json',
-                                          };
-                                          final body = jsonEncode({
-                                            "contents": [
-                                              {
-                                                "parts": [
-                                                  {"text": prompt},
-                                                ],
-                                              },
-                                            ],
-                                          });
-                                          String newFeedback;
-                                          try {
-                                            final resp = await http.post(
-                                              url,
-                                              headers: headers,
-                                              body: body,
-                                            );
-                                            final decoded = jsonDecode(
-                                              resp.body,
-                                            );
-                                            String raw =
-                                                decoded["candidates"][0]["content"]["parts"][0]["text"];
-                                            raw =
-                                                raw
-                                                    .replaceAll(
-                                                      RegExp(r'```json|```'),
-                                                      '',
-                                                    )
-                                                    .trim();
-                                            final parsed = jsonDecode(raw);
-                                            newFeedback =
-                                                parsed["feedback"] ??
-                                                "피드백 생성에 실패했습니다.";
-                                          } catch (_) {
-                                            newFeedback = "피드백 생성에 실패했습니다.";
-                                          }
-                                          //로컬 state 업데이트
-                                          setState(() {
-                                            currentQuestion.distractors.add(
-                                              input,
-                                            );
-                                            currentQuestion.feedbacks.add(
-                                              newFeedback,
-                                            );
-                                          });
-                                          //파이어스토어 업데이트
-                                          await FirebaseFirestore.instance
-                                              .collection('quizzes')
-                                              .doc(currentQuestion.answer)
-                                              .update({
-                                                'distractors':
-                                                    FieldValue.arrayUnion([
-                                                      input,
-                                                    ]),
-                                                'feedbacks':
-                                                    FieldValue.arrayUnion([
-                                                      newFeedback,
-                                                    ]),
-                                              });
-                                          //alert 다이얼로그로 표시
-                                          showDialog(
-                                            context: context,
-                                            builder:
-                                                (ctx) => AlertDialog(
-                                                  title: const Text('피드백'),
-                                                  content: Text(newFeedback),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed:
-                                                          () => Navigator.pop(
-                                                            ctx,
-                                                          ),
-                                                      child: const Text('확인'),
-                                                    ),
-                                                  ],
-                                                ),
-                                          );
-                                        }
-
-                                        //초성 hint로 변경
-                                        final initialHint = _extractInitialHint(
-                                          currentQuestion.answer,
-                                        );
-                                        setState(
-                                          () => answerHintText = initialHint,
-                                        );
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(60, 40),
-                                    ),
-                                    child: const Text('확인'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // (키보드 영역은 실제 디바이스 키보드가 올라오며, 이 Container 위에 고정되어 있게 됩니다)
-                    ],
-                  ),
-                ),
+  void _showFeedbackDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('피드백'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('확인'),
+          ),
+        ],
       ),
     );
   }
 
-  //초성 찾는 코드
   String _extractInitialHint(String text) {
     const CHO = [
-      'ㄱ',
-      'ㄲ',
-      'ㄴ',
-      'ㄷ',
-      'ㄸ',
-      'ㄹ',
-      'ㅁ',
-      'ㅂ',
-      'ㅃ',
-      'ㅅ',
-      'ㅆ',
-      'ㅇ',
-      'ㅈ',
-      'ㅉ',
-      'ㅊ',
-      'ㅋ',
-      'ㅌ',
-      'ㅍ',
-      'ㅎ',
+      'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ',
+      'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ',
+      'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
     ];
     return text.split('').map((c) {
       final code = c.codeUnitAt(0);
@@ -426,7 +105,100 @@ class _QuizPageState extends State<QuizPage> {
       return c;
     }).join();
   }
-}
 
-//Todo: 사용자 정보 갱신도 servie, repository에서 구현 필요
-//TODO: 프롬프트 좀더 명확하게 작성할 필요 있음 가끔식 이상한 대답함 ex) 피드백에 정답을 포함한 대답 또는 잘못된 정답을 정답이라고 알려줌
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('퀴즈 풀기'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: SafeArea(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage.isNotEmpty
+            ? Center(child: Text(errorMessage, style: const TextStyle(color: Colors.red)))
+            : _buildQuizContent(),
+      ),
+    );
+  }
+
+  Widget _buildQuizContent() {
+    final question = currentQuestion;
+    if (question == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text('난이도 ${question.difficulty}', style: const TextStyle(fontSize: 12)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        question.question,
+                        style: const TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => _showFeedbackDialog(question.hint),
+                        child: const Text('힌트'),
+                        style: ElevatedButton.styleFrom(minimumSize: const Size(60, 40)),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: _answerCtrl,
+                          decoration: InputDecoration(
+                            hintText: answerHintText,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => _submitAnswer(_answerCtrl.text.trim()),
+                        child: const Text('확인'),
+                        style: ElevatedButton.styleFrom(minimumSize: const Size(60, 40)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
