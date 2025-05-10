@@ -125,18 +125,40 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   String nickname = "";
+  String accuracy = "0%";
   final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
     _loadNickname();
+    _loadStats();
   }
 
   void _loadNickname() async {
     final nick = await _authService.getNickname();
     setState(() {
       nickname = nick;
+    });
+  }
+
+  Future<void> _loadStats() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    final data = doc.data();
+    if (data == null) return;
+
+    final int correct = (data['correctSolved'] as int?) ?? 0;
+    final int total   = (data['totalSolved']   as int?) ?? 0;
+    final double pct  = total > 0 ? correct / total * 100 : 0;
+
+    setState(() {
+      accuracy = "${pct.toStringAsFixed(1)}%";
     });
   }
 
@@ -180,7 +202,7 @@ class _MainPage extends State<MainPage> {
                 children: [
                   //TODO : 학습 시간 및 정답률 공개
                   _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: "45분"),
-                  _DashboardCard(icon: Icons.star, label: "정답률", value: "88%"),
+                  _DashboardCard(icon: Icons.star, label: "정답률", value: accuracy),
                 ],
               ),
               const SizedBox(height: 20),
