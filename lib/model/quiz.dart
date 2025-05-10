@@ -8,6 +8,7 @@ class QuizQuestion {
   final List<String> distractors;
   final List<String> feedbacks; // ✅ 배열로 수정
   final int difficulty;
+  final bool isReview;
 
   QuizQuestion({
     required this.question,
@@ -16,6 +17,7 @@ class QuizQuestion {
     required this.distractors,
     required this.feedbacks,
     required this.difficulty,
+    this.isReview = false,
   });
 
   Map<String, dynamic> toMap() {
