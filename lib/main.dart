@@ -39,7 +39,9 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
-        ChangeNotifierProvider(create: (_) => OptionViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => OptionViewModel(QuizRepository(GeminiService(apiKey: geminiApiKey),)),
+        ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         Provider(

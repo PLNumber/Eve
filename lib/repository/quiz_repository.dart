@@ -17,17 +17,21 @@ class QuizRepository {
   // 해당하는 단어를 선택하는  함수인 selectWord 함수를 구현
   // ✅ 1. 랜덤 단어 선택
   Future<Map<String, dynamic>> selectWord(String uid) async {
-    // 1. 사용자의 wordHistory 불러오기
     final userDoc = await _firestore.collection('users').doc(uid).get();
     final wordHistory = List<String>.from(userDoc.data()?['wordHistory'] ?? []);
+    final level = userDoc.data()?['level'] ?? 1;
 
-    // 2. vocab4 컬렉션 전체 단어 가져오기
-    final snapshot = await _firestore.collection('vocab4').get();
+    // ✅ 1~level까지 등급 조건 생성
+    final levelRange = List.generate(level, (i) => "${i + 1}등급");
+    final snapshot = await _firestore
+        .collection('vocab4')
+        .where('등급', whereIn: levelRange)
+        .get();
+
+
     final docs = snapshot.docs;
+    if (docs.isEmpty) throw Exception("해당 레벨에 맞는 단어가 없습니다.");
 
-    if (docs.isEmpty) throw Exception("단어 데이터가 없습니다.");
-
-    // 3. 아직 푼 적 없는 단어로 필터링
     final remaining = docs.where((doc) {
       final word = doc.data()['어휘'];
       return !wordHistory.contains(word);
@@ -35,7 +39,6 @@ class QuizRepository {
 
     if (remaining.isEmpty) throw Exception("모든 단어를 푸셨습니다!");
 
-    // 4. 랜덤으로 하나 선택
     final randomDoc = remaining[Random().nextInt(remaining.length)];
     final data = randomDoc.data();
 
@@ -43,15 +46,17 @@ class QuizRepository {
     final meanings = List<String>.from(data['의미']);
     final selectedMeaning = meanings[Random().nextInt(meanings.length)];
     final partsOfSpeech = List<String>.from(data['품사']).join(', ');
-    final level = data['등급'];
+    final levelTag = data['등급'];
 
     return {
       '어휘': word,
       '의미': selectedMeaning,
       '품사': partsOfSpeech,
-      '등급': level,
+      '등급': levelTag,
     };
   }
+
+
 
 
   // 선택한 단어로 만든 문제 데이터베이스가 존재하는지 판별하는 isExist 함수를 구현
@@ -123,9 +128,18 @@ class QuizRepository {
   // 피드백 생성하기
   Future<String> generateFeedBack(String answer, String wrongInput) async {
     final prompt = '''
-사용자가 입력한 오답 "$wrongInput"에 대해 설명하는 한 문장 피드백을 JSON 형식으로 반환해주세요.
-형식: {"feedback": "..."}
+사용자가 입력한 단어는 문제의 정답이 아닙니다.
+
+오답: "$wrongInput"
+
+정답 단어는 공개하지 마세요.  
+대신 오답이 왜 적절하지 않은지, 의미적으로 어떤 점이 잘못되었는지를 한 문장으로 설명해주세요.  
+정답을 유추할 수 없도록 설명은 일반적인 수준으로 제한합니다.
+
+아래 JSON 형식으로만 응답하세요:
+{"feedback": "입력한 단어는 사람이나 물건의 가치를 나타내지만, 문맥상 맞지 않습니다."}
 ''';
+
 
     final url = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiService.apiKey}',
@@ -168,25 +182,53 @@ class QuizRepository {
   }
 
   // 맞출시 통계 저장
-  Future<void> updateStatsOnCorrect(String uid, String word) async {
+  Future<void> updateStatsOnCorrect(String uid, String word, int difficulty) async {
     final userRef = _firestore.collection('users').doc(uid);
     final userDoc = await userRef.get();
 
     final reviewMap = Map<String, dynamic>.from(userDoc.data()?['reviewProgress'] ?? {});
+    final hasSeenBefore = reviewMap.containsKey(word);
+    final correctCount = reviewMap[word] ?? 0;
+
     final updates = <String, dynamic>{
-      'totalSolved': FieldValue.increment(1),
-      'correctSolved': FieldValue.increment(1),
       'wordHistory': FieldValue.arrayUnion([word]),
     };
 
-    if (reviewMap.containsKey(word)) {
-      final count = (reviewMap[word] ?? 0) + 1;
+    if (!hasSeenBefore || (hasSeenBefore && correctCount == 0)) {
+      updates['correctSolved'] = FieldValue.increment(1);
+    }
 
-      if (count > 2) {
+    // ✅ 경험치 차등 계산
+    final currentExp = userDoc.data()?['experience'] ?? 0;
+    final currentLevel = userDoc.data()?['level'] ?? 1;
+    int gainedExp = switch (difficulty) {
+      1 => 10,
+      2 => 15,
+      3 => 20,
+      4 => 25,
+      5 => 30,
+      _ => 10,
+    };
+
+    int newExp = currentExp + gainedExp;
+    int newLevel = currentLevel;
+
+    if (newExp >= 100) {
+      newLevel += 1;
+      newExp -= 100;
+    }
+
+    updates['experience'] = newExp;
+    updates['level'] = newLevel;
+
+    if (hasSeenBefore) {
+      final newCount = correctCount + 1;
+
+      if (newCount >= 3) {
         updates['reviewProgress.$word'] = FieldValue.delete();
         updates['incorrectWords'] = FieldValue.arrayRemove([word]);
       } else {
-        updates['reviewProgress.$word'] = count; // ✅ 정상적으로 int 저장
+        updates['reviewProgress.$word'] = newCount;
       }
     }
 
@@ -194,11 +236,12 @@ class QuizRepository {
   }
 
 
+
   // 틀릴 시 통계 저장
   Future<void> updateStatsOnIncorrect(String uid, String word) async {
     final userRef = _firestore.collection('users').doc(uid);
     await userRef.update({
-      'totalSolved': FieldValue.increment(1),
+      //'totalSolved': FieldValue.increment(1),
       'incorrectWords': FieldValue.arrayUnion([word]),
       'wordHistory': FieldValue.arrayUnion([word]),
       'reviewProgress.$word': 0, // 틀리면 다시 초기화
@@ -214,6 +257,33 @@ class QuizRepository {
     final randomWord = incorrect[Random().nextInt(incorrect.length)];
     return randomWord;
   }
+
+  Future<void> incrementTotalSolved(String uid) async {
+    await _firestore.collection('users').doc(uid).update({
+      'totalSolved': FieldValue.increment(1),
+    });
+  }
+
+  Future<void> incrementCorrectSolved(String uid) async {
+    await _firestore.collection('users').doc(uid).update({
+      'correctSolved': FieldValue.increment(1),
+    });
+  }
+
+
+
+  // 기록 초기화
+  Future<void> resetUserStats(String uid) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+    await userRef.update({
+      'wordHistory': [],
+      'incorrectWords': [],
+      'reviewProgress': {},
+      'totalSolved': 0,
+      'correctSolved': 0,
+    });
+  }
+
   /*================================================================================*/
 
   //TODO : 해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x
