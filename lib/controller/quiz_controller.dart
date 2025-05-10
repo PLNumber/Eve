@@ -14,9 +14,10 @@ class QuizController {
     return await _service.getQuestion();
   }
 
-  Future<AnswerResult> checkAnswer(QuizQuestion question, String userInput) async {
-    return await _service.compareAnswer(question, userInput);
+  Future<AnswerResult> checkAnswer(QuizQuestion question, String userInput, {required bool hasAlreadySubmitted}) async {
+    return await _service.compareAnswer(question, userInput, hasAlreadySubmitted: hasAlreadySubmitted);
   }
+
 
   /// 다음 문제 요청 (generateQuiz와 동일하지만 명시적으로 구분)
   Future<QuizQuestion?> nextQuestion() async {

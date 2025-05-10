@@ -27,6 +27,7 @@ class _QuizPageState extends State<QuizPage> {
   bool isLoading = false;
   String errorMessage = "";
   String answerHintText = '답 입력';
+  bool hasSubmitted = false; // 🔹 최초 제출 추적 변수
 
   //퀴즈 시간 저장
   late final DateTime _quizStartTime;
@@ -74,23 +75,35 @@ class _QuizPageState extends State<QuizPage> {
 
   Future<void> _submitAnswer(String input) async {
     if (currentQuestion == null) return;
-    final result = await controller.checkAnswer(currentQuestion!, input);
+
+    final result = await controller.checkAnswer(
+      currentQuestion!,
+      input,
+      hasAlreadySubmitted: hasSubmitted,
+    );
+
+    hasSubmitted = true; // 첫 제출 이후부터는 true
 
     if (result.isCorrect) {
       _answerCtrl.clear();
-      setState(() => answerHintText = '답 입력');
+      setState(() {
+        answerHintText = '답 입력';
+      });
 
       await showContinueOrEndDialog(
         context,
         onContinue: () async {
           final newQuiz = await controller.nextQuestion();
           if (newQuiz != null) {
-            setState(() => currentQuestion = newQuiz);
+            setState(() {
+              currentQuestion = newQuiz;
+              hasSubmitted = false; // 새 문제 시작 시 초기화
+            });
           } else {
             setState(() => errorMessage = "다음 문제를 가져올 수 없습니다.");
           }
         },
-        onEnd: () async{
+        onEnd: () async {
           await _endQuiz();
         },
       );
