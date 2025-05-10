@@ -126,6 +126,8 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   String nickname = "";
   String accuracy = "0%";
+  String learningTime = "0분";
+
   final AuthService _authService = AuthService();
 
   @override
@@ -133,6 +135,21 @@ class _MainPage extends State<MainPage> {
     super.initState();
     _loadNickname();
     _loadStats();
+    _loadLearningTime();
+  }
+
+  Future<void> _loadLearningTime() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+    final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
+    setState(() {
+      learningTime = "${(secs/60).floor()}분";
+    }
+    );
   }
 
   void _loadNickname() async {
@@ -200,8 +217,8 @@ class _MainPage extends State<MainPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //TODO : 학습 시간 및 정답률 공개
-                  _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: "45분"),
+                  //TODO : 학습 시간
+                  _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: learningTime),
                   _DashboardCard(icon: Icons.star, label: "정답률", value: accuracy),
                 ],
               ),
@@ -210,11 +227,16 @@ class _MainPage extends State<MainPage> {
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.quiz),
                   label: const Text("퀴즈 시작하기"),
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final popped = await Navigator.push<bool>(
                       context,
-                      MaterialPageRoute(builder: (context) => QuizPage()),
+                      MaterialPageRoute(builder: (_) => const QuizPage()),
                     );
+                    if (popped == true) {
+                      await _loadStats();
+                      await _loadLearningTime();
+                    }
+
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),

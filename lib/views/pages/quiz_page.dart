@@ -11,6 +11,9 @@ import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../model/quiz.dart';
 import '../widgets/nav_util.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key}) : super(key: key);
 
@@ -24,15 +27,30 @@ class _QuizPageState extends State<QuizPage> {
   bool isLoading = false;
   String errorMessage = "";
   String answerHintText = '답 입력';
+
+  //퀴즈 시간 저장
+  late final DateTime _quizStartTime;
   final TextEditingController _answerCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     controller = context.read<QuizController>();
+    _quizStartTime = DateTime.now();// 퀴즈 페이지 진입하면 시작 시간 기록
     _loadQuiz();
   }
 
+  Future<void> _endQuiz() async {
+    final seconds = DateTime.now().difference(_quizStartTime).inSeconds;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'timeSpent': FieldValue.increment(seconds)});
+    }
+    controller.endQuiz(context);//메인페이지로 이동
+  }
   Future<void> _loadQuiz() async {
     setState(() {
       isLoading = true;
@@ -72,8 +90,8 @@ class _QuizPageState extends State<QuizPage> {
             setState(() => errorMessage = "다음 문제를 가져올 수 없습니다.");
           }
         },
-        onEnd: () {
-          controller.endQuiz(context);
+        onEnd: () async{
+          await _endQuiz();
         },
       );
     } else {
@@ -133,7 +151,9 @@ class _QuizPageState extends State<QuizPage> {
           context,
           title: local.exit,
           content: local.confirm_exit,
-          onConfirm: () => controller.endQuiz(context), // ✅ 메인페이지로 이동
+          onConfirm: () async {
+            await _endQuiz();
+          }
         );
       },
       child: Scaffold(
