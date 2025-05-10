@@ -44,6 +44,7 @@ class _OptionPageState extends State<OptionPage> {
     final textColor = isDark ? Colors.white : Colors.black87;
     final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -63,8 +64,28 @@ class _OptionPageState extends State<OptionPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _buildOptionCard(Icons.music_note, local.sound, () => SoundDialog.show(context), textColor),
-                _buildOptionCard(Icons.restore, local.reset_history,
-                        () => _showSimpleSnack(context, "초기화 기능은 나중에 추가될 예정입니다."), textColor),
+
+                _buildOptionCard(Icons.restore, local.reset_history, () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('정말 초기화할까요?'),
+                      content: const Text('삭제된 데이터는 복구할 수 없습니다.'),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('취소')),
+                        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('초기화')),
+                      ],
+                    ),
+                  );
+
+                  if (confirm == true && uid != null) {
+                    await optionViewModel.resetUserStats(uid);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('기록이 초기화되었습니다.')),
+                    );
+                  }
+                }, textColor),
+
                 _buildOptionCard(Icons.brightness_6, local.change_background,
                         () => BackgroundDialog.show(context), textColor),
                 _buildOptionCard(Icons.language, local.change_language,

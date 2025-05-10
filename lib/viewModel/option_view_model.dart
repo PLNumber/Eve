@@ -3,9 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Services/auth_service.dart';
+import '../repository/quiz_repository.dart';
 
 class OptionViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
+  final QuizRepository _quizRepository;
+
+  OptionViewModel(this._quizRepository);
+
+  QuizRepository get quizRepository => _quizRepository;
+
+  Future<void> resetUserStats(String uid) async {
+    await _quizRepository.resetUserStats(uid);
+  }
 
   Future<void> signOutAndExit() async {
     await _authService.signOutAndExit();

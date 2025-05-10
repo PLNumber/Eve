@@ -4,7 +4,7 @@ import '../repository/quiz_repository.dart';
 import 'package:eve/model/quiz.dart';
 import '../controller/quiz_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuizService {
   final QuizRepository _repository;
@@ -67,7 +67,17 @@ class QuizService {
 
     if (isCorrect) {
       if (uid != null) {
-        await _repository.updateStatsOnCorrect(uid, question.answer);
+        final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        final incorrectList = List<String>.from(userDoc.data()?['incorrectWords'] ?? []);
+        final wasIncorrect = incorrectList.contains(question.answer);
+
+        // ✅ 항상 시도 횟수는 증가
+        await _repository.incrementTotalSolved(uid);
+
+        // ✅ 오답을 낸 적 없는 경우에만 정답률 반영
+        if (!wasIncorrect) {
+          await _repository.incrementCorrectSolved(uid);
+        }
       }
       return AnswerResult(isCorrect: true);
     }
@@ -97,6 +107,7 @@ class QuizService {
     return AnswerResult(isCorrect: false, feedback: newFeedback);
   }
 
+
   bool isClearlyInvalidWord(String input) {
     for (int i = 0; i < input.length; i++) {
       final code = input.codeUnitAt(i);
@@ -110,11 +121,8 @@ class QuizService {
     return false;
   }
 
-
-
-/*===================================================*/
+  /*===================================================*/
   //TODO: checkAnswer 함수를 통해 해당하는 문제의 정답을 확인하는 함수를 구현 해야함 x
-
 
   //TODO : 이후에 사용자의 통계를 갱신하는 함수인 updateStat 함수를 구현 해야함
 }
