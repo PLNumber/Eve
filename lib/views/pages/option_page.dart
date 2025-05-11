@@ -1,4 +1,4 @@
-// ✅ option_page.dart: 사용자 경험치 진행 바 + 레벨업 메시지 표시
+// ✅ option_page.dart: 사용자 경험치 진행 바 + 레벨별 프로필 이미지 적용
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +40,6 @@ class _OptionPageState extends State<OptionPage> {
       _exp = data['experience'] ?? 0;
     });
 
-    // ✅ 레벨업 안내
     if (mounted && data['level'] != null && data['level'] > _level) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -48,6 +47,11 @@ class _OptionPageState extends State<OptionPage> {
         );
       });
     }
+  }
+
+  String getProfileImage(int level) {
+    if (level >= 5) return 'assets/images/profile_level_5.png';
+    return 'assets/images/profile_level_$level.png';
   }
 
   @override
@@ -98,15 +102,12 @@ class _OptionPageState extends State<OptionPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('기록이 초기화되었습니다.')),
                     );
-                    _loadUserInfo(); // ✅ 초기화 후 정보 재로딩
+                    _loadUserInfo();
                   }
                 }, textColor),
-                _buildOptionCard(Icons.brightness_6, local.change_background,
-                        () => BackgroundDialog.show(context), textColor),
-                _buildOptionCard(Icons.language, local.change_language,
-                        () => LanguageDialog.show(context), textColor),
-                _buildOptionCard(Icons.person, local.nickname_change,
-                        () => NicknameDialog.show(context), textColor),
+                _buildOptionCard(Icons.brightness_6, local.change_background, () => BackgroundDialog.show(context), textColor),
+                _buildOptionCard(Icons.language, local.change_language, () => LanguageDialog.show(context), textColor),
+                _buildOptionCard(Icons.person, local.nickname_change, () => NicknameDialog.show(context), textColor),
                 _buildOptionCard(Icons.logout, local.logout, () {
                   showConfirmDialog(
                     context,
@@ -126,9 +127,13 @@ class _OptionPageState extends State<OptionPage> {
   Widget _buildProfileSection(Color textColor, Color subTextColor) {
     return Column(
       children: [
-        const CircleAvatar(
-          radius: 50,
-          backgroundImage: AssetImage("assets/images/profile.png"),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          child: CircleAvatar(
+            key: ValueKey<int>(_level),
+            radius: 50,
+            backgroundImage: AssetImage(getProfileImage(_level)),
+          ),
         ),
         const SizedBox(height: 12),
         Text(

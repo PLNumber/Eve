@@ -222,6 +222,11 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  String getProfileImage(int level) {
+    if (level >= 5) return 'assets/images/profile_level_5.png';
+    return 'assets/images/profile_level_$level.png';
+  }
+
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
@@ -258,6 +263,17 @@ class _MainPage extends State<MainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: CircleAvatar(
+                    key: ValueKey<int>(_level),
+                    radius: 50,
+                    backgroundImage: AssetImage(getProfileImage(_level)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               Card(
                 color: cardColor,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
