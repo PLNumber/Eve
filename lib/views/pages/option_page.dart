@@ -8,6 +8,7 @@ import '../../l10n/gen_l10n/app_localizations.dart';
 import '../widgets/option_widget.dart';
 import '../widgets/nav_util.dart';
 
+
 class OptionPage extends StatefulWidget {
   @override
   State<OptionPage> createState() => _OptionPageState();
@@ -33,9 +34,10 @@ class _OptionPageState extends State<OptionPage> {
     final doc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
     final data = doc.data() ?? {};
 
+    final local = AppLocalizations.of(context)!;
     setState(() {
-      _nickname = data['nickname'] ?? "닉네임 없음";
-      _email = user.email ?? "이메일 없음";
+      _nickname = data['nickname'] ?? local.noNickname;
+      _email = user.email ?? local.noEmail;
       _level = data['level'] ?? 1;
       _exp = data['experience'] ?? 0;
     });
@@ -43,7 +45,7 @@ class _OptionPageState extends State<OptionPage> {
     if (mounted && data['level'] != null && data['level'] > _level) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("레벨업! 축하합니다.")),
+          SnackBar(content: Text(local.levelUpMessage)),
         );
       });
     }
@@ -88,11 +90,11 @@ class _OptionPageState extends State<OptionPage> {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      title: const Text('정말 초기화할까요?'),
-                      content: const Text('삭제된 데이터는 복구할 수 없습니다.'),
+                      title: Text(local.resetDialogTitle),
+                      content: Text(local.resetDialogContent),
                       actions: [
-                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('취소')),
-                        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('초기화')),
+                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(local.cancel)),
+                        TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(local.reset_history)),
                       ],
                     ),
                   );
@@ -100,7 +102,7 @@ class _OptionPageState extends State<OptionPage> {
                   if (confirm == true && uid != null) {
                     await optionViewModel.resetUserStats(uid);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('기록이 초기화되었습니다.')),
+                      SnackBar(content: Text(local.historyCleared)),
                     );
                     _loadUserInfo();
                   }
@@ -125,6 +127,7 @@ class _OptionPageState extends State<OptionPage> {
   }
 
   Widget _buildProfileSection(Color textColor, Color subTextColor) {
+    final local = AppLocalizations.of(context)!;
     return Column(
       children: [
         AnimatedSwitcher(
@@ -143,18 +146,19 @@ class _OptionPageState extends State<OptionPage> {
         const SizedBox(height: 4),
         Text(_email, style: TextStyle(color: subTextColor)),
         const SizedBox(height: 8),
-        Text("레벨 $_level", style: TextStyle(fontSize: 14, color: textColor)),
+        Text(local.levelLabel(_level), style: TextStyle(fontSize: 14, color: textColor)),
       ],
     );
   }
 
   Widget _buildExpBar() {
+    final local = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("경험치 ($_exp / $_maxExp)", style: const TextStyle(fontSize: 14)),
+          Text(local.expProgress(_exp, _maxExp), style: const TextStyle(fontSize: 14)),
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: _exp / _maxExp,
