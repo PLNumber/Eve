@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm_logout => 'Do you really want to logout?';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'OK';
 
   @override
   String get cancel => 'Cancel';
@@ -115,4 +115,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm_exit => 'Are you sure want to exit?';
+
+  @override
+  String get noNickname => 'No nickname';
+
+  @override
+  String get noEmail => 'No email';
+
+  @override
+  String levelLabel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String expProgress(int exp, int maxExp) {
+    return 'Experience ($exp / $maxExp)';
+  }
+
+  @override
+  String get resetDialogTitle => 'Really reset?';
+
+  @override
+  String get resetDialogContent => 'Deleted data cannot be recovered.';
+
+  @override
+  String get historyCleared => 'History has been reset.';
+
+  @override
+  String get levelUpMessage => 'You\'ve leveled up! Congrats!';
+
+  @override
+  String get quizPageTitle => 'Take Quiz';
+
+  @override
+  String get quizErrorFetch => 'Failed to generate question: cannot reach server.';
+
+  @override
+  String get quizErrorNext => 'Unable to load the next question.';
+
+  @override
+  String get feedbackTitle => 'Feedback';
+
+  @override
+  String get hint => 'Hint';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String difficultyBadge(int difficulty) {
+    return 'Difficulty $difficulty';
+  }
+
+  @override
+  String get reviewBadge => 'Review Question';
+
+  @override
+  String get answerHintDefault => 'Enter answer';
+
+  @override
+  String get setNicknameTitle => 'Set Nickname';
+
+  @override
+  String get promptEnterNickname => 'Please enter your nickname';
+
+  @override
+  String get exampleNickname => 'e.g., VocabularyKing123';
+
+  @override
+  String get invalidNicknameFormat => 'Nickname must be 2–10 chars, Korean/letters/numbers only.';
+
+  @override
+  String get nicknameDuplicateExists => 'This nickname is already in use.';
+
+  @override
+  String get nicknameAvailable => 'Nickname is available!';
+
+  @override
+  String get nicknameCheckError => 'Please check your nickname.';
+
+  @override
+  String get nicknameSaved => 'Nickname saved!';
+
+  @override
+  String get saveAndStart => 'Save & Start';
 }

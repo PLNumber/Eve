@@ -25,12 +25,13 @@ class _SetUserPage extends State<SetUserPage> {
 
 
   Future<void> _checkNicknameDuplicate() async {
+    final local = AppLocalizations.of(context)!;
     final inputName = _nicknameController.text.trim();
 
     if (!_validateNickname(inputName)) {
       setState(() {
         _isDuplicate = null;
-        _checkMessage = "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.";
+        _checkMessage = local.invalidNicknameFormat;
       });
       return;
     }
@@ -45,17 +46,18 @@ class _SetUserPage extends State<SetUserPage> {
 
     setState(() {
       _isDuplicate = isTaken;
-      _checkMessage = isTaken ? "이미 사용 중인 닉네임입니다." : "사용 가능한 닉네임입니다!";
+      _checkMessage = isTaken ? local.nicknameDuplicateExists : local.nicknameAvailable;
     });
   }
 
 
   Future<void> _saveNickname() async {
+    final local = AppLocalizations.of(context)!;
     final nickname = _nicknameController.text.trim();
     final user = FirebaseAuth.instance.currentUser;
 
     if (!_validateNickname(nickname) || _isDuplicate != false || user == null) {
-      showSavedSnackBar(context, message: "닉네임을 확인해주세요.");
+      showSavedSnackBar(context, message: local.nicknameCheckError);
       return;
     }
 
@@ -65,7 +67,7 @@ class _SetUserPage extends State<SetUserPage> {
       'nickname': nickname,
     });
 
-    showSavedSnackBar(context, message: "닉네임이 저장되었습니다!");
+    showSavedSnackBar(context, message: local.nicknameSaved);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainPage()),
@@ -76,14 +78,15 @@ class _SetUserPage extends State<SetUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (didPop) return;
         showConfirmDialog(
           context,
-          title: "앱 종료",
-          content: '정말 앱을 종료하시겠습니까?',
+          title: local.exit,
+          content: local.confirm_exit,
           onConfirm: () {
             SystemNavigator.pop();
           },
@@ -92,7 +95,7 @@ class _SetUserPage extends State<SetUserPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: true, // Scaf
         appBar: AppBar(
-          title: const Text("닉네임 설정"),
+          title: Text(local.setNicknameTitle),
           centerTitle: true,
           automaticallyImplyLeading: false,
         ),
@@ -102,12 +105,12 @@ class _SetUserPage extends State<SetUserPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 60),
-              const Text("닉네임을 입력해주세요", style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+              Text(local.promptEnterNickname, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
               const SizedBox(height: 20),
               TextField(
                 controller: _nicknameController,
                 decoration: InputDecoration(
-                  hintText: "예: 어휘왕123",
+                  hintText: local.exampleNickname,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -130,7 +133,7 @@ class _SetUserPage extends State<SetUserPage> {
                   ? Center(child: CircularProgressIndicator())
                   : ElevatedButton(
                 onPressed: _saveNickname,
-                child: const Text("저장하고 시작하기"),
+                child: Text(local.saveAndStart),
               ),
               const SizedBox(height: 40),
             ],

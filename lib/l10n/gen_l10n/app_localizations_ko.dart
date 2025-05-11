@@ -115,4 +115,88 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get confirm_exit => '정말 종료하시겠습니까?';
+
+  @override
+  String get noNickname => '닉네임 없음';
+
+  @override
+  String get noEmail => '이메일 없음';
+
+  @override
+  String levelLabel(int level) {
+    return '레벨 $level';
+  }
+
+  @override
+  String expProgress(int exp, int maxExp) {
+    return '경험치 ($exp / $maxExp)';
+  }
+
+  @override
+  String get resetDialogTitle => '정말 초기화할까요?';
+
+  @override
+  String get resetDialogContent => '삭제된 데이터는 복구할 수 없습니다.';
+
+  @override
+  String get historyCleared => '기록이 초기화되었습니다.';
+
+  @override
+  String get levelUpMessage => '레벨업! 축하합니다.';
+
+  @override
+  String get quizPageTitle => '퀴즈 풀기';
+
+  @override
+  String get quizErrorFetch => '문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.';
+
+  @override
+  String get quizErrorNext => '다음 문제를 가져올 수 없습니다.';
+
+  @override
+  String get feedbackTitle => '피드백';
+
+  @override
+  String get hint => '힌트';
+
+  @override
+  String get submit => '제출';
+
+  @override
+  String difficultyBadge(int difficulty) {
+    return '난이도 $difficulty';
+  }
+
+  @override
+  String get reviewBadge => '복습 문제';
+
+  @override
+  String get answerHintDefault => '답 입력';
+
+  @override
+  String get setNicknameTitle => '닉네임 설정';
+
+  @override
+  String get promptEnterNickname => '닉네임을 입력해주세요';
+
+  @override
+  String get exampleNickname => '예: 어휘왕123';
+
+  @override
+  String get invalidNicknameFormat => '닉네임은 2~10자, 한글/영문/숫자만 가능합니다.';
+
+  @override
+  String get nicknameDuplicateExists => '이미 사용 중인 닉네임입니다.';
+
+  @override
+  String get nicknameAvailable => '사용 가능한 닉네임입니다!';
+
+  @override
+  String get nicknameCheckError => '닉네임을 확인해주세요.';
+
+  @override
+  String get nicknameSaved => '닉네임이 저장되었습니다!';
+
+  @override
+  String get saveAndStart => '저장하고 시작하기';
 }
