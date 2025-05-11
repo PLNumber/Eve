@@ -41,7 +41,8 @@ class _QuizPageState extends State<QuizPage> {
   Future<void> _loadUserLevel() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
     final data = doc.data() ?? {};
     setState(() {
       _level = data['level'] ?? 1;
@@ -70,10 +71,9 @@ class _QuizPageState extends State<QuizPage> {
     final seconds = DateTime.now().difference(_quizStartTime).inSeconds;
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .update({'timeSpent': FieldValue.increment(seconds)});
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'timeSpent': FieldValue.increment(seconds),
+      });
     }
     controller.endQuiz(context);
   }
@@ -87,7 +87,8 @@ class _QuizPageState extends State<QuizPage> {
     final quiz = await controller.generateQuiz();
     if (quiz == null) {
       setState(() {
-        errorMessage = "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.(Failed to generate question: cannot reach server.)";
+        errorMessage =
+            "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.(Failed to generate question: cannot reach server.)";
         isLoading = false;
       });
       return;
@@ -142,18 +143,42 @@ class _QuizPageState extends State<QuizPage> {
     final local = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(local.feedbackTitle),
-        content: Text(message),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(local.confirm)),
-        ],
-      ),
+      builder:
+          (ctx) => AlertDialog(
+            title: Text(local.hint),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(local.confirm),
+              ),
+            ],
+          ),
     );
   }
 
   String _extractInitialHint(String text) {
-    const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    const CHO = [
+      'ㄱ',
+      'ㄲ',
+      'ㄴ',
+      'ㄷ',
+      'ㄸ',
+      'ㄹ',
+      'ㅁ',
+      'ㅂ',
+      'ㅃ',
+      'ㅅ',
+      'ㅆ',
+      'ㅇ',
+      'ㅈ',
+      'ㅉ',
+      'ㅊ',
+      'ㅋ',
+      'ㅌ',
+      'ㅍ',
+      'ㅎ',
+    ];
     return text.split('').map((c) {
       final code = c.codeUnitAt(0);
       if (code >= 0xAC00 && code <= 0xD7A3) {
@@ -199,101 +224,169 @@ class _QuizPageState extends State<QuizPage> {
                   onConfirm: () => _endQuiz(),
                 );
               },
-            )
+            ),
           ],
         ),
         body: SafeArea(
-          child: isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : errorMessage.isNotEmpty
-              ? Center(child: Text(errorMessage, style: const TextStyle(color: Colors.red)))
-              : Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 레벨 progress bar 생략
-              const SizedBox(height: 12),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8),
-                    ],
-                  ),
-                  child: Column(
+          child:
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : errorMessage.isNotEmpty
+                  ? Center(
+                    child: Text(
+                      errorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                  : Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Text(
-                            quiz!.question,
-                            style: const TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
+                      // 레벨 progress bar 생략
                       const SizedBox(height: 12),
-
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          icon: const Icon(Icons.lightbulb_outline),
-                          tooltip: local.hint,
-                          onPressed: () => _showFeedbackDialog(quiz.hint),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _answerCtrl,
-                              decoration: InputDecoration(
-                                hintText: answerHintText,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
                               ),
-                            ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.check_circle_outline),
-                            tooltip: local.confirm,
-                            onPressed: () => _submitAnswer(_answerCtrl.text.trim()),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                      horizontal: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: getDifficultyColor(
+                                        quiz?.difficulty ?? 0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      local.difficultyBadge(
+                                        quiz?.difficulty ?? 0,
+                                      ),
+                                    ),
+                                  ),
+                                  if (quiz?.isReview == true)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                        horizontal: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange.shade200,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        local.reviewBadge,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Text(
+                                    quiz!.question,
+                                    style: const TextStyle(fontSize: 20),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                  icon: const Icon(Icons.lightbulb_outline),
+                                  tooltip: local.hint,
+                                  onPressed:
+                                      () => _showFeedbackDialog(quiz.hint),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _answerCtrl,
+                                      decoration: InputDecoration(
+                                        hintText: answerHintText,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.check_circle_outline,
+                                    ),
+                                    tooltip: local.confirm,
+                                    onPressed:
+                                        () => _submitAnswer(
+                                          _answerCtrl.text.trim(),
+                                        ),
+                                  ),
+                                  if (hasSubmitted && !isLoading)
+                                    IconButton(
+                                      icon: const Icon(Icons.skip_next),
+                                      tooltip: local.next_question,
+                                      onPressed: () async {
+                                        final newQuiz =
+                                            await controller.nextQuestion();
+                                        if (newQuiz != null) {
+                                          setState(() {
+                                            currentQuestion = newQuiz;
+                                            hasSubmitted = false;
+                                            _answerCtrl.clear();
+                                            answerHintText =
+                                                '답 입력(Enter answer)';
+                                          });
+                                        } else {
+                                          setState(
+                                            () =>
+                                                errorMessage =
+                                                    local.quizErrorNext,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                ],
+                              ),
+                            ],
                           ),
-                          if (hasSubmitted && !isLoading)
-                            IconButton(
-                              icon: const Icon(Icons.skip_next),
-                              tooltip: local.next_question,
-                              onPressed: () async {
-                                final newQuiz = await controller.nextQuestion();
-                                if (newQuiz != null) {
-                                  setState(() {
-                                    currentQuestion = newQuiz;
-                                    hasSubmitted = false;
-                                    _answerCtrl.clear();
-                                    answerHintText = '답 입력(Enter answer)';
-                                  });
-                                } else {
-                                  setState(() => errorMessage = local.quizErrorNext);
-                                }
-                              },
-                            ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              )
-            ],
-          ),
         ),
       ),
     );
   }
-
 }
