@@ -21,7 +21,7 @@ class _QuizPageState extends State<QuizPage> {
   QuizQuestion? currentQuestion;
   bool isLoading = false;
   String errorMessage = "";
-  String answerHintText = '답 입력';
+  String answerHintText = '답 입력(Enter answer)';
   bool hasSubmitted = false;
   int _level = 1;
   int _exp = 0;
@@ -87,7 +87,7 @@ class _QuizPageState extends State<QuizPage> {
     final quiz = await controller.generateQuiz();
     if (quiz == null) {
       setState(() {
-        errorMessage = "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.";
+        errorMessage = "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.(Failed to generate question: cannot reach server.)";
         isLoading = false;
       });
       return;
@@ -100,6 +100,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<void> _submitAnswer(String input) async {
+    final local = AppLocalizations.of(context)!;
     if (currentQuestion == null) return;
 
     final result = await controller.checkAnswer(
@@ -112,7 +113,7 @@ class _QuizPageState extends State<QuizPage> {
 
     if (result.isCorrect) {
       _answerCtrl.clear();
-      setState(() => answerHintText = '답 입력');
+      setState(() => answerHintText = '답 입력(Enter answer)');
 
       await showContinueOrEndDialog(
         context,
@@ -124,7 +125,7 @@ class _QuizPageState extends State<QuizPage> {
               hasSubmitted = false;
             });
           } else {
-            setState(() => errorMessage = "다음 문제를 가져올 수 없습니다.");
+            setState(() => errorMessage = local.quizErrorNext);
           }
         },
         onEnd: () async => await _endQuiz(),
@@ -138,13 +139,14 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _showFeedbackDialog(String message) {
+    final local = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('피드백'),
+        title: Text(local.feedbackTitle),
         content: Text(message),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('확인')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(local.confirm)),
         ],
       ),
     );
@@ -227,7 +229,8 @@ class _QuizPageState extends State<QuizPage> {
                         color: getDifficultyColor(quiz?.difficulty ?? 0),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text("난이도 ${quiz?.difficulty ?? '-'}"),
+                      child: Text(local.difficultyBadge(quiz?.difficulty ?? 0)),
+
                     ),
                     if (quiz?.isReview == true)
                       Container(
@@ -236,7 +239,7 @@ class _QuizPageState extends State<QuizPage> {
                           color: Colors.orange.shade200,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text("복습 문제", style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: Text(local.reviewBadge, style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                   ],
                 ),
@@ -270,7 +273,7 @@ class _QuizPageState extends State<QuizPage> {
                         children: [
                           ElevatedButton(
                             onPressed: () => _showFeedbackDialog(quiz.hint),
-                            child: const Text('힌트'),
+                            child: Text(local.hint),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -286,8 +289,38 @@ class _QuizPageState extends State<QuizPage> {
                           const SizedBox(width: 8),
                           ElevatedButton(
                             onPressed: () => _submitAnswer(_answerCtrl.text.trim()),
-                            child: const Text('확인'),
+                            child: Text(local.confirm),
                           ),
+                          // 다음 문제로 넘기기 버튼 (오답 제출 후에만 표시)
+                          if (hasSubmitted && !isLoading)
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final newQuiz = await controller.nextQuestion();
+                                  if (newQuiz != null) {
+                                    setState(() {
+                                      currentQuestion = newQuiz;
+                                      hasSubmitted = false;
+                                      _answerCtrl.clear();
+                                      answerHintText = '답 입력(Enter answer)';
+                                    });
+                                  } else {
+                                    setState(() {
+                                      errorMessage = local.quizErrorNext;
+                                    });
+                                  }
+                                },
+                                icon: const Icon(Icons.skip_next),
+                                label: Text(local.next_question),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade300,
+                                  foregroundColor: Colors.black87,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+
                         ],
                       ),
                     ],

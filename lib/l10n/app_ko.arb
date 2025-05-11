@@ -1,30 +1,23 @@
 {
   "@@locale": "ko",
-
-  "waiting" : "불러오는 중 . . .",
+  "waiting": "불러오는 중 . . .",
   "title": "환영합니다",
-
   "login": "로그인",
-  "google_login" : "구글 로그인",
-
+  "google_login": "구글 로그인",
   "settings": "설정",
-  "sound" : "소리 설정",
+  "sound": "소리 설정",
   "sound_settings": "소리 설정",
   "sound_on": "소리 켜기",
   "volume_level": "음량",
-  "select_music" : "음악 선택",
-
-  "reset_history" : "기록 초기화",
-
+  "select_music": "음악 선택",
+  "reset_history": "기록 초기화",
   "change_background": "배경 변경",
-  "default_background" : "밝음(기본)",
-  "dark_background" : "어두움",
-
+  "default_background": "밝음(기본)",
+  "dark_background": "어두움",
   "change_language": "언어 변경",
   "language_selection": "언어 선택",
   "korean": "한국어",
   "english": "영어",
-
   "nickname_change": "닉네임 변경",
   "nickname_invalid": "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.",
   "nickname_taken": "이미 사용 중인 닉네임입니다.",
@@ -34,106 +27,143 @@
   "nickname_placeholder": "새 닉네임 입력",
   "nickname_success": "닉네임이 변경되었습니다!",
   "nickname_check_prompt": "닉네임 확인을 완료해주세요.",
-
   "logout": "로그아웃",
   "confirm_logout": "정말로 로그아웃을 하시겠습니까?",
-
-  "confirm": "확인",
-  "cancel": "취소",
   "saved_message": "저장되었습니다!",
   "close": "닫기",
-
   "exit": "종료",
   "confirm_exit_quiz": "정말 퀴즈를 종료하시겠습니까?",
-  "confirm_exit" : "정말 종료하시겠습니까?",
-
+  "confirm_exit": "정말 종료하시겠습니까?",
   "noNickname": "닉네임 없음",
-  "@noNickname": { "description": "프로필에 닉네임이 없을 때 표시할 텍스트" },
+  "@noNickname": {
+    "description": "프로필에 닉네임이 없을 때 표시할 텍스트"
+  },
   "noEmail": "이메일 없음",
-  "@noEmail": { "description": "프로필에 이메일이 없을 때 표시할 텍스트" },
+  "@noEmail": {
+    "description": "프로필에 이메일이 없을 때 표시할 텍스트"
+  },
   "levelLabel": "레벨 {level}",
   "@levelLabel": {
     "description": "프로필에 현재 레벨을 표시",
-    "placeholders": { "level": { "type": "int"} }
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
   },
   "expProgress": "경험치 ({exp} / {maxExp})",
   "@expProgress": {
     "description": "경험치 진행 바 위 텍스트",
-    "placeholders": { "exp": { "type": "int"}, "maxExp": { "type": "int"} }
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      },
+      "maxExp": {
+        "type": "int"
+      }
+    }
   },
   "resetDialogTitle": "정말 초기화할까요?",
-  "@resetDialogTitle": { "description": "기록 초기화 확인 다이얼로그 제목" },
+  "@resetDialogTitle": {
+    "description": "기록 초기화 확인 다이얼로그 제목"
+  },
   "resetDialogContent": "삭제된 데이터는 복구할 수 없습니다.",
-  "@resetDialogContent": { "description": "기록 초기화 확인 다이얼로그 내용" },
+  "@resetDialogContent": {
+    "description": "기록 초기화 확인 다이얼로그 내용"
+  },
   "cancel": "취소",
-  "@cancel": { "description": "다이얼로그 취소 버튼 레이블" },
+  "@cancel": {
+    "description": "다이얼로그 취소 버튼 레이블"
+  },
   "historyCleared": "기록이 초기화되었습니다.",
-  "@historyCleared": { "description": "기록 초기화 완료 스낵바 메시지" },
+  "@historyCleared": {
+    "description": "기록 초기화 완료 스낵바 메시지"
+  },
   "levelUpMessage": "레벨업! 축하합니다.",
   "@levelUpMessage": {
     "description": "사용자가 레벨업했을 때 표시되는 메시지"
   },
+  "quizPageTitle": "퀴즈 풀기",
+  "@quizPageTitle": {
+    "description": "퀴즈 페이지 AppBar 제목"
+  },
+  "quizErrorFetch": "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.",
+  "@quizErrorFetch": {
+    "description": "서버에서 퀴즈 문제를 받아올 수 없을 때 표시할 메시지"
+  },
+  "quizErrorNext": "다음 문제를 가져올 수 없습니다.",
+  "@quizErrorNext": {
+    "description": "다음 문제 요청에 실패했을 때 표시할 메시지"
+  },
+  "feedbackTitle": "피드백",
+  "@feedbackTitle": {
+    "description": "피드백 다이얼로그 제목"
+  },
+  "confirm": "확인",
+  "@confirm": {
+    "description": "확인 버튼 레이블"
+  },
+  "hint": "힌트",
+  "@hint": {
+    "description": "힌트 버튼 레이블"
+  },
+  "submit": "제출",
+  "@submit": {
+    "description": "답안 제출 버튼 레이블"
+  },
+  "difficultyBadge": "난이도 {difficulty}",
+  "@difficultyBadge": {
+    "description": "난이도 뱃지 텍스트",
+    "placeholders": {
+      "difficulty": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewBadge": "복습 문제",
+  "@reviewBadge": {
+    "description": "‘복습 문제’ 뱃지 레이블"
+  },
+  "answerHintDefault": "답 입력",
+  "@answerHintDefault": {
+    "description": "답 입력 칸 기본 힌트 텍스트"
+  },
+  "setNicknameTitle": "닉네임 설정",
+  "@setNicknameTitle": {
+    "description": "닉네임 설정 페이지 AppBar 제목"
+  },
+  "promptEnterNickname": "닉네임을 입력해주세요",
+  "@promptEnterNickname": {
+    "description": "닉네임 입력 안내 텍스트"
+  },
+  "exampleNickname": "예: 어휘왕123",
+  "@exampleNickname": {
+    "description": "닉네임 힌트 예시 텍스트"
+  },
+  "invalidNicknameFormat": "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.",
+  "@invalidNicknameFormat": {
+    "description": "닉네임 형식이 올바르지 않을 때 메시지"
+  },
+  "nicknameDuplicateExists": "이미 사용 중인 닉네임입니다.",
+  "@nicknameDuplicateExists": {
+    "description": "중복 검사 후 이미 있을 때 메시지"
+  },
+  "nicknameAvailable": "사용 가능한 닉네임입니다!",
+  "@nicknameAvailable": {
+    "description": "중복 검사 후 사용 가능할 때 메시지"
+  },
+  "nicknameCheckError": "닉네임을 확인해주세요.",
+  "@nicknameCheckError": {
+    "description": "저장 전 오류 발생 시 스낵바 메시지"
+  },
+  "nicknameSaved": "닉네임이 저장되었습니다!",
+  "@nicknameSaved": {
+    "description": "저장 완료 시 스낵바 메시지"
+  },
+  "saveAndStart": "저장하고 시작하기",
+  "@saveAndStart": {
+    "description": "저장 후 시작하기 버튼 레이블"
+  },
 
-   "quizPageTitle": "퀴즈 풀기",
-    "@quizPageTitle": { "description": "퀴즈 페이지 AppBar 제목" },
-
-    "quizErrorFetch": "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.",
-    "@quizErrorFetch": { "description": "서버에서 퀴즈 문제를 받아올 수 없을 때 표시할 메시지" },
-
-    "quizErrorNext": "다음 문제를 가져올 수 없습니다.",
-    "@quizErrorNext": { "description": "다음 문제 요청에 실패했을 때 표시할 메시지" },
-
-    "feedbackTitle": "피드백",
-    "@feedbackTitle": { "description": "피드백 다이얼로그 제목" },
-
-    "confirm": "확인",
-    "@confirm": { "description": "확인 버튼 레이블" },
-
-    "hint": "힌트",
-    "@hint": { "description": "힌트 버튼 레이블" },
-
-    "submit": "제출",
-    "@submit": { "description": "답안 제출 버튼 레이블" },
-
-    "difficultyBadge": "난이도 {difficulty}",
-    "@difficultyBadge": {
-      "description": "난이도 뱃지 텍스트",
-      "placeholders": { "difficulty": { "type": "int" } }
-    },
-
-    "reviewBadge": "복습 문제",
-    "@reviewBadge": { "description": "‘복습 문제’ 뱃지 레이블" },
-
-    "answerHintDefault": "답 입력",
-    "@answerHintDefault": { "description": "답 입력 칸 기본 힌트 텍스트" },
-
-
-      "setNicknameTitle": "닉네임 설정",
-      "@setNicknameTitle": { "description": "닉네임 설정 페이지 AppBar 제목" },
-
-      "promptEnterNickname": "닉네임을 입력해주세요",
-      "@promptEnterNickname": { "description": "닉네임 입력 안내 텍스트" },
-
-      "exampleNickname": "예: 어휘왕123",
-      "@exampleNickname": { "description": "닉네임 힌트 예시 텍스트" },
-
-      "invalidNicknameFormat": "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.",
-      "@invalidNicknameFormat": { "description": "닉네임 형식이 올바르지 않을 때 메시지" },
-
-      "nicknameDuplicateExists": "이미 사용 중인 닉네임입니다.",
-      "@nicknameDuplicateExists": { "description": "중복 검사 후 이미 있을 때 메시지" },
-
-      "nicknameAvailable": "사용 가능한 닉네임입니다!",
-      "@nicknameAvailable": { "description": "중복 검사 후 사용 가능할 때 메시지" },
-
-      "nicknameCheckError": "닉네임을 확인해주세요.",
-      "@nicknameCheckError": { "description": "저장 전 오류 발생 시 스낵바 메시지" },
-
-      "nicknameSaved": "닉네임이 저장되었습니다!",
-      "@nicknameSaved": { "description": "저장 완료 시 스낵바 메시지" },
-
-      "saveAndStart": "저장하고 시작하기",
-      "@saveAndStart": { "description": "저장 후 시작하기 버튼 레이블" }
-
-
+  "next_question": "넘기기"
 }

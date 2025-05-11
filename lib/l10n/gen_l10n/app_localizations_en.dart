@@ -199,4 +199,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveAndStart => 'Save & Start';
+
+  @override
+  String get next_question => 'skip';
 }

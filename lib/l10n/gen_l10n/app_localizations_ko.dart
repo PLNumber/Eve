@@ -199,4 +199,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get saveAndStart => '저장하고 시작하기';
+
+  @override
+  String get next_question => '넘기기';
 }
