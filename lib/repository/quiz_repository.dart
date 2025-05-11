@@ -26,7 +26,7 @@ class QuizRepository {
 
     // ✅ vocab4에서 등급 + history 제외 필터
     final vocabSnap = await _firestore
-        .collection('vocab4')
+        .collection('vocab')
         .where('등급', whereIn: levelRange)
         .get();
 
