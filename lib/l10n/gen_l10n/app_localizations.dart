@@ -269,13 +269,13 @@ abstract class AppLocalizations {
   /// **'Do you really want to logout?'**
   String get confirm_logout;
 
-  /// No description provided for @confirm.
+  /// Confirm button label
   ///
   /// In en, this message translates to:
-  /// **'Confirm'**
+  /// **'OK'**
   String get confirm;
 
-  /// No description provided for @cancel.
+  /// Dialog cancel button label
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
@@ -310,6 +310,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure want to exit?'**
   String get confirm_exit;
+
+  /// Text when no nickname in profile
+  ///
+  /// In en, this message translates to:
+  /// **'No nickname'**
+  String get noNickname;
+
+  /// Text when no email in profile
+  ///
+  /// In en, this message translates to:
+  /// **'No email'**
+  String get noEmail;
+
+  /// Display current level in profile
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String levelLabel(int level);
+
+  /// Text above exp progress bar
+  ///
+  /// In en, this message translates to:
+  /// **'Experience ({exp} / {maxExp})'**
+  String expProgress(int exp, int maxExp);
+
+  /// Dialog title for confirming reset
+  ///
+  /// In en, this message translates to:
+  /// **'Really reset?'**
+  String get resetDialogTitle;
+
+  /// Dialog content for confirming reset
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted data cannot be recovered.'**
+  String get resetDialogContent;
+
+  /// Snackbar message after reset
+  ///
+  /// In en, this message translates to:
+  /// **'History has been reset.'**
+  String get historyCleared;
+
+  /// Message shown when the user levels up
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve leveled up! Congrats!'**
+  String get levelUpMessage;
+
+  /// AppBar title for quiz page
+  ///
+  /// In en, this message translates to:
+  /// **'Take Quiz'**
+  String get quizPageTitle;
+
+  /// Shown when failing to fetch a quiz question
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to generate question: cannot reach server.'**
+  String get quizErrorFetch;
+
+  /// Shown when failing to fetch the next question
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load the next question.'**
+  String get quizErrorNext;
+
+  /// Title for feedback dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedbackTitle;
+
+  /// Hint button label
+  ///
+  /// In en, this message translates to:
+  /// **'Hint'**
+  String get hint;
+
+  /// Submit answer button label
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// Text for difficulty badge
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty {difficulty}'**
+  String difficultyBadge(int difficulty);
+
+  /// Label for review question badge
+  ///
+  /// In en, this message translates to:
+  /// **'Review Question'**
+  String get reviewBadge;
+
+  /// Default hint text for answer field
+  ///
+  /// In en, this message translates to:
+  /// **'Enter answer'**
+  String get answerHintDefault;
+
+  /// AppBar title for nickname setting page
+  ///
+  /// In en, this message translates to:
+  /// **'Set Nickname'**
+  String get setNicknameTitle;
+
+  /// Prompt text for nickname input
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your nickname'**
+  String get promptEnterNickname;
+
+  /// Example nickname hint text
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., VocabularyKing123'**
+  String get exampleNickname;
+
+  /// Shown when nickname format is invalid
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname must be 2–10 chars, Korean/letters/numbers only.'**
+  String get invalidNicknameFormat;
+
+  /// Shown when nickname already taken
+  ///
+  /// In en, this message translates to:
+  /// **'This nickname is already in use.'**
+  String get nicknameDuplicateExists;
+
+  /// Shown when nickname is available
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname is available!'**
+  String get nicknameAvailable;
+
+  /// Snackbar message on nickname check error
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your nickname.'**
+  String get nicknameCheckError;
+
+  /// Snackbar message when nickname saved
+  ///
+  /// In en, this message translates to:
+  /// **'Nickname saved!'**
+  String get nicknameSaved;
+
+  /// Label for Save & Start button
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Start'**
+  String get saveAndStart;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

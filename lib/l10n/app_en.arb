@@ -1,30 +1,23 @@
 {
   "@@locale": "en",
-
   "waiting": "Loading . . . ",
   "title": "Welcome",
-
   "login": "Login",
-  "google_login" : "Google Login",
-
+  "google_login": "Google Login",
   "settings": "Settings",
-  "sound" : "Sound",
+  "sound": "Sound",
   "sound_settings": "Sound Settings",
   "sound_on": "Enable Sound",
   "volume_level": "Volume",
   "select_music": "Choose Music",
-
-  "reset_history" : "Reset History",
-
+  "reset_history": "Reset History",
   "change_background": "Change Background",
-  "default_background" : "White(Default)",
-  "dark_background" : "Dark",
-
+  "default_background": "White(Default)",
+  "dark_background": "Dark",
   "change_language": "Change Language",
   "language_selection": "Select Language",
   "korean": "Korean",
   "english": "English",
-
   "nickname_change": "Change Nickname",
   "nickname_invalid": "Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.",
   "nickname_taken": "This nickname is already taken.",
@@ -34,16 +27,143 @@
   "nickname_placeholder": "Enter new nickname",
   "nickname_success": "Nickname changed successfully!",
   "nickname_check_prompt": "Please complete the nickname check.",
-
   "logout": "Logout",
   "confirm_logout": "Do you really want to logout?",
-
   "confirm": "Confirm",
   "cancel": "Cancel",
   "saved_message": "Saved successfully!",
   "close": "Close",
-
   "exit": "Exit",
   "confirm_exit_quiz": "Are you sure you want to quit the quiz?",
-  "confirm_exit" : "Are you sure want to exit?"
+  "confirm_exit": "Are you sure want to exit?",
+  "noNickname": "No nickname",
+  "@noNickname": {
+    "description": "Text when no nickname in profile"
+  },
+  "noEmail": "No email",
+  "@noEmail": {
+    "description": "Text when no email in profile"
+  },
+  "levelLabel": "Level {level}",
+  "@levelLabel": {
+    "description": "Display current level in profile",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "expProgress": "Experience ({exp} / {maxExp})",
+  "@expProgress": {
+    "description": "Text above exp progress bar",
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      },
+      "maxExp": {
+        "type": "int"
+      }
+    }
+  },
+  "resetDialogTitle": "Really reset?",
+  "@resetDialogTitle": {
+    "description": "Dialog title for confirming reset"
+  },
+  "resetDialogContent": "Deleted data cannot be recovered.",
+  "@resetDialogContent": {
+    "description": "Dialog content for confirming reset"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Dialog cancel button label"
+  },
+  "historyCleared": "History has been reset.",
+  "@historyCleared": {
+    "description": "Snackbar message after reset"
+  },
+  "levelUpMessage": "You've leveled up! Congrats!",
+  "@levelUpMessage": {
+    "description": "Message shown when the user levels up"
+  },
+  "quizPageTitle": "Take Quiz",
+  "@quizPageTitle": {
+    "description": "AppBar title for quiz page"
+  },
+  "quizErrorFetch": "Failed to generate question: cannot reach server.",
+  "@quizErrorFetch": {
+    "description": "Shown when failing to fetch a quiz question"
+  },
+  "quizErrorNext": "Unable to load the next question.",
+  "@quizErrorNext": {
+    "description": "Shown when failing to fetch the next question"
+  },
+  "feedbackTitle": "Feedback",
+  "@feedbackTitle": {
+    "description": "Title for feedback dialog"
+  },
+  "confirm": "OK",
+  "@confirm": {
+    "description": "Confirm button label"
+  },
+  "hint": "Hint",
+  "@hint": {
+    "description": "Hint button label"
+  },
+  "submit": "Submit",
+  "@submit": {
+    "description": "Submit answer button label"
+  },
+  "difficultyBadge": "Difficulty {difficulty}",
+  "@difficultyBadge": {
+    "description": "Text for difficulty badge",
+    "placeholders": {
+      "difficulty": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewBadge": "Review Question",
+  "@reviewBadge": {
+    "description": "Label for review question badge"
+  },
+  "answerHintDefault": "Enter answer",
+  "@answerHintDefault": {
+    "description": "Default hint text for answer field"
+  },
+  "setNicknameTitle": "Set Nickname",
+  "@setNicknameTitle": {
+    "description": "AppBar title for nickname setting page"
+  },
+  "promptEnterNickname": "Please enter your nickname",
+  "@promptEnterNickname": {
+    "description": "Prompt text for nickname input"
+  },
+  "exampleNickname": "e.g., VocabularyKing123",
+  "@exampleNickname": {
+    "description": "Example nickname hint text"
+  },
+  "invalidNicknameFormat": "Nickname must be 2–10 chars, Korean/letters/numbers only.",
+  "@invalidNicknameFormat": {
+    "description": "Shown when nickname format is invalid"
+  },
+  "nicknameDuplicateExists": "This nickname is already in use.",
+  "@nicknameDuplicateExists": {
+    "description": "Shown when nickname already taken"
+  },
+  "nicknameAvailable": "Nickname is available!",
+  "@nicknameAvailable": {
+    "description": "Shown when nickname is available"
+  },
+  "nicknameCheckError": "Please check your nickname.",
+  "@nicknameCheckError": {
+    "description": "Snackbar message on nickname check error"
+  },
+  "nicknameSaved": "Nickname saved!",
+  "@nicknameSaved": {
+    "description": "Snackbar message when nickname saved"
+  },
+  "saveAndStart": "Save & Start",
+  "@saveAndStart": {
+    "description": "Label for Save & Start button"
+  }
 }
