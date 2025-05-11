@@ -30,6 +30,12 @@ import 'repository/quiz_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 자동회전 끔
+  // await SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: "assets/config/.env");
   final String geminiApiKey = dotenv.env['geminiApiKey'] ?? "";
@@ -40,18 +46,20 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(
-          create: (_) => OptionViewModel(QuizRepository(GeminiService(apiKey: geminiApiKey),)),
+          create:
+              (_) => OptionViewModel(
+                QuizRepository(GeminiService(apiKey: geminiApiKey)),
+              ),
         ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         Provider(
-          create: (_) => QuizController(
-            QuizService(
-              QuizRepository(
-                GeminiService(apiKey: geminiApiKey),
+          create:
+              (_) => QuizController(
+                QuizService(
+                  QuizRepository(GeminiService(apiKey: geminiApiKey)),
+                ),
               ),
-            ),
-          ),
         ),
       ],
       child: const MyApp(),
@@ -67,10 +75,16 @@ class MyApp extends StatelessWidget {
 
     if (user == null) return const LoginPage();
 
-    final snapshot = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
     final nickname = snapshot.data()?['nickname'];
 
-    if (nickname == null || nickname == user.uid || nickname.toString().trim().isEmpty) {
+    if (nickname == null ||
+        nickname == user.uid ||
+        nickname.toString().trim().isEmpty) {
       return SetUserPage();
     }
     return const MainPage();
@@ -80,18 +94,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+    final locale = provider.locale;
 
     return MaterialApp(
       title: 'LexiUp',
       themeMode: themeProvider.themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      locale: provider.locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('ko'),
-      ],
+      theme: ThemeData.light().copyWith(
+        textTheme: ThemeData.light().textTheme.apply(
+          fontFamily:
+              locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
+          fontFamily:
+              locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+        ),
+      ),
+
+      locale: locale,
+      supportedLocales: const [Locale('en'), Locale('ko')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -99,20 +121,20 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: Builder(
-          builder: (context) {
-            return FutureBuilder<Widget>(
-              future: _getStartPage(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                } else {
-                  return snapshot.data!;
-                }
-              },
-            );
-          }
+        builder: (context) {
+          return FutureBuilder<Widget>(
+            future: _getStartPage(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else {
+                return snapshot.data!;
+              }
+            },
+          );
+        },
       ),
     );
   }
@@ -129,24 +151,55 @@ class _MainPage extends State<MainPage> {
   String nickname = "";
   String accuracy = "0%";
   String learningTime = "0분";
+  int _level = 1;
+  int _exp = 0;
+  final int _maxExp = 100;
 
   final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
-    _loadNickname();
+    _loadUserInfo();
     _loadStats();
     _loadLearningTime();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final data = doc.data() ?? {};
+
+    setState(() {
+      nickname = data['nickname'] ?? "닉네임 없음";
+      _level = data['level'] ?? 1;
+      _exp = data['experience'] ?? 0;
+    });
+  }
+
+  Future<void> _loadStats() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final data = doc.data();
+    if (data == null) return;
+
+    final int correct = (data['correctSolved'] as int?) ?? 0;
+    final int total = (data['totalSolved'] as int?) ?? 0;
+    final double pct = total > 0 ? correct / total * 100 : 0;
+
+    setState(() {
+      accuracy = "${pct.toStringAsFixed(1)}%";
+    });
   }
 
   Future<void> _loadLearningTime() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
+    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
     setState(() {
       final days = secs ~/ 86400;
@@ -160,51 +213,27 @@ class _MainPage extends State<MainPage> {
           "$days일",
           if (hours > 0) "${hours}시간",
           if (minutes > 0) "${minutes}분",
-          "$minutes분"
         ].join(' ');
       } else if (hours > 0) {
-        learningTime = [
-          "${hours}시간",
-          if (minutes > 0) "${minutes}분",
-        ].join(' ');
+        learningTime = ["${hours}시간", if (minutes > 0) "${minutes}분"].join(' ');
       } else {
         learningTime = "$minutes분";
       }
-
-    }
-    );
-  }
-
-  void _loadNickname() async {
-    final nick = await _authService.getNickname();
-    setState(() {
-      nickname = nick;
     });
   }
 
-  Future<void> _loadStats() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
-    final data = doc.data();
-    if (data == null) return;
-
-    final int correct = (data['correctSolved'] as int?) ?? 0;
-    final int total   = (data['totalSolved']   as int?) ?? 0;
-    final double pct  = total > 0 ? correct / total * 100 : 0;
-
-    setState(() {
-      accuracy = "${pct.toStringAsFixed(1)}%";
-    });
+  String getProfileImage(int level) {
+    if (level >= 5) return 'assets/images/profile_level_5.png';
+    return 'assets/images/profile_level_$level.png';
   }
 
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+    final accentColor = Colors.indigoAccent;
 
     return PopScope(
       canPop: false,
@@ -218,9 +247,9 @@ class _MainPage extends State<MainPage> {
         );
       },
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          title: Text(nickname.isNotEmpty ? "$nickname님, 안녕하세요!" : "LexiUp"),
+          title: Text(nickname.isNotEmpty ? "$nickname님, 환영합니다!" : "LexiUp"),
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () => Navigator.push(
@@ -230,42 +259,91 @@ class _MainPage extends State<MainPage> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 환영합니다.
-              Text(local.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20),
+              Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: CircleAvatar(
+                    key: ValueKey<int>(_level),
+                    radius: 50,
+                    backgroundImage: AssetImage(getProfileImage(_level)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                color: cardColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.quiz),
+                        label: const Text("퀴즈 시작하기"),
+                        onPressed: () async {
+                          final popped = await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute(builder: (_) => const QuizPage()),
+                          );
+                          if (popped == true) {
+                            await _loadStats();
+                            await _loadLearningTime();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          textStyle: const TextStyle(fontSize: 18),
+                          backgroundColor: accentColor,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      LinearProgressIndicator(
+                        value: _exp / _maxExp,
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: AlwaysStoppedAnimation<Color>(accentColor),
+                      ),
+                      const SizedBox(height: 8),
+                      Text("레벨 $_level ($_exp / $_maxExp)",
+                          style: TextStyle(fontSize: 14, color: textColor)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //TODO : 학습 시간
-                  _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: learningTime),
+                  _DashboardCard(icon: Icons.access_time, label: "플레이 시간", value: learningTime),
                   _DashboardCard(icon: Icons.star, label: "정답률", value: accuracy),
                 ],
               ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.quiz),
-                  label: const Text("퀴즈 시작하기"),
-                  onPressed: () async {
-                    final popped = await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(builder: (_) => const QuizPage()),
-                    );
-                    if (popped == true) {
-                      await _loadStats();
-                      await _loadLearningTime();
-                    }
-
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: cardColor,
+                  foregroundColor: textColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
+                child: const Text("복습할 단어 풀기 (추후 업데이트)"),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: cardColor,
+                  foregroundColor: textColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text("단어사전 (추후 업데이트)"),
               ),
             ],
           ),
@@ -284,7 +362,12 @@ class _DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+
     return Card(
+      color: cardColor,
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
@@ -293,11 +376,11 @@ class _DashboardCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 32),
+            Icon(icon, size: 32, color: textColor),
             const SizedBox(height: 8),
-            Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
             const SizedBox(height: 4),
-            Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            Text(label, style: TextStyle(fontSize: 14, color: textColor?.withOpacity(0.7))),
           ],
         ),
       ),

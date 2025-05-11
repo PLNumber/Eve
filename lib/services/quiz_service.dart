@@ -4,7 +4,6 @@ import '../repository/quiz_repository.dart';
 import 'package:eve/model/quiz.dart';
 import '../controller/quiz_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuizService {
   final QuizRepository _repository;
@@ -25,6 +24,7 @@ class QuizService {
     _quizCount++;
     final isReviewTurn = _quizCount % reviewInterval == 0;
 
+    // ✅ 1. 복습 문제 출제
     if (isReviewTurn) {
       final reviewWord = await _repository.getRandomIncorrectWord(uid);
       if (reviewWord != null) {
@@ -41,47 +41,47 @@ class QuizService {
       }
     }
 
+    // ✅ 2. 일반 문제 출제
     final vocab = await _repository.selectWord(uid);
-    final exists = await _repository.isExist(vocab['어휘']);
+    final saved = await _repository.getSavedQuestion(vocab['어휘']);
 
-    if (!exists) {
-      return await _repository.generateQuestion(vocab);
-    }
-
-    final question = await _repository.getSavedQuestion(vocab['어휘']);
     return QuizQuestion(
-      question: question.question,
-      answer: question.answer,
-      hint: question.hint,
-      distractors: question.distractors,
-      feedbacks: question.feedbacks,
-      difficulty: question.difficulty,
+      question: saved.question,
+      answer: saved.answer,
+      hint: saved.hint,
+      distractors: saved.distractors,
+      feedbacks: saved.feedbacks,
+      difficulty: saved.difficulty,
       isReview: false,
     );
   }
 
+
   //compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수
-  Future<AnswerResult> compareAnswer(QuizQuestion question, String userInput) async {
+  Future<AnswerResult> compareAnswer(
+      QuizQuestion question,
+      String userInput,
+      {required bool hasAlreadySubmitted}
+      ) async {
     final isCorrect = userInput == question.answer;
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
+    // 첫 제출일 때만 total 증가
+    if (!hasAlreadySubmitted && uid != null) {
+      await _repository.incrementTotalSolved(uid);
+    }
+
     if (isCorrect) {
-      if (uid != null) {
-        final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        final incorrectList = List<String>.from(userDoc.data()?['incorrectWords'] ?? []);
-        final wasIncorrect = incorrectList.contains(question.answer);
-
-        await _repository.incrementTotalSolved(uid);
-
-        if (!wasIncorrect) {
-          await _repository.incrementCorrectSolved(uid);
-        }
-
-        await _repository.updateStatsOnCorrect(uid, question.answer, question.difficulty); // ✅ 난이도 전달
+      // 정답은 반드시 hasAlreadySubmitted가 false일 때만 기록
+      if (!hasAlreadySubmitted && uid != null) {
+        await _repository.incrementCorrectSolved(uid);
+        await _repository.updateStatsOnCorrect(uid, question.answer, question.difficulty);
       }
+
       return AnswerResult(isCorrect: true);
     }
 
+    // 오답 처리
     if (isClearlyInvalidWord(userInput)) {
       return AnswerResult(
         isCorrect: false,
@@ -91,7 +91,7 @@ class QuizService {
 
     final idx = question.distractors.indexOf(userInput);
     if (idx != -1 && idx < question.feedbacks.length) {
-      if (uid != null) {
+      if (!hasAlreadySubmitted && uid != null) {
         await _repository.updateStatsOnIncorrect(uid, question.answer);
       }
       return AnswerResult(isCorrect: false, feedback: question.feedbacks[idx]);
@@ -100,12 +100,13 @@ class QuizService {
     final newFeedback = await _repository.generateFeedBack(question.answer, userInput);
     await _repository.appendFeedback(question.answer, userInput, newFeedback);
 
-    if (uid != null) {
+    if (!hasAlreadySubmitted && uid != null) {
       await _repository.updateStatsOnIncorrect(uid, question.answer);
     }
 
     return AnswerResult(isCorrect: false, feedback: newFeedback);
   }
+
 
 
   bool isClearlyInvalidWord(String input) {

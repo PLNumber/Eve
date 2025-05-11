@@ -19,34 +19,49 @@ class QuizRepository {
   Future<Map<String, dynamic>> selectWord(String uid) async {
     final userDoc = await _firestore.collection('users').doc(uid).get();
     final wordHistory = List<String>.from(userDoc.data()?['wordHistory'] ?? []);
-    final level = userDoc.data()?['level'] ?? 1;
+    final userLevel = userDoc.data()?['level'] ?? 1;
 
-    // ✅ 1~level까지 등급 조건 생성
-    final levelRange = List.generate(level, (i) => "${i + 1}등급");
-    final snapshot = await _firestore
+    // ✅ 1. 유저 레벨 기반 등급 리스트 생성 ("1등급", "2등급", ...)
+    final levelRange = List.generate(userLevel, (i) => "${i + 1}등급");
+
+    // ✅ 2. vocab4에서 등급 필터 + history 제외
+    final vocabSnap = await _firestore
         .collection('vocab4')
         .where('등급', whereIn: levelRange)
         .get();
 
-
-    final docs = snapshot.docs;
-    if (docs.isEmpty) throw Exception("해당 레벨에 맞는 단어가 없습니다.");
-
-    final remaining = docs.where((doc) {
+    final remaining = vocabSnap.docs.where((doc) {
       final word = doc.data()['어휘'];
       return !wordHistory.contains(word);
     }).toList();
 
-    if (remaining.isEmpty) throw Exception("모든 단어를 푸셨습니다!");
+    if (remaining.isEmpty) {
+      throw Exception("해당 레벨에 맞는 단어를 모두 푸셨습니다!");
+    }
 
-    final randomDoc = remaining[Random().nextInt(remaining.length)];
-    final data = randomDoc.data();
+    // ✅ 3. 랜덤 단어 선택
+    final selectedDoc = remaining[Random().nextInt(remaining.length)];
+    final vocabData = selectedDoc.data();
 
-    final word = data['어휘'];
-    final meanings = List<String>.from(data['의미']);
+    final word = vocabData['어휘'];
+    final meanings = List<String>.from(vocabData['의미']);
     final selectedMeaning = meanings[Random().nextInt(meanings.length)];
-    final partsOfSpeech = List<String>.from(data['품사']).join(', ');
-    final levelTag = data['등급'];
+    final partsOfSpeech = List<String>.from(vocabData['품사']).join(', ');
+    final levelTag = vocabData['등급'];
+
+    // ✅ 4. quizzes에 문제 있는지 확인
+    final exists = await isExist(word);
+
+    if (!exists) {
+      // GPT로 문제 생성 및 저장
+      final newQuiz = await generateQuestion({
+        '어휘': word,
+        '의미': selectedMeaning,
+        '품사': partsOfSpeech,
+        '등급': levelTag,
+      });
+      await saveQuiz(word, newQuiz);
+    }
 
     return {
       '어휘': word,
@@ -55,8 +70,6 @@ class QuizRepository {
       '등급': levelTag,
     };
   }
-
-
 
 
   // 선택한 단어로 만든 문제 데이터베이스가 존재하는지 판별하는 isExist 함수를 구현
@@ -194,10 +207,6 @@ class QuizRepository {
       'wordHistory': FieldValue.arrayUnion([word]),
     };
 
-    if (!hasSeenBefore || (hasSeenBefore && correctCount == 0)) {
-      updates['correctSolved'] = FieldValue.increment(1);
-    }
-
     // ✅ 경험치 차등 계산
     final currentExp = userDoc.data()?['experience'] ?? 0;
     final currentLevel = userDoc.data()?['level'] ?? 1;
@@ -235,13 +244,10 @@ class QuizRepository {
     await userRef.update(updates);
   }
 
-
-
   // 틀릴 시 통계 저장
   Future<void> updateStatsOnIncorrect(String uid, String word) async {
     final userRef = _firestore.collection('users').doc(uid);
     await userRef.update({
-      //'totalSolved': FieldValue.increment(1),
       'incorrectWords': FieldValue.arrayUnion([word]),
       'wordHistory': FieldValue.arrayUnion([word]),
       'reviewProgress.$word': 0, // 틀리면 다시 초기화
@@ -269,8 +275,6 @@ class QuizRepository {
       'correctSolved': FieldValue.increment(1),
     });
   }
-
-
 
   // 기록 초기화
   Future<void> resetUserStats(String uid) async {

@@ -20,7 +20,6 @@ class AuthRepository {
       "incorrectWords": [],
       "reviewProgress": {},
       "email": user.email,
-      "timeSpent": 0,
       "createdAt": FieldValue.serverTimestamp(),
     });
   }

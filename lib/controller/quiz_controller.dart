@@ -14,9 +14,10 @@ class QuizController {
     return await _service.getQuestion();
   }
 
-  Future<AnswerResult> checkAnswer(QuizQuestion question, String userInput) async {
-    return await _service.compareAnswer(question, userInput);
+  Future<AnswerResult> checkAnswer(QuizQuestion question, String userInput, {required bool hasAlreadySubmitted}) async {
+    return await _service.compareAnswer(question, userInput, hasAlreadySubmitted: hasAlreadySubmitted);
   }
+
 
   /// 다음 문제 요청 (generateQuiz와 동일하지만 명시적으로 구분)
   Future<QuizQuestion?> nextQuestion() async {
@@ -31,7 +32,6 @@ class QuizController {
     );
   }
 
-// TODO : 사용자는 답안을 제출 한 후, requestAnswer 함수를 통해 해당 답안과 일치하는지 판별하는 것을 구현 해야함
 }
 
 
