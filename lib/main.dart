@@ -30,6 +30,12 @@ import 'repository/quiz_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 자동회전 끔
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: "assets/config/.env");
   final String geminiApiKey = dotenv.env['geminiApiKey'] ?? "";
@@ -40,18 +46,20 @@ void main() async {
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocale()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(
-          create: (_) => OptionViewModel(QuizRepository(GeminiService(apiKey: geminiApiKey),)),
+          create:
+              (_) => OptionViewModel(
+                QuizRepository(GeminiService(apiKey: geminiApiKey)),
+              ),
         ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
         Provider(
-          create: (_) => QuizController(
-            QuizService(
-              QuizRepository(
-                GeminiService(apiKey: geminiApiKey),
+          create:
+              (_) => QuizController(
+                QuizService(
+                  QuizRepository(GeminiService(apiKey: geminiApiKey)),
+                ),
               ),
-            ),
-          ),
         ),
       ],
       child: const MyApp(),
@@ -67,10 +75,16 @@ class MyApp extends StatelessWidget {
 
     if (user == null) return const LoginPage();
 
-    final snapshot = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
     final nickname = snapshot.data()?['nickname'];
 
-    if (nickname == null || nickname == user.uid || nickname.toString().trim().isEmpty) {
+    if (nickname == null ||
+        nickname == user.uid ||
+        nickname.toString().trim().isEmpty) {
       return SetUserPage();
     }
     return const MainPage();
@@ -80,18 +94,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final audioProvider = Provider.of<AudioProvider>(context, listen: false);
+    final locale = provider.locale;
 
     return MaterialApp(
       title: 'LexiUp',
       themeMode: themeProvider.themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      locale: provider.locale,
-      supportedLocales: const [
-        Locale('en'),
-        Locale('ko'),
-      ],
+      theme: ThemeData.light().copyWith(
+        textTheme: ThemeData.light().textTheme.apply(
+          fontFamily: locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        textTheme: ThemeData.dark().textTheme.apply(
+          fontFamily: locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+        ),
+      ),
+
+      locale: locale,
+      supportedLocales: const [Locale('en'), Locale('ko')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -99,23 +119,26 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: Builder(
-          builder: (context) {
-            return FutureBuilder<Widget>(
-              future: _getStartPage(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                } else {
-                  return snapshot.data!;
-                }
-              },
-            );
-          }
+        builder: (context) {
+          return FutureBuilder<Widget>(
+            future: _getStartPage(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              } else {
+                return snapshot.data!;
+              }
+            },
+          );
+        },
       ),
     );
+
   }
+
+
 }
 
 class MainPage extends StatefulWidget {
@@ -143,10 +166,8 @@ class _MainPage extends State<MainPage> {
   Future<void> _loadLearningTime() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
     setState(() {
       final days = secs ~/ 86400;
@@ -160,19 +181,14 @@ class _MainPage extends State<MainPage> {
           "$days일",
           if (hours > 0) "${hours}시간",
           if (minutes > 0) "${minutes}분",
-          "$minutes분"
+          "$minutes분",
         ].join(' ');
       } else if (hours > 0) {
-        learningTime = [
-          "${hours}시간",
-          if (minutes > 0) "${minutes}분",
-        ].join(' ');
+        learningTime = ["${hours}시간", if (minutes > 0) "${minutes}분"].join(' ');
       } else {
         learningTime = "$minutes분";
       }
-
-    }
-    );
+    });
   }
 
   void _loadNickname() async {
@@ -186,16 +202,17 @@ class _MainPage extends State<MainPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
     final data = doc.data();
     if (data == null) return;
 
     final int correct = (data['correctSolved'] as int?) ?? 0;
-    final int total   = (data['totalSolved']   as int?) ?? 0;
-    final double pct  = total > 0 ? correct / total * 100 : 0;
+    final int total = (data['totalSolved'] as int?) ?? 0;
+    final double pct = total > 0 ? correct / total * 100 : 0;
 
     setState(() {
       accuracy = "${pct.toStringAsFixed(1)}%";
@@ -223,10 +240,11 @@ class _MainPage extends State<MainPage> {
           title: Text(nickname.isNotEmpty ? "$nickname님, 안녕하세요!" : "LexiUp"),
           leading: IconButton(
             icon: const Icon(Icons.menu),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => OptionPage()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OptionPage()),
+                ),
           ),
         ),
         body: Padding(
@@ -235,14 +253,28 @@ class _MainPage extends State<MainPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 환영합니다.
-              Text(local.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              Text(
+                local.title,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   //TODO : 학습 시간
-                  _DashboardCard(icon: Icons.access_time, label: "학습 시간", value: learningTime),
-                  _DashboardCard(icon: Icons.star, label: "정답률", value: accuracy),
+                  _DashboardCard(
+                    icon: Icons.access_time,
+                    label: "학습 시간",
+                    value: learningTime,
+                  ),
+                  _DashboardCard(
+                    icon: Icons.star,
+                    label: "정답률",
+                    value: accuracy,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -259,10 +291,12 @@ class _MainPage extends State<MainPage> {
                       await _loadStats();
                       await _loadLearningTime();
                     }
-
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
                     textStyle: const TextStyle(fontSize: 18),
                   ),
                 ),
@@ -280,7 +314,11 @@ class _DashboardCard extends StatelessWidget {
   final String label;
   final String value;
 
-  const _DashboardCard({required this.icon, required this.label, required this.value});
+  const _DashboardCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -295,9 +333,15 @@ class _DashboardCard extends StatelessWidget {
           children: [
             Icon(icon, size: 32),
             const SizedBox(height: 8),
-            Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 4),
-            Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
           ],
         ),
       ),
