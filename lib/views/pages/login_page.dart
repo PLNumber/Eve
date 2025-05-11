@@ -18,8 +18,8 @@ class LoginPage extends StatelessWidget {
           builder: (context, viewModel, child) {
             if (viewModel.isLoading) return const CircularProgressIndicator();
 
-            return ElevatedButton(
-              onPressed: () async {
+            return GestureDetector(
+              onTap: () async {
                 final userCredential = await viewModel.signInWithGoogle();
                 if (userCredential != null) {
                   final uid = userCredential.user?.uid;
@@ -34,7 +34,12 @@ class LoginPage extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(viewModel.errorMessage)));
                 }
               },
-              child: Text(AppLocalizations.of(context)!.google_login),
+              child: Image.asset(
+                'assets/images/google.png',
+                width: 200,
+                height: 50,
+                fit: BoxFit.contain,
+              ),
             );
           },
         ),
