@@ -210,40 +210,7 @@ class _QuizPageState extends State<QuizPage> {
               : Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: LinearProgressIndicator(
-                  value: _exp / _maxExp,
-                  backgroundColor: Colors.grey.shade300,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.indigoAccent),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: getDifficultyColor(quiz?.difficulty ?? 0),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(local.difficultyBadge(quiz?.difficulty ?? 0)),
-
-                    ),
-                    if (quiz?.isReview == true)
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade200,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(local.reviewBadge, style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                  ],
-                ),
-              ),
+              // 레벨 progress bar 생략
               const SizedBox(height: 12),
               Expanded(
                 child: Container(
@@ -268,14 +235,20 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          icon: const Icon(Icons.lightbulb_outline),
+                          tooltip: local.hint,
+                          onPressed: () => _showFeedbackDialog(quiz.hint),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
                       Row(
                         children: [
-                          ElevatedButton(
-                            onPressed: () => _showFeedbackDialog(quiz.hint),
-                            child: Text(local.hint),
-                          ),
-                          const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
                               controller: _answerCtrl,
@@ -287,40 +260,29 @@ class _QuizPageState extends State<QuizPage> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          ElevatedButton(
+                          IconButton(
+                            icon: const Icon(Icons.check_circle_outline),
+                            tooltip: local.confirm,
                             onPressed: () => _submitAnswer(_answerCtrl.text.trim()),
-                            child: Text(local.confirm),
                           ),
-                          // 다음 문제로 넘기기 버튼 (오답 제출 후에만 표시)
                           if (hasSubmitted && !isLoading)
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: ElevatedButton.icon(
-                                onPressed: () async {
-                                  final newQuiz = await controller.nextQuestion();
-                                  if (newQuiz != null) {
-                                    setState(() {
-                                      currentQuestion = newQuiz;
-                                      hasSubmitted = false;
-                                      _answerCtrl.clear();
-                                      answerHintText = '답 입력(Enter answer)';
-                                    });
-                                  } else {
-                                    setState(() {
-                                      errorMessage = local.quizErrorNext;
-                                    });
-                                  }
-                                },
-                                icon: const Icon(Icons.skip_next),
-                                label: Text(local.next_question),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey.shade300,
-                                  foregroundColor: Colors.black87,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
+                            IconButton(
+                              icon: const Icon(Icons.skip_next),
+                              tooltip: local.next_question,
+                              onPressed: () async {
+                                final newQuiz = await controller.nextQuestion();
+                                if (newQuiz != null) {
+                                  setState(() {
+                                    currentQuestion = newQuiz;
+                                    hasSubmitted = false;
+                                    _answerCtrl.clear();
+                                    answerHintText = '답 입력(Enter answer)';
+                                  });
+                                } else {
+                                  setState(() => errorMessage = local.quizErrorNext);
+                                }
+                              },
                             ),
-
                         ],
                       ),
                     ],
@@ -333,4 +295,5 @@ class _QuizPageState extends State<QuizPage> {
       ),
     );
   }
+
 }
