@@ -466,6 +466,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save & Start'**
   String get saveAndStart;
+
+  /// No description provided for @next_question.
+  ///
+  /// In en, this message translates to:
+  /// **'skip'**
+  String get next_question;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

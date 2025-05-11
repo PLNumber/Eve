@@ -21,10 +21,10 @@ class QuizRepository {
     final wordHistory = List<String>.from(userDoc.data()?['wordHistory'] ?? []);
     final userLevel = userDoc.data()?['level'] ?? 1;
 
-    // ✅ 1. 유저 레벨 기반 등급 리스트 생성 ("1등급", "2등급", ...)
-    final levelRange = List.generate(userLevel, (i) => "${i + 1}등급");
+    // ✅ 레벨 기반 등급 필터링
+    final levelRange = getGradeRangeFromLevel(userLevel);
 
-    // ✅ 2. vocab4에서 등급 필터 + history 제외
+    // ✅ vocab4에서 등급 + history 제외 필터
     final vocabSnap = await _firestore
         .collection('vocab4')
         .where('등급', whereIn: levelRange)
@@ -39,7 +39,7 @@ class QuizRepository {
       throw Exception("해당 레벨에 맞는 단어를 모두 푸셨습니다!");
     }
 
-    // ✅ 3. 랜덤 단어 선택
+    // ✅ 랜덤 단어 선택
     final selectedDoc = remaining[Random().nextInt(remaining.length)];
     final vocabData = selectedDoc.data();
 
@@ -49,11 +49,10 @@ class QuizRepository {
     final partsOfSpeech = List<String>.from(vocabData['품사']).join(', ');
     final levelTag = vocabData['등급'];
 
-    // ✅ 4. quizzes에 문제 있는지 확인
+    // ✅ 문제 존재 여부 확인 및 생성
     final exists = await isExist(word);
 
     if (!exists) {
-      // GPT로 문제 생성 및 저장
       final newQuiz = await generateQuestion({
         '어휘': word,
         '의미': selectedMeaning,
@@ -69,6 +68,15 @@ class QuizRepository {
       '품사': partsOfSpeech,
       '등급': levelTag,
     };
+  }
+
+  // 레벨에 따른 등급
+  List<String> getGradeRangeFromLevel(int level) {
+    if (level <= 9) return ["1등급"];
+    if (level <= 24) return ["1등급", "2등급"];
+    if (level <= 49) return ["1등급", "2등급", "3등급"];
+    if (level <= 74) return ["1등급", "2등급", "3등급", "4등급"];
+    return ["1등급", "2등급", "3등급", "4등급", "5등급"];
   }
 
 

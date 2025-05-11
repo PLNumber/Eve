@@ -165,5 +165,6 @@
   "saveAndStart": "Save & Start",
   "@saveAndStart": {
     "description": "Label for Save & Start button"
-  }
+  },
+  "next_question": "skip"
 }

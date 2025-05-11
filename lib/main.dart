@@ -165,11 +165,25 @@ class _MainPage extends State<MainPage> {
     _loadLearningTime();
   }
 
+  String getGradeMappingText() {
+    return '''
+레벨 1 ~ 9   : 1등급
+레벨 10 ~ 24 : 2등급
+레벨 25 ~ 49 : 3등급
+레벨 50 ~ 74 : 4등급
+레벨 75 ~ 100: 5등급
+''';
+  }
+
   Future<void> _loadUserInfo() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final doc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final doc =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
     final data = doc.data() ?? {};
 
     setState(() {
@@ -183,7 +197,11 @@ class _MainPage extends State<MainPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
     final data = doc.data();
     if (data == null) return;
 
@@ -199,7 +217,8 @@ class _MainPage extends State<MainPage> {
   Future<void> _loadLearningTime() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
     setState(() {
       final days = secs ~/ 86400;
@@ -252,10 +271,11 @@ class _MainPage extends State<MainPage> {
           title: Text(nickname.isNotEmpty ? "$nickname님, 환영합니다!" : "LexiUp"),
           leading: IconButton(
             icon: const Icon(Icons.menu),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => OptionPage()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OptionPage()),
+                ),
           ),
         ),
         body: Padding(
@@ -276,7 +296,9 @@ class _MainPage extends State<MainPage> {
               const SizedBox(height: 16),
               Card(
                 color: cardColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
@@ -309,8 +331,44 @@ class _MainPage extends State<MainPage> {
                         valueColor: AlwaysStoppedAnimation<Color>(accentColor),
                       ),
                       const SizedBox(height: 8),
-                      Text("레벨 $_level ($_exp / $_maxExp)",
-                          style: TextStyle(fontSize: 14, color: textColor)),
+                      Text(
+                        "레벨 $_level ($_exp / $_maxExp)",
+                        style: TextStyle(fontSize: 14, color: textColor),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.info_outline, size: 16, color: textColor),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (ctx) => AlertDialog(
+                                      title: const Text("레벨별 문제 등급 안내"),
+                                      content: Text(getGradeMappingText()),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text("닫기"),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            },
+
+                            child: Text(
+                              "내 등급 범위 보기",
+                              style: TextStyle(
+                                color: Colors.indigo,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -319,8 +377,16 @@ class _MainPage extends State<MainPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _DashboardCard(icon: Icons.access_time, label: "플레이 시간", value: learningTime),
-                  _DashboardCard(icon: Icons.star, label: "정답률", value: accuracy),
+                  _DashboardCard(
+                    icon: Icons.access_time,
+                    label: "플레이 시간",
+                    value: learningTime,
+                  ),
+                  _DashboardCard(
+                    icon: Icons.star,
+                    label: "정답률",
+                    value: accuracy,
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -329,7 +395,9 @@ class _MainPage extends State<MainPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: cardColor,
                   foregroundColor: textColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: const Text("복습할 단어 풀기 (추후 업데이트)"),
@@ -340,7 +408,9 @@ class _MainPage extends State<MainPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: cardColor,
                   foregroundColor: textColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: const Text("단어사전 (추후 업데이트)"),
@@ -358,7 +428,11 @@ class _DashboardCard extends StatelessWidget {
   final String label;
   final String value;
 
-  const _DashboardCard({required this.icon, required this.label, required this.value});
+  const _DashboardCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -378,9 +452,22 @@ class _DashboardCard extends StatelessWidget {
           children: [
             Icon(icon, size: 32, color: textColor),
             const SizedBox(height: 8),
-            Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(label, style: TextStyle(fontSize: 14, color: textColor?.withOpacity(0.7))),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: textColor?.withAlpha(178),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,0 +1,65 @@
+@startuml QuizSkipFeedbackFlow
+
+actor User
+participant "QuizPage (View)" as View
+participant "QuizController" as Controller
+participant "QuizService" as Service
+participant "QuizRepository" as Repository
+participant "Gemini API" as Gemini
+participant "Firebase" as DB
+
+== 퀴즈 시작 ==
+User -> View: 퀴즈 시작 버튼 클릭
+View -> Controller: generateQuiz()
+Controller -> Service: getQuestion()
+Service -> Firebase: 사용자 UID 확인
+alt 복습 차례
+  Service -> Repository: getRandomIncorrectWord(uid)
+  Repository -> Firebase: incorrectWords 조회
+  Repository -> Firebase: 퀴즈 데이터 조회
+  Service -> Controller: QuizQuestion (isReview=true)
+else 일반 문제
+  Service -> Repository: selectWord(uid)
+  Repository -> Firebase: vocab4 중 등급 및 history 필터
+  Repository -> Firebase: quizzes[word] 존재 확인
+  alt 문제 없음
+    Repository -> Gemini: generateQuizQuestion(word data)
+    Gemini --> Repository: JSON 문제 반환
+    Repository -> Firebase: 퀴즈 저장
+  end
+  Repository -> Firebase: quizzes[word] 데이터 불러오기
+  Service -> Controller: QuizQuestion (isReview=false)
+end
+Controller -> View: 문제 UI 표시
+
+== 사용자 입력 ==
+User -> View: 정답 입력 후 제출
+View -> Controller: checkAnswer(question, input)
+Controller -> Service: compareAnswer()
+
+alt 정답
+  Service -> Firebase: correctSolved +1, 경험치 업데이트
+  Service -> Firebase: reviewProgress 갱신
+  Controller -> View: "정답입니다" → 다음 문제 or 종료 선택
+else 오답
+  alt 오답이 distractors에 있음
+    Service -> Firebase: incorrectWords 등록
+    Controller -> View: 기존 피드백 제공
+  else 새로운 오답
+    Service -> Repository: generateFeedBack(answer, input)
+    Repository -> Gemini: 오답 피드백 요청
+    Gemini --> Repository: 피드백 반환
+    Repository -> Firebase: distractors/feedbacks 추가
+    Service -> Firebase: incorrectWords 등록
+    Controller -> View: 새 피드백 제공
+  end
+
+  alt 사용자가 재시도
+    User -> View: 새로운 입력 후 제출 → 위 로직 반복
+  else 사용자가 "넘기기" 클릭
+    View -> Controller: nextQuestion()
+    Controller -> Service: getQuestion() (다시 위로)
+  end
+end
+
+@enduml

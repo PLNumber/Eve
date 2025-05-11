@@ -163,5 +163,7 @@
   "saveAndStart": "저장하고 시작하기",
   "@saveAndStart": {
     "description": "저장 후 시작하기 버튼 레이블"
-  }
+  },
+
+  "next_question": "넘기기"
 }

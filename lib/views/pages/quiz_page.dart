@@ -291,6 +291,36 @@ class _QuizPageState extends State<QuizPage> {
                             onPressed: () => _submitAnswer(_answerCtrl.text.trim()),
                             child: Text(local.confirm),
                           ),
+                          // 다음 문제로 넘기기 버튼 (오답 제출 후에만 표시)
+                          if (hasSubmitted && !isLoading)
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final newQuiz = await controller.nextQuestion();
+                                  if (newQuiz != null) {
+                                    setState(() {
+                                      currentQuestion = newQuiz;
+                                      hasSubmitted = false;
+                                      _answerCtrl.clear();
+                                      answerHintText = '답 입력(Enter answer)';
+                                    });
+                                  } else {
+                                    setState(() {
+                                      errorMessage = local.quizErrorNext;
+                                    });
+                                  }
+                                },
+                                icon: const Icon(Icons.skip_next),
+                                label: Text(local.next_question),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade300,
+                                  foregroundColor: Colors.black87,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+
                         ],
                       ),
                     ],
