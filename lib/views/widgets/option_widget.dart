@@ -17,10 +17,7 @@ class OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      onTap: onTap,
-    );
+    return ListTile(title: Text(title), onTap: onTap);
   }
 }
 
@@ -34,78 +31,104 @@ class SoundDialog {
 
     showDialog(
       context: context,
-      builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        insetPadding: const EdgeInsets.all(24),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Consumer<AudioProvider>(
-            builder: (context, audio, _) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _dialogHeader(Icons.music_note, local.sound_settings, textColor),
-                  const SizedBox(height: 16),
-                  SwitchListTile(
-                    title: Text(local.sound_on, style: TextStyle(color: textColor)),
-                    value: audio.isPlaying,
-                    onChanged: (_) => audio.togglePlay(),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(local.select_music,
-                      style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
-                  const SizedBox(height: 6),
-                  DropdownButton<String>(
-                    value: audio.currentMusic,
-                    isExpanded: true,
-                    dropdownColor: isDark ? Colors.grey[900] : Colors.white,
-                    items: audio.musicList.map((music) {
-                      return DropdownMenuItem<String>(
-                        value: music,
-                        child: Text(music.replaceAll('.mp3', ''),
-                            style: TextStyle(color: textColor)),
-                      );
-                    }).toList(),
-                    onChanged: (newMusic) {
-                      if (newMusic != null) {
-                        audio.changeMusic(newMusic);
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Text("${local.volume_level}: ${(audio.volume * 10).round()} / 10",
-                      style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
-                  Slider(
-                    value: audio.volume,
-                    min: 0,
-                    max: 1,
-                    divisions: 10,
-                    onChanged: (value) => audio.setVolume(value),
-                    activeColor: Colors.indigo,
-                    inactiveColor: Colors.indigo.withOpacity(0.3),
-                  ),
-                  const SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.check, color: Colors.white),
-                      label: Text(local.close,
-                          style: const TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+      builder:
+          (_) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            insetPadding: const EdgeInsets.all(24),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Consumer<AudioProvider>(
+                builder: (context, audio, _) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _dialogHeader(
+                        Icons.music_note,
+                        local.sound_settings,
+                        textColor,
                       ),
-                    ),
-                  )
-                ],
-              );
-            },
+                      const SizedBox(height: 16),
+                      SwitchListTile(
+                        title: Text(
+                          local.sound_on,
+                          style: TextStyle(color: textColor),
+                        ),
+                        value: audio.isPlaying,
+                        onChanged: (_) => audio.togglePlay(),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        local.select_music,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      DropdownButton<String>(
+                        value: audio.currentMusic,
+                        isExpanded: true,
+                        dropdownColor: isDark ? Colors.grey[900] : Colors.white,
+                        items:
+                            audio.musicList.map((music) {
+                              return DropdownMenuItem<String>(
+                                value: music,
+                                child: Text(
+                                  music.replaceAll('.mp3', ''),
+                                  style: TextStyle(color: textColor),
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (newMusic) {
+                          if (newMusic != null) {
+                            audio.changeMusic(newMusic);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "${local.volume_level}: ${(audio.volume * 10).round()} / 10",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                        ),
+                      ),
+                      Slider(
+                        value: audio.volume,
+                        min: 0,
+                        max: 1,
+                        divisions: 10,
+                        onChanged: (value) => audio.setVolume(value),
+                        activeColor: Colors.indigo,
+                        inactiveColor: Colors.indigo.withOpacity(0.3),
+                      ),
+                      const SizedBox(height: 24),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.check, color: Colors.white),
+                          label: Text(
+                            local.close,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.indigo,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -116,7 +139,11 @@ class SoundDialog {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
       ],
     );
@@ -133,56 +160,67 @@ class LanguageDialog {
 
     showDialog(
       context: context,
-      builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        insetPadding: const EdgeInsets.all(24),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _dialogHeader(Icons.language, local.language_selection, textColor),
-              const SizedBox(height: 16),
-              _languageOption(
-                context,
-                icon: Icons.flag,
-                label: local.korean,
-                onTap: () {
-                  localeProvider.setLocale("ko");
-                  Navigator.pop(context);
-                },
-                textColor: textColor,
-              ),
-              const SizedBox(height: 12),
-              _languageOption(
-                context,
-                icon: Icons.flag_outlined,
-                label: local.english,
-                onTap: () {
-                  localeProvider.setLocale("en");
-                  Navigator.pop(context);
-                },
-                textColor: textColor,
-              ),
-              const SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  label: Text(local.close,
-                      style: const TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      builder:
+          (_) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            insetPadding: const EdgeInsets.all(24),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _dialogHeader(
+                    Icons.language,
+                    local.language_selection,
+                    textColor,
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  _languageOption(
+                    context,
+                    icon: Icons.flag,
+                    label: local.korean,
+                    onTap: () {
+                      localeProvider.setLocale("ko");
+                      Navigator.pop(context);
+                    },
+                    textColor: textColor,
+                  ),
+                  const SizedBox(height: 12),
+                  _languageOption(
+                    context,
+                    icon: Icons.flag_outlined,
+                    label: local.english,
+                    onTap: () {
+                      localeProvider.setLocale("en");
+                      Navigator.pop(context);
+                    },
+                    textColor: textColor,
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      label: Text(
+                        local.close,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -191,18 +229,25 @@ class LanguageDialog {
       children: [
         Icon(icon, color: Colors.indigo),
         const SizedBox(width: 8),
-        Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
       ],
     );
   }
 
   static Widget _languageOption(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required VoidCallback onTap,
-        required Color textColor,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required Color textColor,
+  }) {
     return InkWell(
       borderRadius: BorderRadius.circular(10),
       onTap: onTap,
@@ -234,56 +279,67 @@ class BackgroundDialog {
 
     showDialog(
       context: context,
-      builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        insetPadding: const EdgeInsets.all(24),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _dialogHeader(Icons.palette, local.change_background, textColor),
-              const SizedBox(height: 16),
-              _themeOption(
-                context,
-                icon: Icons.wb_sunny_outlined,
-                label: local.default_background,
-                onTap: () {
-                  themeProvider.setTheme(ThemeMode.light);
-                  Navigator.pop(context);
-                },
-                textColor: textColor,
-              ),
-              const SizedBox(height: 12),
-              _themeOption(
-                context,
-                icon: Icons.nightlight_round,
-                label: local.dark_background,
-                onTap: () {
-                  themeProvider.setTheme(ThemeMode.dark);
-                  Navigator.pop(context);
-                },
-                textColor: textColor,
-              ),
-              const SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  label: Text(local.close,
-                      style: const TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      builder:
+          (_) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            insetPadding: const EdgeInsets.all(24),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _dialogHeader(
+                    Icons.palette,
+                    local.change_background,
+                    textColor,
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  _themeOption(
+                    context,
+                    icon: Icons.wb_sunny_outlined,
+                    label: local.default_background,
+                    onTap: () {
+                      themeProvider.setTheme(ThemeMode.light);
+                      Navigator.pop(context);
+                    },
+                    textColor: textColor,
+                  ),
+                  const SizedBox(height: 12),
+                  _themeOption(
+                    context,
+                    icon: Icons.nightlight_round,
+                    label: local.dark_background,
+                    onTap: () {
+                      themeProvider.setTheme(ThemeMode.dark);
+                      Navigator.pop(context);
+                    },
+                    textColor: textColor,
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      label: Text(
+                        local.close,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -294,19 +350,23 @@ class BackgroundDialog {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
       ],
     );
   }
 
   static Widget _themeOption(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required VoidCallback onTap,
-        required Color textColor,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required Color textColor,
+  }) {
     return InkWell(
       borderRadius: BorderRadius.circular(10),
       onTap: onTap,
@@ -352,87 +412,116 @@ class NicknameDialog {
 
     showDialog(
       context: context,
-      builder: (dialogContext) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        insetPadding: const EdgeInsets.all(24),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _dialogHeader(Icons.person, local.change_nickname, textColor),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _controller,
-                    style: TextStyle(color: textColor),
-                    decoration: InputDecoration(
-                      hintText: local.nickname_placeholder,
-                      hintStyle: TextStyle(color: textColor.withOpacity(0.5)),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      prefixIcon: const Icon(Icons.edit),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton.icon(
-                    onPressed: () => checkNickname(dialogContext),
-                    icon: const Icon(Icons.search, color: Colors.white),
-                    label: Text(local.check_duplicate,
-                        style: const TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (message.isNotEmpty)
-                    Text(
-                      message,
-                      style: TextStyle(
-                        color: isAvailable == true ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+      builder:
+          (dialogContext) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            insetPadding: const EdgeInsets.all(24),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextButton.icon(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(Icons.cancel, color: textColor),
-                        label: Text(local.cancel, style: TextStyle(color: textColor)),
+                      _dialogHeader(
+                        Icons.person,
+                        local.change_nickname,
+                        textColor,
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          final nickname = _controller.text.trim();
-                          if (isAvailable != true) {
-                            showSavedSnackBar(context, message: local.nickname_check_prompt);
-                            return;
-                          }
-
-                          await viewModel.updateNickname(nickname);
-                          Navigator.pop(context);
-                          showSavedSnackBar(context, message: local.nickname_success);
-                        },
-                        icon: const Icon(Icons.check, color: Colors.white),
-                        label: Text(local.confirm,
-                            style: const TextStyle(color: Colors.white)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.indigo,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _controller,
+                        style: TextStyle(color: textColor),
+                        decoration: InputDecoration(
+                          hintText: local.nickname_placeholder,
+                          hintStyle: TextStyle(
+                            color: textColor.withOpacity(0.5),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          prefixIcon: const Icon(Icons.edit),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: () => checkNickname(dialogContext),
+                        icon: const Icon(Icons.search, color: Colors.white),
+                        label: Text(
+                          local.check_duplicate,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.indigo,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      if (message.isNotEmpty)
+                        Text(
+                          message,
+                          style: TextStyle(
+                            color:
+                                isAvailable == true ? Colors.green : Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton.icon(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.cancel, color: textColor),
+                            label: Text(
+                              local.cancel,
+                              style: TextStyle(color: textColor),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              final nickname = _controller.text.trim();
+                              if (isAvailable != true) {
+                                showSavedSnackBar(
+                                  context,
+                                  message: local.nickname_check_prompt,
+                                );
+                                return;
+                              }
+
+                              await viewModel.updateNickname(nickname);
+                              Navigator.pop(context);
+                              showSavedSnackBar(
+                                context,
+                                message: local.nickname_success,
+                              );
+                            },
+                            icon: const Icon(Icons.check, color: Colors.white),
+                            label: Text(
+                              local.confirm,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.indigo,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
-                  )
-                ],
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -443,10 +532,13 @@ class NicknameDialog {
         const SizedBox(width: 8),
         Text(
           title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
       ],
     );
   }
 }
-

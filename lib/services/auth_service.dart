@@ -19,7 +19,8 @@ class AuthService {
     }
 
     // 2. 구글 인증 정보 획득
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // 3. Firebase 자격증명 생성
     final credential = GoogleAuthProvider.credential(
@@ -54,9 +55,7 @@ class AuthService {
       });
     } else {
       // 기존 사용자: 마지막 로그인 시간만 갱신
-      await userDoc.update({
-        "lastLogin": FieldValue.serverTimestamp(),
-      });
+      await userDoc.update({"lastLogin": FieldValue.serverTimestamp()});
     }
 
     return userCredential;

@@ -23,15 +23,29 @@ class LoginPage extends StatelessWidget {
                 final userCredential = await viewModel.signInWithGoogle();
                 if (userCredential != null) {
                   final uid = userCredential.user?.uid;
-                  final userDoc = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+                  final userDoc =
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(uid)
+                          .get();
                   final nickname = userDoc.data()?['nickname'];
-                  if (nickname == null || nickname == uid || nickname.toString().trim().isEmpty) {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SetUserPage()));
+                  if (nickname == null ||
+                      nickname == uid ||
+                      nickname.toString().trim().isEmpty) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => SetUserPage()),
+                    );
                   } else {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainPage()));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MainPage()),
+                    );
                   }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(viewModel.errorMessage)));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(viewModel.errorMessage)),
+                  );
                 }
               },
               child: Image.asset(

@@ -9,9 +9,9 @@ class GeminiService {
   GeminiService({required this.apiKey});
 
   Future<QuizQuestion?> generateQuizQuestion(
-      Map<String, dynamic> vocabData,
-      String promptTemplate,
-      ) async {
+    Map<String, dynamic> vocabData,
+    String promptTemplate,
+  ) async {
     final word = vocabData['어휘'];
     final meaning = vocabData['의미'];
     final pos = vocabData['품사'];
@@ -24,7 +24,7 @@ class GeminiService {
         .replaceAll('{등급}', level);
 
     final url = Uri.parse(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$apiKey"
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$apiKey",
     );
 
     final headers = {'Content-Type': 'application/json'};
@@ -32,10 +32,10 @@ class GeminiService {
       "contents": [
         {
           "parts": [
-            {"text": prompt}
-          ]
-        }
-      ]
+            {"text": prompt},
+          ],
+        },
+      ],
     });
 
     try {
@@ -48,7 +48,8 @@ class GeminiService {
       }
 
       final decoded = jsonDecode(response.body);
-      String? text = decoded["candidates"]?[0]?["content"]?["parts"]?[0]?["text"];
+      String? text =
+          decoded["candidates"]?[0]?["content"]?["parts"]?[0]?["text"];
 
       // ✅ 코드 블럭 제거
       if (text != null && text.startsWith("```json")) {
@@ -70,11 +71,10 @@ class GeminiService {
         answer: quizJson['answer'] ?? "",
         hint: quizJson['hint'] ?? "힌트 없음",
         distractors: List<String>.from(quizJson['distractors'] ?? []),
-        feedbacks: List<String>.from(quizJson['feedbacks'] ?? []), // ✅ 복수형 피드백
+        feedbacks: List<String>.from(quizJson['feedbacks'] ?? []),
+        // ✅ 복수형 피드백
         difficulty: int.tryParse(quizJson['difficulty']?.toString() ?? "") ?? 3,
       );
-
-
     } catch (e) {
       print("❗ Gemini 응답 파싱 에러: $e");
       return null;

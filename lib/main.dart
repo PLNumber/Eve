@@ -463,10 +463,7 @@ class _DashboardCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                color: textColor?.withAlpha(178),
-              ),
+              style: TextStyle(fontSize: 14, color: textColor?.withAlpha(178)),
             ),
           ],
         ),

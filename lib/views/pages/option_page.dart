@@ -8,7 +8,6 @@ import '../../l10n/gen_l10n/app_localizations.dart';
 import '../widgets/option_widget.dart';
 import '../widgets/nav_util.dart';
 
-
 class OptionPage extends StatefulWidget {
   @override
   State<OptionPage> createState() => _OptionPageState();
@@ -31,7 +30,11 @@ class _OptionPageState extends State<OptionPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final doc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final doc =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
     final data = doc.data() ?? {};
 
     final local = AppLocalizations.of(context)!;
@@ -44,9 +47,9 @@ class _OptionPageState extends State<OptionPage> {
 
     if (mounted && data['level'] != null && data['level'] > _level) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(local.levelUpMessage)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(local.levelUpMessage)));
       });
     }
   }
@@ -58,7 +61,10 @@ class _OptionPageState extends State<OptionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final optionViewModel = Provider.of<OptionViewModel>(context, listen: false);
+    final optionViewModel = Provider.of<OptionViewModel>(
+      context,
+      listen: false,
+    );
     final local = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -85,18 +91,30 @@ class _OptionPageState extends State<OptionPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                _buildOptionCard(Icons.music_note, local.sound, () => SoundDialog.show(context), textColor),
+                _buildOptionCard(
+                  Icons.music_note,
+                  local.sound,
+                  () => SoundDialog.show(context),
+                  textColor,
+                ),
                 _buildOptionCard(Icons.restore, local.reset_history, () async {
                   final confirm = await showDialog<bool>(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text(local.resetDialogTitle),
-                      content: Text(local.resetDialogContent),
-                      actions: [
-                        TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(local.cancel)),
-                        TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(local.reset_history)),
-                      ],
-                    ),
+                    builder:
+                        (ctx) => AlertDialog(
+                          title: Text(local.resetDialogTitle),
+                          content: Text(local.resetDialogContent),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: Text(local.cancel),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: Text(local.reset_history),
+                            ),
+                          ],
+                        ),
                   );
 
                   if (confirm == true && uid != null) {
@@ -107,9 +125,24 @@ class _OptionPageState extends State<OptionPage> {
                     _loadUserInfo();
                   }
                 }, textColor),
-                _buildOptionCard(Icons.brightness_6, local.change_background, () => BackgroundDialog.show(context), textColor),
-                _buildOptionCard(Icons.language, local.change_language, () => LanguageDialog.show(context), textColor),
-                _buildOptionCard(Icons.person, local.nickname_change, () => NicknameDialog.show(context), textColor),
+                _buildOptionCard(
+                  Icons.brightness_6,
+                  local.change_background,
+                  () => BackgroundDialog.show(context),
+                  textColor,
+                ),
+                _buildOptionCard(
+                  Icons.language,
+                  local.change_language,
+                  () => LanguageDialog.show(context),
+                  textColor,
+                ),
+                _buildOptionCard(
+                  Icons.person,
+                  local.nickname_change,
+                  () => NicknameDialog.show(context),
+                  textColor,
+                ),
                 _buildOptionCard(Icons.logout, local.logout, () {
                   showConfirmDialog(
                     context,
@@ -141,12 +174,19 @@ class _OptionPageState extends State<OptionPage> {
         const SizedBox(height: 12),
         Text(
           _nickname,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
         const SizedBox(height: 4),
         Text(_email, style: TextStyle(color: subTextColor)),
         const SizedBox(height: 8),
-        Text(local.levelLabel(_level), style: TextStyle(fontSize: 14, color: textColor)),
+        Text(
+          local.levelLabel(_level),
+          style: TextStyle(fontSize: 14, color: textColor),
+        ),
       ],
     );
   }
@@ -158,7 +198,10 @@ class _OptionPageState extends State<OptionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(local.expProgress(_exp, _maxExp), style: const TextStyle(fontSize: 14)),
+          Text(
+            local.expProgress(_exp, _maxExp),
+            style: const TextStyle(fontSize: 14),
+          ),
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: _exp / _maxExp,
@@ -171,7 +214,12 @@ class _OptionPageState extends State<OptionPage> {
     );
   }
 
-  Widget _buildOptionCard(IconData icon, String title, VoidCallback onTap, Color textColor) {
+  Widget _buildOptionCard(
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+    Color textColor,
+  ) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(vertical: 8),

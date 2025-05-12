@@ -18,7 +18,10 @@ class ThemeProvider with ChangeNotifier {
   //배경 설정하기
   Future<void> setTheme(ThemeMode mode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('theme_mode', mode == ThemeMode.dark ? 'dark' : 'light');
+    await prefs.setString(
+      'theme_mode',
+      mode == ThemeMode.dark ? 'dark' : 'light',
+    );
     _themeMode = mode;
     notifyListeners();
   }

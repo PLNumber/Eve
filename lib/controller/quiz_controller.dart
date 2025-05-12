@@ -7,6 +7,7 @@ import '../services/quiz_service.dart';
 /// viewModel 없이 Provider를 안 쓰고 직접 컨트롤러로 구성하고 싶을 경우 사용 가능
 class QuizController {
   final QuizService _service;
+
   QuizController(this._service);
 
   /// 문제를 생성하는 함수
@@ -14,10 +15,17 @@ class QuizController {
     return await _service.getQuestion();
   }
 
-  Future<AnswerResult> checkAnswer(QuizQuestion question, String userInput, {required bool hasAlreadySubmitted}) async {
-    return await _service.compareAnswer(question, userInput, hasAlreadySubmitted: hasAlreadySubmitted);
+  Future<AnswerResult> checkAnswer(
+    QuizQuestion question,
+    String userInput, {
+    required bool hasAlreadySubmitted,
+  }) async {
+    return await _service.compareAnswer(
+      question,
+      userInput,
+      hasAlreadySubmitted: hasAlreadySubmitted,
+    );
   }
-
 
   /// 다음 문제 요청 (generateQuiz와 동일하지만 명시적으로 구분)
   Future<QuizQuestion?> nextQuestion() async {
@@ -31,9 +39,7 @@ class QuizController {
       MaterialPageRoute(builder: (_) => const MainPage()),
     );
   }
-
 }
-
 
 class AnswerResult {
   final bool isCorrect;

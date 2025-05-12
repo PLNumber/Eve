@@ -18,8 +18,11 @@ class AudioProvider with ChangeNotifier {
   String _currentMusic = 'Vivaldi_Spring.mp3';
 
   bool get isPlaying => _isPlaying;
+
   double get volume => _volume;
+
   String get currentMusic => _currentMusic;
+
   List<String> get musicList => _musicList;
 
   AudioProvider() {
@@ -33,7 +36,9 @@ class AudioProvider with ChangeNotifier {
     _volume = prefs.getDouble('sound_volume') ?? 0.5;
     _currentMusic = prefs.getString('music_filename') ?? 'Vivaldi_Spring.mp3';
 
-    print("🎧 초기화: isPlaying=$_isPlaying, volume=$_volume, currentMusic=$_currentMusic");
+    print(
+      "🎧 초기화: isPlaying=$_isPlaying, volume=$_volume, currentMusic=$_currentMusic",
+    );
 
     try {
       await _setMusic(_currentMusic);

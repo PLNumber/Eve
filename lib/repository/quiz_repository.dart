@@ -25,15 +25,17 @@ class QuizRepository {
     final levelRange = getGradeRangeFromLevel(userLevel);
 
     // ✅ vocab4에서 등급 + history 제외 필터
-    final vocabSnap = await _firestore
-        .collection('vocab')
-        .where('등급', whereIn: levelRange)
-        .get();
+    final vocabSnap =
+        await _firestore
+            .collection('vocab')
+            .where('등급', whereIn: levelRange)
+            .get();
 
-    final remaining = vocabSnap.docs.where((doc) {
-      final word = doc.data()['어휘'];
-      return !wordHistory.contains(word);
-    }).toList();
+    final remaining =
+        vocabSnap.docs.where((doc) {
+          final word = doc.data()['어휘'];
+          return !wordHistory.contains(word);
+        }).toList();
 
     if (remaining.isEmpty) {
       throw Exception("해당 레벨에 맞는 단어를 모두 푸셨습니다!");
@@ -78,7 +80,6 @@ class QuizRepository {
     if (level <= 74) return ["1등급", "2등급", "3등급", "4등급"];
     return ["1등급", "2등급", "3등급", "4등급", "5등급"];
   }
-
 
   // 선택한 단어로 만든 문제 데이터베이스가 존재하는지 판별하는 isExist 함수를 구현
   // ✅ 2. 문제 존재 여부 확인
@@ -170,7 +171,6 @@ class QuizRepository {
 {"feedback": "입력한 단어는 '기계적 장치'를 의미하지만, 이 문장은 감정을 표현하는 상황과 맞지 않습니다."}
 ''';
 
-
     final url = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiService.apiKey}',
     );
@@ -180,10 +180,10 @@ class QuizRepository {
       "contents": [
         {
           "parts": [
-            {"text": prompt}
-          ]
-        }
-      ]
+            {"text": prompt},
+          ],
+        },
+      ],
     });
 
     try {
@@ -192,9 +192,12 @@ class QuizRepository {
         throw Exception("Gemini 응답 실패: ${response.statusCode}");
       }
 
-      String raw = jsonDecode(response.body)["candidates"][0]["content"]["parts"][0]["text"]
-          .replaceAll(RegExp(r'```json|```'), '')
-          .trim();
+      String raw =
+          jsonDecode(
+                response.body,
+              )["candidates"][0]["content"]["parts"][0]["text"]
+              .replaceAll(RegExp(r'```json|```'), '')
+              .trim();
 
       final parsed = jsonDecode(raw);
       return parsed['feedback'] ?? "피드백 생성에 실패했습니다.";
@@ -204,7 +207,11 @@ class QuizRepository {
   }
 
   // 피드백 저장하기
-  Future<void> appendFeedback(String word, String input, String feedback) async {
+  Future<void> appendFeedback(
+    String word,
+    String input,
+    String feedback,
+  ) async {
     await _firestore.collection('quizzes').doc(word).update({
       'distractors': FieldValue.arrayUnion([input]),
       'feedbacks': FieldValue.arrayUnion([feedback]),
@@ -212,11 +219,17 @@ class QuizRepository {
   }
 
   // 맞출시 통계 저장
-  Future<void> updateStatsOnCorrect(String uid, String word, int difficulty) async {
+  Future<void> updateStatsOnCorrect(
+    String uid,
+    String word,
+    int difficulty,
+  ) async {
     final userRef = _firestore.collection('users').doc(uid);
     final userDoc = await userRef.get();
 
-    final reviewMap = Map<String, dynamic>.from(userDoc.data()?['reviewProgress'] ?? {});
+    final reviewMap = Map<String, dynamic>.from(
+      userDoc.data()?['reviewProgress'] ?? {},
+    );
     final hasSeenBefore = reviewMap.containsKey(word);
     final correctCount = reviewMap[word] ?? 0;
 
@@ -274,7 +287,9 @@ class QuizRepository {
   // 복습문제 가져오기
   Future<String?> getRandomIncorrectWord(String uid) async {
     final userDoc = await _firestore.collection('users').doc(uid).get();
-    final incorrect = List<String>.from(userDoc.data()?['incorrectWords'] ?? []);
+    final incorrect = List<String>.from(
+      userDoc.data()?['incorrectWords'] ?? [],
+    );
     if (incorrect.isEmpty) return null;
 
     final randomWord = incorrect[Random().nextInt(incorrect.length)];
@@ -307,11 +322,11 @@ class QuizRepository {
 
   /*================================================================================*/
 
-  //TODO : 해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x
+  //해당 문제의 정답을 가져 오는 함수인 getAnswer 함수를 구현 해야함  x
 
   //오답 일 경우, 해당 하는 정답의 피드백을 불러오는 requestFeedBack 함수를 구현 해야함
 
   //만약 해당하는 오답의 피드백이 없을 경우 해당하는 오답의 피드백을 생성하는 generateFeedBack 함수를 구현해야함 (아니면 공용 피드백을 호출하는 방법도 괜찮을듯 함)
 
-  //TODO : 사용자의 정보를 변경하는 changeStat 함수를 구현 해야함
+  //사용자의 정보를 변경하는 changeStat 함수를 구현 해야함
 }
