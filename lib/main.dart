@@ -419,17 +419,24 @@ class _MainPage extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildFeatureButton("오답 노트", Icons.edit_note, onTap: () {
-                            // TODO: 오답 노트 페이지 이동
+                            // TODO: 오답 노트 페이지 이동 
+                            /*
+                            * 틀린 단어의 목록을 보여주고 해당 리스트에서 단어를 탭하거나 누르면 해당 단어의 뜻을 보여주게 하는 것으로 표현하는 것이 나을 것
+                            * */
                           }),
                           _buildFeatureButton("단어 사전", Icons.menu_book, onTap: () {
                             // TODO: 단어 사전 페이지 이동
+                            /*
+                            * 네이버 사전 api 이나 우리말 샘 api를 사용하여 단어를 검색하게 하기
+                            *  아니면 그냥 네이버 사전으로 접속하게 하여 검색유도하기 (이건 날먹인거 같아서 2차적으로 고민을 해야할 듯)
+                            * */
                           }),
                         ],
                       ),
 
-                      // 달력
+                      // 출석 달력
                       SizedBox(height: 20),
-                      WeeklyAttendancePreview(), // 🔥 일주일 출석만 보여줌
+                      WeeklyAttendancePreview(), // 일주일 출석만 보여줌
                       SizedBox(height: 20),
                     ],
                   ),
@@ -443,6 +450,7 @@ class _MainPage extends State<MainPage> {
   }
 }
 
+// 위젯
 Widget _buildFeatureButton(String title, IconData icon, {required VoidCallback onTap}) {
   return GestureDetector(
     onTap: onTap,
