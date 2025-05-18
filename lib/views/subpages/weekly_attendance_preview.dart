@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'attendance_calendar.dart'; // 전체 달력
 import 'dart:async';
+
+import 'attendance_calendar.dart';
 
 class WeeklyAttendancePreview extends StatefulWidget {
   @override
