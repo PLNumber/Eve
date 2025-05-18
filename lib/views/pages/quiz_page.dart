@@ -17,6 +17,8 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  late final FocusNode _answerFocusNode;
+
   late final QuizController controller;
   QuizQuestion? currentQuestion;
   bool isLoading = false;
@@ -36,6 +38,18 @@ class _QuizPageState extends State<QuizPage> {
     _quizStartTime = DateTime.now();
     _loadQuiz();
     _loadUserLevel();
+    _answerFocusNode = FocusNode();                   // ⚡ 추가
+    // 위젯 빌드 완료 후에 포커스 요청
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _answerFocusNode.requestFocus();
+      SystemChannels.textInput.invokeMethod('TextInput.show'); // 키보드 강제 표시
+    });
+  }
+  @override
+  void dispose() {
+    _answerFocusNode.dispose();                       // ⚡ 추가
+    _answerCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _loadUserLevel() async {
@@ -329,6 +343,8 @@ class _QuizPageState extends State<QuizPage> {
                                   Expanded(
                                     child: TextField(
                                       controller: _answerCtrl,
+                                      focusNode: _answerFocusNode,//
+                                      autofocus: true,//
                                       decoration: InputDecoration(
                                         hintText: answerHintText,
                                         border: OutlineInputBorder(
