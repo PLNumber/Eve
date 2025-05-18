@@ -20,9 +20,10 @@ class _SetUserPage extends State<SetUserPage> {
 
   bool _validateNickname(String nickname) {
     final regex = RegExp(r'^[가-힣a-zA-Z0-9]+$'); // 한글, 영문, 숫자만 허용
-    return regex.hasMatch(nickname) && nickname.length >= 2 && nickname.length <= 10;
+    return regex.hasMatch(nickname) &&
+        nickname.length >= 2 &&
+        nickname.length <= 10;
   }
-
 
   Future<void> _checkNicknameDuplicate() async {
     final local = AppLocalizations.of(context)!;
@@ -36,20 +37,21 @@ class _SetUserPage extends State<SetUserPage> {
       return;
     }
 
-    final query = await FirebaseFirestore.instance
-        .collection('users')
-        .where('nickname', isEqualTo: inputName)
-        .get();
+    final query =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .where('nickname', isEqualTo: inputName)
+            .get();
 
     final currentUid = FirebaseAuth.instance.currentUser?.uid;
     final isTaken = query.docs.any((doc) => doc.id != currentUid);
 
     setState(() {
       _isDuplicate = isTaken;
-      _checkMessage = isTaken ? local.nicknameDuplicateExists : local.nicknameAvailable;
+      _checkMessage =
+          isTaken ? local.nicknameDuplicateExists : local.nicknameAvailable;
     });
   }
-
 
   Future<void> _saveNickname() async {
     final local = AppLocalizations.of(context)!;
@@ -105,7 +107,11 @@ class _SetUserPage extends State<SetUserPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 60),
-              Text(local.promptEnterNickname, style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
+              Text(
+                local.promptEnterNickname,
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               TextField(
                 controller: _nicknameController,
@@ -132,14 +138,13 @@ class _SetUserPage extends State<SetUserPage> {
               _isSaving
                   ? Center(child: CircularProgressIndicator())
                   : ElevatedButton(
-                onPressed: _saveNickname,
-                child: Text(local.saveAndStart),
-              ),
+                    onPressed: _saveNickname,
+                    child: Text(local.saveAndStart),
+                  ),
               const SizedBox(height: 40),
             ],
           ),
         ),
-
       ),
     );
   }

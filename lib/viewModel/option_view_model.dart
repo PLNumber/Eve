@@ -31,10 +31,11 @@ class OptionViewModel extends ChangeNotifier {
     final isValid = RegExp(r'^[가-힣a-zA-Z0-9]{2,10}$').hasMatch(nickname);
     if (!isValid) return "닉네임은 2~10자, 한글/영문/숫자만 가능합니다.";
 
-    final query = await FirebaseFirestore.instance
-        .collection('users')
-        .where('nickname', isEqualTo: nickname)
-        .get();
+    final query =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .where('nickname', isEqualTo: nickname)
+            .get();
 
     final currentUid = FirebaseAuth.instance.currentUser?.uid;
     final isTaken = query.docs.any((doc) => doc.id != currentUid);

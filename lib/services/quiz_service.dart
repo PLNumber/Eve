@@ -56,13 +56,12 @@ class QuizService {
     );
   }
 
-
   //compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수
   Future<AnswerResult> compareAnswer(
-      QuizQuestion question,
-      String userInput,
-      {required bool hasAlreadySubmitted}
-      ) async {
+    QuizQuestion question,
+    String userInput, {
+    required bool hasAlreadySubmitted,
+  }) async {
     final isCorrect = userInput == question.answer;
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -75,7 +74,11 @@ class QuizService {
       // 정답은 반드시 hasAlreadySubmitted가 false일 때만 기록
       if (!hasAlreadySubmitted && uid != null) {
         await _repository.incrementCorrectSolved(uid);
-        await _repository.updateStatsOnCorrect(uid, question.answer, question.difficulty);
+        await _repository.updateStatsOnCorrect(
+          uid,
+          question.answer,
+          question.difficulty,
+        );
       }
 
       return AnswerResult(isCorrect: true);
@@ -97,7 +100,10 @@ class QuizService {
       return AnswerResult(isCorrect: false, feedback: question.feedbacks[idx]);
     }
 
-    final newFeedback = await _repository.generateFeedBack(question.answer, userInput);
+    final newFeedback = await _repository.generateFeedBack(
+      question.answer,
+      userInput,
+    );
     await _repository.appendFeedback(question.answer, userInput, newFeedback);
 
     if (!hasAlreadySubmitted && uid != null) {
@@ -106,8 +112,6 @@ class QuizService {
 
     return AnswerResult(isCorrect: false, feedback: newFeedback);
   }
-
-
 
   bool isClearlyInvalidWord(String input) {
     for (int i = 0; i < input.length; i++) {

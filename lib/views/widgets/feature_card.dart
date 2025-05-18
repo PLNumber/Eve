@@ -36,9 +36,10 @@ class FeatureCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black, // 다크 모드에 따라 색상 변경
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black, // 다크 모드에 따라 색상 변경
               ),
               textAlign: TextAlign.center,
             ),
