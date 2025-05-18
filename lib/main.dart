@@ -13,7 +13,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import 'controller/attendance_calendar.dart';
 import 'controller/quiz_controller.dart';
+import 'controller/weekly_attendance_preview.dart';
 import 'viewModel/option_view_model.dart';
 import 'firebase_options.dart';
 import 'l10n/gen_l10n/app_localizations.dart';
@@ -425,6 +427,11 @@ class _MainPage extends State<MainPage> {
                           }),
                         ],
                       ),
+
+                      // 달력
+                      SizedBox(height: 20),
+                      WeeklyAttendancePreview(), // 🔥 일주일 출석만 보여줌
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
