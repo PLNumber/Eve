@@ -1,4 +1,4 @@
-// ✅ lib/main.dart (Fitness UI 스타일 적용된 MainPage 포함)
+//lib/main.dart (Fitness UI 스타일 적용된 MainPage 포함)
 import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'controller/quiz_controller.dart';
 import 'viewModel/option_view_model.dart';
@@ -148,14 +149,15 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  String nickname = "";
-  String accuracy = "0%";
+  String nickname = "사용자";
+  String accuracy = "0.0%";
   String learningTime = "0분";
+  int totalSolved = 0;
+  int correctSolved = 0;
   int _level = 1;
   int _exp = 0;
   final int _maxExp = 100;
-
-  final AuthService _authService = AuthService();
+  bool _notificationsEnabled = true;
 
   @override
   void initState() {
@@ -165,27 +167,15 @@ class _MainPage extends State<MainPage> {
     _loadLearningTime();
   }
 
-  String getGradeMappingText() {
-    return '''
-레벨 1 ~ 9   : 1등급
-레벨 10 ~ 24 : 2등급
-레벨 25 ~ 49 : 3등급
-레벨 50 ~ 74 : 4등급
-레벨 75 ~ 100: 5등급
-''';
-  }
-
   Future<void> _loadUserInfo() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-
     final doc =
         await FirebaseFirestore.instance
             .collection("users")
             .doc(user.uid)
             .get();
     final data = doc.data() ?? {};
-
     setState(() {
       nickname = data['nickname'] ?? "닉네임 없음";
       _level = data['level'] ?? 1;
@@ -196,7 +186,6 @@ class _MainPage extends State<MainPage> {
   Future<void> _loadStats() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-
     final doc =
         await FirebaseFirestore.instance
             .collection('users')
@@ -204,11 +193,9 @@ class _MainPage extends State<MainPage> {
             .get();
     final data = doc.data();
     if (data == null) return;
-
-    final int correct = (data['correctSolved'] as int?) ?? 0;
-    final int total = (data['totalSolved'] as int?) ?? 0;
-    final double pct = total > 0 ? correct / total * 100 : 0;
-
+    correctSolved = (data['correctSolved'] as int?) ?? 0;
+    totalSolved = (data['totalSolved'] as int?) ?? 0;
+    final double pct = totalSolved > 0 ? correctSolved / totalSolved * 100 : 0;
     setState(() {
       accuracy = "${pct.toStringAsFixed(1)}%";
     });
@@ -226,7 +213,6 @@ class _MainPage extends State<MainPage> {
       final hours = remAfterDays ~/ 3600;
       final remAfterHours = remAfterDays % 3600;
       final minutes = remAfterHours ~/ 60;
-
       if (days > 0) {
         learningTime = [
           "$days일",
@@ -242,228 +228,168 @@ class _MainPage extends State<MainPage> {
   }
 
   String getProfileImage(int level) {
-    if (level >= 5) return 'assets/images/profile_level_5.png';
     return 'assets/images/profile_level_$level.png';
   }
 
   @override
   Widget build(BuildContext context) {
-    final local = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     final accentColor = Colors.indigoAccent;
+    double accuracyValue = double.tryParse(accuracy.replaceAll('%', '')) ?? 0;
+    double accuracyPercent = accuracyValue / 100;
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (bool didPop, Object? result) {
-        if (didPop) return;
-        showConfirmDialog(
-          context,
-          title: local.exit,
-          content: local.confirm_exit,
-          onConfirm: () => SystemNavigator.pop(),
-        );
-      },
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: Text(nickname.isNotEmpty ? "$nickname님, 환영합니다!" : "LexiUp"),
-          leading: IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => OptionPage()),
-                ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 70,
+        leading: IconButton(
+          icon: const Icon(Icons.menu, size: 50),
+          onPressed: () {},
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  child: CircleAvatar(
-                    key: ValueKey<int>(_level),
-                    radius: 50,
-                    backgroundImage: AssetImage(getProfileImage(_level)),
+        title: Text("$nickname님 환영합니다!"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _notificationsEnabled
+                  ? Icons.notifications_active
+                  : Icons.notifications_off,
+              size: 50,
+            ),
+            onPressed: () {
+              setState(() {
+                _notificationsEnabled = !_notificationsEnabled;
+              });
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.exit_to_app),
+        onPressed: () {},
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Card(
-                color: cardColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.quiz),
-                        label: const Text("퀴즈 시작하기"),
-                        onPressed: () async {
-                          final popped = await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute(builder: (_) => const QuizPage()),
-                          );
-                          if (popped == true) {
-                            await _loadStats();
-                            await _loadLearningTime();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          textStyle: const TextStyle(fontSize: 18),
-                          backgroundColor: accentColor,
-                          foregroundColor: Colors.white,
-                        ),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage(getProfileImage(_level)),
                       ),
-                      const SizedBox(height: 16),
-                      LinearProgressIndicator(
-                        value: _exp / _maxExp,
-                        backgroundColor: Colors.grey.shade300,
-                        valueColor: AlwaysStoppedAnimation<Color>(accentColor),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "레벨 $_level ($_exp / $_maxExp)",
-                        style: TextStyle(fontSize: 14, color: textColor),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.info_outline, size: 16, color: textColor),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder:
-                                    (ctx) => AlertDialog(
-                                      title: const Text("레벨별 문제 등급 안내"),
-                                      content: Text(getGradeMappingText()),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(ctx),
-                                          child: const Text("닫기"),
-                                        ),
-                                      ],
-                                    ),
-                              );
-                            },
-
-                            child: Text(
-                              "내 등급 범위 보기",
-                              style: TextStyle(
-                                color: Colors.indigo,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
+                          Text(accuracy, style: const TextStyle(fontSize: 24)),
+                          const Text("어휘 학습"),
+                          const Text("하루 목표: 30개"),
                         ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _DashboardCard(
-                    icon: Icons.access_time,
-                    label: "플레이 시간",
-                    value: learningTime,
+                Positioned(
+                  bottom: -24,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.quiz),
+                      label: const Text("퀴즈 시작하기"),
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: const StadiumBorder(),
+                        elevation: 8,
+                        backgroundColor: accentColor,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
                   ),
-                  _DashboardCard(
-                    icon: Icons.star,
-                    label: "정답률",
-                    value: accuracy,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: cardColor,
-                  foregroundColor: textColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text("복습할 단어 풀기 (추후 업데이트)"),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: cardColor,
-                  foregroundColor: textColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text("단어사전 (추후 업데이트)"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DashboardCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _DashboardCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = Theme.of(context).cardColor;
-    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
-
-    return Card(
-      color: cardColor,
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        width: 140,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 32, color: textColor),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(fontSize: 14, color: textColor?.withAlpha(178)),
+            const SizedBox(height: 48),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          "나의 통계",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("총 푼 횟수: $totalSolved"),
+                                Text("맞춘 횟수: $correctSolved"),
+                                Text("플레이 시간: $learningTime"),
+                              ],
+                            ),
+                            CircularPercentIndicator(
+                              radius: 60.0,
+                              lineWidth: 8.0,
+                              percent: accuracyPercent.clamp(0.0, 1.0),
+                              center: Text(accuracy),
+                              progressColor: Colors.green,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        LinearProgressIndicator(
+                          value: _exp / _maxExp,
+                          backgroundColor: Colors.grey.shade300,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            accentColor,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "레벨 $_level ($_exp / $_maxExp)",
+                          style: TextStyle(fontSize: 14, color: textColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
