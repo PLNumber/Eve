@@ -276,26 +276,36 @@ class _QuizPageState extends State<QuizPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: getDifficultyColor(
-                                        quiz?.difficulty ?? 0,
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: getDifficultyColor(
+                                            quiz?.difficulty ?? 0,
+                                          ),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          local.difficultyBadge(
+                                            quiz?.difficulty ?? 0,
+                                          ),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      local.difficultyBadge(
-                                        quiz?.difficulty ?? 0,
-                                      ),
-                                    ),
+                                    ],
                                   ),
+                                  IconButton(
+                                    icon: const Icon(Icons.lightbulb_outline),
+                                    tooltip: local.hint,
+                                    onPressed:
+                                        () => _showFeedbackDialog(quiz!.hint),
+                                  ),
+
                                   if (quiz?.isReview == true)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -327,16 +337,16 @@ class _QuizPageState extends State<QuizPage> {
                               ),
                               const SizedBox(height: 12),
 
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  icon: const Icon(Icons.lightbulb_outline),
-                                  tooltip: local.hint,
-                                  onPressed:
-                                      () => _showFeedbackDialog(quiz.hint),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
+                              // Align(
+                              //   alignment: Alignment.centerLeft,
+                              //   child: IconButton(
+                              //     icon: const Icon(Icons.lightbulb_outline),
+                              //     tooltip: local.hint,
+                              //     onPressed:
+                              //         () => _showFeedbackDialog(quiz.hint),
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 8),
 
                               Row(
                                 children: [
