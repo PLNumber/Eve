@@ -101,6 +101,10 @@ flutter:
     - family: OpenDyslexic
       fonts:
         - asset: assets/fonts/open-dyslexic.ttf
+
+    - family: BMHANNAAir
+      fonts:
+        - asset: assets/fonts/BMHANNAAir.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

@@ -104,13 +104,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light().copyWith(
         textTheme: ThemeData.light().textTheme.apply(
           fontFamily:
-              locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+              locale.languageCode == 'ko' ? 'BMHANNAAir' : 'OpenDyslexic',
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         textTheme: ThemeData.dark().textTheme.apply(
           fontFamily:
-              locale.languageCode == 'ko' ? 'IropkeBatang' : 'OpenDyslexic',
+              locale.languageCode == 'ko' ? 'BMHANNAAir' : 'OpenDyslexic',
         ),
       ),
 
@@ -166,6 +166,17 @@ class _MainPage extends State<MainPage> {
     _loadUserInfo();
     _loadStats();
     _loadLearningTime();
+  }
+
+  // 해당 등급의 텍스트
+  String getGradeMappingText() {
+    return '''
+레벨 1 ~ 9   : 1등급
+레벨 10 ~ 24 : 2등급
+레벨 25 ~ 49 : 3등급
+레벨 50 ~ 74 : 4등급
+레벨 75 ~ 100: 5등급
+''';
   }
 
   Future<void> _loadUserInfo() async {
@@ -410,6 +421,42 @@ class _MainPage extends State<MainPage> {
                               ),
                               const SizedBox(height: 8),
                               Text("레벨 $_level ($_exp / $_maxExp)", style: TextStyle(fontSize: 14, color: textColor)),
+
+                              // 정보 창
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.info_outline, size: 16, color: textColor),
+                                  const SizedBox(width: 4),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (ctx) => AlertDialog(
+                                          title: const Text("레벨별 문제 등급 안내"),
+                                          content: Text(getGradeMappingText()),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(ctx),
+                                              child: const Text("닫기"),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+
+                                    child: Text(
+                                      "내 등급 범위 보기",
+                                      style: TextStyle(
+                                        color: Colors.indigo,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
                             ],
                           ),
                         ),
