@@ -434,7 +434,7 @@ class _MainPage extends State<MainPage> {
                                         context: context,
                                         builder:
                                             (ctx) => AlertDialog(
-                                          title: const Text("레벨별 문제 등급 안내"),
+                                          title: const Text("출제 등급"),
                                           content: Text(getGradeMappingText()),
                                           actions: [
                                             TextButton(
@@ -447,7 +447,7 @@ class _MainPage extends State<MainPage> {
                                     },
 
                                     child: Text(
-                                      "내 등급 범위 보기",
+                                      "출제 등급",
                                       style: TextStyle(
                                         color: Colors.indigo,
                                         decoration: TextDecoration.underline,
