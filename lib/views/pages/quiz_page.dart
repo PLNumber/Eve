@@ -207,6 +207,7 @@ class _QuizPageState extends State<QuizPage> {
         );
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,//변경
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -242,7 +243,7 @@ class _QuizPageState extends State<QuizPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // 레벨 progress bar 생략
-                      const SizedBox(height: 12),
+                      //const SizedBox(height: 12),
                       Expanded(
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -383,6 +384,7 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                         ),
                       ),
+                      const Spacer(),
                     ],
                   ),
         ),
