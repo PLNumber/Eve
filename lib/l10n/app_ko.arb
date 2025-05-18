@@ -165,5 +165,11 @@
     "description": "저장 후 시작하기 버튼 레이블"
   },
 
-  "next_question": "넘기기"
+  "next_question": "넘기기",
+
+  "startWithGoogle": "구글로 시작하기",
+      "@startWithGoogle": {
+        "description": "구글 로그인 버튼 레이블"
+      }
+
 }
