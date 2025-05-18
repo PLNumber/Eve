@@ -202,4 +202,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get next_question => '넘기기';
+
+  @override
+  String get startWithGoogle => '구글로 시작하기';
 }

@@ -17,6 +17,8 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  late final FocusNode _answerFocusNode;
+
   late final QuizController controller;
   QuizQuestion? currentQuestion;
   bool isLoading = false;
@@ -36,6 +38,18 @@ class _QuizPageState extends State<QuizPage> {
     _quizStartTime = DateTime.now();
     _loadQuiz();
     _loadUserLevel();
+    _answerFocusNode = FocusNode();                   // ⚡ 추가
+    // 위젯 빌드 완료 후에 포커스 요청
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _answerFocusNode.requestFocus();
+      SystemChannels.textInput.invokeMethod('TextInput.show'); // 키보드 강제 표시
+    });
+  }
+  @override
+  void dispose() {
+    _answerFocusNode.dispose();                       // ⚡ 추가
+    _answerCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _loadUserLevel() async {
@@ -207,6 +221,7 @@ class _QuizPageState extends State<QuizPage> {
         );
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,//변경
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -242,7 +257,7 @@ class _QuizPageState extends State<QuizPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // 레벨 progress bar 생략
-                      const SizedBox(height: 12),
+                      //const SizedBox(height: 12),
                       Expanded(
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -261,26 +276,36 @@ class _QuizPageState extends State<QuizPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: getDifficultyColor(
-                                        quiz?.difficulty ?? 0,
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: getDifficultyColor(
+                                            quiz?.difficulty ?? 0,
+                                          ),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          local.difficultyBadge(
+                                            quiz?.difficulty ?? 0,
+                                          ),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      local.difficultyBadge(
-                                        quiz?.difficulty ?? 0,
-                                      ),
-                                    ),
+                                    ],
                                   ),
+                                  IconButton(
+                                    icon: const Icon(Icons.lightbulb_outline),
+                                    tooltip: local.hint,
+                                    onPressed:
+                                        () => _showFeedbackDialog(quiz!.hint),
+                                  ),
+
                                   if (quiz?.isReview == true)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -312,22 +337,24 @@ class _QuizPageState extends State<QuizPage> {
                               ),
                               const SizedBox(height: 12),
 
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  icon: const Icon(Icons.lightbulb_outline),
-                                  tooltip: local.hint,
-                                  onPressed:
-                                      () => _showFeedbackDialog(quiz.hint),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
+                              // Align(
+                              //   alignment: Alignment.centerLeft,
+                              //   child: IconButton(
+                              //     icon: const Icon(Icons.lightbulb_outline),
+                              //     tooltip: local.hint,
+                              //     onPressed:
+                              //         () => _showFeedbackDialog(quiz.hint),
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 8),
 
                               Row(
                                 children: [
                                   Expanded(
                                     child: TextField(
                                       controller: _answerCtrl,
+                                      focusNode: _answerFocusNode,//
+                                      autofocus: true,//
                                       decoration: InputDecoration(
                                         hintText: answerHintText,
                                         border: OutlineInputBorder(
@@ -383,6 +410,7 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                         ),
                       ),
+                      const Spacer(),
                     ],
                   ),
         ),

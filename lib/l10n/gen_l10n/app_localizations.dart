@@ -472,6 +472,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'skip'**
   String get next_question;
+
+  /// Label for the Google sign-in button
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Google'**
+  String get startWithGoogle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

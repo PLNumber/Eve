@@ -202,4 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next_question => 'skip';
+
+  @override
+  String get startWithGoogle => 'Start with Google';
 }
