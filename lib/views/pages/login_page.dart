@@ -28,13 +28,10 @@ class LoginPage extends StatelessWidget {
                 Column(
                   children: [
                     const SizedBox(height: 80), // 상단 여백
-                    const Text(//추후 이미지로 대체
-                      '로고부분',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                    Image(
+                      image: AssetImage('assets/images/appImage.png'),
+                      width: 24,
+                      height: 24,
                     ),
                   ],
                 ),
