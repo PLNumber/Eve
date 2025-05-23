@@ -96,12 +96,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm_logout => 'Do you really want to logout?';
 
   @override
-  String get confirm => 'OK';
-
-  @override
-  String get cancel => 'Cancel';
-
-  @override
   String get saved_message => 'Saved successfully!';
 
   @override
@@ -139,6 +133,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetDialogContent => 'Deleted data cannot be recovered.';
 
   @override
+  String get cancel => 'Cancel';
+
+  @override
   String get historyCleared => 'History has been reset.';
 
   @override
@@ -155,6 +152,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedbackTitle => 'Feedback';
+
+  @override
+  String get confirm => 'OK';
 
   @override
   String get hint => 'Hint';

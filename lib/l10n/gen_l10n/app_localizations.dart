@@ -269,18 +269,6 @@ abstract class AppLocalizations {
   /// **'Do you really want to logout?'**
   String get confirm_logout;
 
-  /// Confirm button label
-  ///
-  /// In en, this message translates to:
-  /// **'OK'**
-  String get confirm;
-
-  /// Dialog cancel button label
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
   /// No description provided for @saved_message.
   ///
   /// In en, this message translates to:
@@ -347,6 +335,12 @@ abstract class AppLocalizations {
   /// **'Deleted data cannot be recovered.'**
   String get resetDialogContent;
 
+  /// Dialog cancel button label
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
   /// Snackbar message after reset
   ///
   /// In en, this message translates to:
@@ -382,6 +376,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Feedback'**
   String get feedbackTitle;
+
+  /// Confirm button label
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get confirm;
 
   /// Hint button label
   ///

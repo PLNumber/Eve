@@ -96,12 +96,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get confirm_logout => '정말로 로그아웃을 하시겠습니까?';
 
   @override
-  String get confirm => '확인';
-
-  @override
-  String get cancel => '취소';
-
-  @override
   String get saved_message => '저장되었습니다!';
 
   @override
@@ -139,6 +133,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get resetDialogContent => '삭제된 데이터는 복구할 수 없습니다.';
 
   @override
+  String get cancel => '취소';
+
+  @override
   String get historyCleared => '기록이 초기화되었습니다.';
 
   @override
@@ -155,6 +152,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get feedbackTitle => '피드백';
+
+  @override
+  String get confirm => '확인';
 
   @override
   String get hint => '힌트';

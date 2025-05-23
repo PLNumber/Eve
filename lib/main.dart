@@ -3,6 +3,7 @@ import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
 import 'package:eve/viewModel/login_view_model.dart';
+import 'package:eve/views/pages/wrongNotes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -466,11 +467,12 @@ class _MainPage extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildFeatureButton("오답 노트", Icons.edit_note, onTap: () {
-                            // TODO: 오답 노트 페이지 이동 
-                            /*
-                            * 틀린 단어의 목록을 보여주고 해당 리스트에서 단어를 탭하거나 누르면 해당 단어의 뜻을 보여주게 하는 것으로 표현하는 것이 나을 것
-                            * */
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const WrongNotePage()),
+                            );
                           }),
+
                           _buildFeatureButton("단어 사전", Icons.menu_book, onTap: () {
                             // TODO: 단어 사전 페이지 이동
                             /*

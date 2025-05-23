@@ -1,4 +1,5 @@
 // ✅ lib/view/pages/quiz_page.dart 리디자인: 종료 버튼도 확인 다이얼로그 적용
+import 'package:eve/views/pages/quiz_option_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -226,7 +227,10 @@ class _QuizPageState extends State<QuizPage> {
           automaticallyImplyLeading: false,
           leading: IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.pop(context),
+            onPressed: ()=> Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => QuizOptionPage()),
+            ),
           ),
           actions: [
             IconButton(
@@ -418,3 +422,4 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
+

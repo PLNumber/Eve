@@ -29,8 +29,6 @@
   "nickname_check_prompt": "Please complete the nickname check.",
   "logout": "Logout",
   "confirm_logout": "Do you really want to logout?",
-  "confirm": "Confirm",
-  "cancel": "Cancel",
   "saved_message": "Saved successfully!",
   "close": "Close",
   "exit": "Exit",

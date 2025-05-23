@@ -16,8 +16,10 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
   @override
   void initState() {
     super.initState();
-    _loadAttendance();
+    _markTodayAttendance(); // 👈 오늘 출석 먼저 기록
+    _loadAttendance();       // 이후 데이터 불러오기
   }
+
 
   Future<void> _loadAttendance() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -32,6 +34,27 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
 
   String _formatDate(DateTime date) =>
       "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
+  Future<void> _markTodayAttendance() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    final today = DateTime.now();
+    final todayKey = "${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+
+    await FirebaseFirestore.instance
+        .collection('attendance')
+        .doc(uid)
+        .set({
+      'dates': {
+        todayKey: true,
+      }
+    }, SetOptions(merge: true));
+
+    print("정상적으로 출석 저장됨: $todayKey");
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
