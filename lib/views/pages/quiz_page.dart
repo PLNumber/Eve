@@ -9,6 +9,7 @@ import '../../model/quiz.dart';
 import '../widgets/nav_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({Key? key}) : super(key: key);
@@ -125,6 +126,10 @@ class _QuizPageState extends State<QuizPage> {
       hasAlreadySubmitted: hasSubmitted,
     );
 
+    if (!hasSubmitted) {
+      await _increaseDailyVocabCount(); // 처음 제출일 때만 증가
+    }
+
     hasSubmitted = true;
 
     if (result.isCorrect) {
@@ -152,7 +157,37 @@ class _QuizPageState extends State<QuizPage> {
       final initialHint = _extractInitialHint(currentQuestion!.answer);
       setState(() => answerHintText = initialHint);
     }
+
+
   }
+
+  Future<void> _increaseDailyVocabCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final todayKey = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    final lastDate = prefs.getString('vocab_date');
+    if (lastDate != todayKey) {
+      await prefs.setInt('vocab_completed', 0);
+      await prefs.setString('vocab_date', todayKey);
+    }
+
+    int completed = prefs.getInt('vocab_completed') ?? 0;
+    completed++;
+    await prefs.setInt('vocab_completed', completed);
+    await prefs.setString('vocab_date', todayKey);
+
+    // ✅ Firestore에도 저장
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'vocab_completed': completed,
+      'vocab_date': todayKey,
+    }, SetOptions(merge: true));
+  }
+
+
 
   void _showFeedbackDialog(String message) {
     final local = AppLocalizations.of(context)!;

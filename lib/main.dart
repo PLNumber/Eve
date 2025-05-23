@@ -4,6 +4,7 @@ import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
 import 'package:eve/viewModel/login_view_model.dart';
 import 'package:eve/views/pages/wrongNotes_page.dart';
+import 'package:eve/views/widgets/feature_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,7 +27,6 @@ import 'views/pages/set_name_page.dart';
 import 'views/widgets/nav_util.dart';
 
 import 'Services/gemini_service.dart';
-import 'services/auth_service.dart';
 import 'services/quiz_service.dart';
 import 'repository/quiz_repository.dart';
 
@@ -332,14 +332,15 @@ class _MainPage extends State<MainPage> {
                           backgroundImage: AssetImage(getProfileImage(_level)),
                         ),
                         //TODO : 어휘 학습 구현 해야함
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(accuracy, style: const TextStyle(fontSize: 24)),
-                            const Text("어휘 학습"),
-                            const Text("하루 목표: 30개"),
-                          ],
-                        ),
+                        DailyVocabProgress()
+                        // Column(
+                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                        //   children: [
+                        //     Text(accuracy, style: const TextStyle(fontSize: 24)),
+                        //     const Text("어휘 학습"),
+                        //     const Text("하루 목표: 30개"),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
