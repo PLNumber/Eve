@@ -252,6 +252,8 @@ class _MainPage extends State<MainPage> {
     final accentColor = Colors.indigoAccent;
     double accuracyValue = double.tryParse(accuracy.replaceAll('%', '')) ?? 0;
     double accuracyPercent = accuracyValue / 100;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return PopScope(
       canPop: false,
@@ -266,16 +268,19 @@ class _MainPage extends State<MainPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 70,
+          toolbarHeight: screenHeight * 0.09,
           leading: IconButton(
-            icon: const Icon(Icons.menu, size: 50),
+            icon: Icon(Icons.menu, size: screenWidth * 0.08),
             onPressed:
                 () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => OptionPage()),
-            ),
+                  context,
+                  MaterialPageRoute(builder: (context) => OptionPage()),
+                ),
           ),
-          title: Text("$nickname님 환영합니다!"),
+          title: Text(
+            "$nickname님 환영합니다!",
+            style: TextStyle(fontSize: screenWidth * 0.045),
+          ),
           centerTitle: true,
           actions: [
             IconButton(
@@ -283,7 +288,7 @@ class _MainPage extends State<MainPage> {
                 _notificationsEnabled
                     ? Icons.notifications_active
                     : Icons.notifications_off,
-                size: 50,
+                size: screenWidth*0.08,
               ),
               onPressed: () {
                 setState(() {
@@ -311,8 +316,8 @@ class _MainPage extends State<MainPage> {
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(16),
+                    margin: EdgeInsets.all(screenWidth*0.04),
+                    padding: EdgeInsets.all(screenWidth * 0.04),
                     decoration: BoxDecoration(
                       color: cardColor,
                       borderRadius: BorderRadius.circular(12),
@@ -328,19 +333,11 @@ class _MainPage extends State<MainPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         CircleAvatar(
-                          radius: 50,
+                          radius: screenWidth * 0.1,
                           backgroundImage: AssetImage(getProfileImage(_level)),
                         ),
-                        //TODO : 어휘 학습 구현 해야함
-                        DailyVocabProgress()
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        //     Text(accuracy, style: const TextStyle(fontSize: 24)),
-                        //     const Text("어휘 학습"),
-                        //     const Text("하루 목표: 30개"),
-                        //   ],
-                        // ),
+                        //일일 학습
+                        DailyVocabProgress(),
                       ],
                     ),
                   ),
@@ -351,7 +348,7 @@ class _MainPage extends State<MainPage> {
                     child: Center(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.quiz),
-                        label: const Text("퀴즈 시작하기"),
+                        label: Text("퀴즈 시작하기", style: TextStyle(fontSize: screenWidth * 0.04)),
                         onPressed: () async {
                           final popped = await Navigator.push<bool>(
                             context,
@@ -363,9 +360,9 @@ class _MainPage extends State<MainPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.06,
+                            vertical: screenHeight * 0.015,
                           ),
                           shape: const StadiumBorder(),
                           elevation: 8,
@@ -377,10 +374,10 @@ class _MainPage extends State<MainPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 48),
+              SizedBox(height: screenHeight * 0.03),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(screenWidth * 0.04),
                   child: Column(
                     children: [
                       Card(
@@ -389,46 +386,66 @@ class _MainPage extends State<MainPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(screenWidth*0.04),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Text("나의 통계", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 16),
+                              Text(
+                                "나의 통계",
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight * 0.01),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text("총 푼 횟수: $totalSolved"),
-                                      Text("맞춘 횟수: $correctSolved"),
-                                      Text("플레이 시간: $learningTime"),
+                                      Text("총 푼 횟수: $totalSolved",style: TextStyle(fontSize: screenWidth * 0.03)),
+                                      Text("맞춘 횟수: $correctSolved",style: TextStyle(fontSize: screenWidth * 0.03)),
+                                      Text("플레이 시간: $learningTime",style: TextStyle(fontSize: screenWidth * 0.03)),
                                     ],
                                   ),
                                   CircularPercentIndicator(
-                                    radius: 60.0,
-                                    lineWidth: 8.0,
+                                    radius: screenWidth * 0.08,
+                                    lineWidth: screenWidth * 0.03,
                                     percent: accuracyPercent.clamp(0.0, 1.0),
-                                    center: Text(accuracy),
+                                    center: Text(accuracy, style: TextStyle(fontSize: screenWidth * 0.025),),
                                     progressColor: Colors.green,
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: screenHeight * 0.01),
                               LinearProgressIndicator(
                                 value: _exp / _maxExp,
                                 backgroundColor: Colors.grey.shade300,
-                                valueColor: AlwaysStoppedAnimation<Color>(accentColor),
+                                minHeight: screenHeight * 0.012,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  accentColor,
+                                ),
                               ),
-                              const SizedBox(height: 8),
-                              Text("레벨 $_level ($_exp / $_maxExp)", style: TextStyle(fontSize: 14, color: textColor)),
-
+                              SizedBox(height: screenHeight * 0.01),
+                              Text(
+                                "레벨 $_level ($_exp / $_maxExp)",
+                                style: TextStyle(
+                                  fontSize: screenWidth*0.02,
+                                  color: textColor,
+                                ),
+                              ),
                               // 정보 창
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.info_outline, size: 16, color: textColor),
+                                  Icon(
+                                    Icons.info_outline,
+                                    size: 16,
+                                    color: textColor,
+                                  ),
                                   const SizedBox(width: 4),
                                   GestureDetector(
                                     onTap: () {
@@ -436,15 +453,18 @@ class _MainPage extends State<MainPage> {
                                         context: context,
                                         builder:
                                             (ctx) => AlertDialog(
-                                          title: const Text("출제 등급"),
-                                          content: Text(getGradeMappingText()),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(ctx),
-                                              child: const Text("닫기"),
+                                              title: const Text("출제 등급"),
+                                              content: Text(
+                                                getGradeMappingText(),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.pop(ctx),
+                                                  child: const Text("닫기"),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
                                       );
                                     },
 
@@ -458,29 +478,41 @@ class _MainPage extends State<MainPage> {
                                   ),
                                 ],
                               ),
-
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: screenHeight * 0.01),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildFeatureButton("오답 노트", Icons.edit_note, onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const WrongNotePage()),
-                            );
-                          }),
+                          //
+                          _buildFeatureButton(
+                            context,
+                            "오답 노트",
+                            Icons.edit_note,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const WrongNotePage(),
+                                ),
+                              );
+                            },
+                          ),
 
-                          _buildFeatureButton("단어 사전", Icons.menu_book, onTap: () {
-                            // TODO: 단어 사전 페이지 이동
-                            /*
+                          _buildFeatureButton(
+                            context,
+                            "단어 사전",
+                            Icons.menu_book,
+                            onTap: () {
+                              // TODO: 단어 사전 페이지 이동
+                              /*
                             * 네이버 사전 api 이나 우리말 샘 api를 사용하여 단어를 검색하게 하기
                             *  아니면 그냥 네이버 사전으로 접속하게 하여 검색유도하기 (이건 날먹인거 같아서 2차적으로 고민을 해야할 듯)
                             * */
-                          }),
+                            },
+                          ),
                         ],
                       ),
 
@@ -501,26 +533,31 @@ class _MainPage extends State<MainPage> {
 }
 
 // 위젯
-Widget _buildFeatureButton(String title, IconData icon, {required VoidCallback onTap}) {
+Widget _buildFeatureButton(
+    BuildContext context,
+  String title,
+  IconData icon, {
+  required VoidCallback onTap,
+}) {
+  final screenWidth = MediaQuery.of(context).size.width;
   return GestureDetector(
     onTap: onTap,
     child: Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 4,
       child: Container(
-        width: 120,
-        height: 120,
+        width: screenWidth * 0.35,
+        height: screenWidth * 0.35,
         padding: EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 12),
-            Icon(icon, size: 36),
+            Icon(icon, size: screenWidth * 0.1),
+            SizedBox(height: screenWidth * 0.03),
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold,fontSize: screenWidth * 0.04)),
           ],
         ),
       ),
     ),
   );
 }
-

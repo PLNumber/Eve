@@ -28,6 +28,7 @@ class _QuizOptionPageState extends State<QuizOptionPage> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(local.settings),
         actions: [
           IconButton(
