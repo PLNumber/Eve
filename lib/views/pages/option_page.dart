@@ -65,6 +65,9 @@ class _OptionPageState extends State<OptionPage> {
       context,
       listen: false,
     );
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final local = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
@@ -75,29 +78,30 @@ class _OptionPageState extends State<OptionPage> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: AppBar(
-        title: Text(local.settings, style: TextStyle(color: textColor)),
+        title: Text(local.settings, style: TextStyle(color: textColor, fontSize: screenWidth * 0.055)),
         centerTitle: true,
         backgroundColor: isDark ? Colors.grey[900] : Colors.indigoAccent,
         iconTheme: IconThemeData(color: textColor),
       ),
       body: Column(
         children: [
-          const SizedBox(height: 24),
-          _buildProfileSection(textColor, subTextColor!),
-          const SizedBox(height: 12),
-          _buildExpBar(),
-          const SizedBox(height: 16),
+          SizedBox(height: screenHeight*0.03),
+          _buildProfileSection(context,textColor, subTextColor!),
+          SizedBox(height: screenHeight * 0.001),
+          _buildExpBar(context),
+          SizedBox(height: screenHeight * 0.02),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _buildOptionCard(
+                  context,
                   Icons.music_note,
                   local.sound,
                   () => SoundDialog.show(context),
                   textColor,
                 ),
-                _buildOptionCard(Icons.restore, local.reset_history, () async {
+                _buildOptionCard(context,Icons.restore, local.reset_history, () async {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder:
@@ -126,24 +130,27 @@ class _OptionPageState extends State<OptionPage> {
                   }
                 }, textColor),
                 _buildOptionCard(
+                  context,
                   Icons.brightness_6,
                   local.change_background,
                   () => BackgroundDialog.show(context),
                   textColor,
                 ),
                 _buildOptionCard(
+                  context,
                   Icons.language,
                   local.change_language,
                   () => LanguageDialog.show(context),
                   textColor,
                 ),
                 _buildOptionCard(
+                  context,
                   Icons.person,
                   local.nickname_change,
                   () => NicknameDialog.show(context),
                   textColor,
                 ),
-                _buildOptionCard(Icons.logout, local.logout, () {
+                _buildOptionCard(context,Icons.logout, local.logout, () {
                   showConfirmDialog(
                     context,
                     title: local.logout,
@@ -159,53 +166,60 @@ class _OptionPageState extends State<OptionPage> {
     );
   }
 
-  Widget _buildProfileSection(Color textColor, Color subTextColor) {
+  Widget _buildProfileSection(BuildContext context,Color textColor, Color subTextColor) {
     final local = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Column(
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),
           child: CircleAvatar(
             key: ValueKey<int>(_level),
-            radius: 50,
+            radius: screenWidth*0.1,
             backgroundImage: AssetImage(getProfileImage(_level)),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: screenHeight * 0.02),
         Text(
           _nickname,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: screenHeight * 0.03,
             fontWeight: FontWeight.bold,
             color: textColor,
           ),
         ),
-        const SizedBox(height: 4),
-        Text(_email, style: TextStyle(color: subTextColor)),
-        const SizedBox(height: 8),
+        SizedBox(height: screenHeight * 0.001),
+        Text(_email, style: TextStyle(color: subTextColor, fontSize: screenWidth * 0.02)),
+        SizedBox(height: screenHeight * 0.04),
         Text(
           local.levelLabel(_level),
-          style: TextStyle(fontSize: 14, color: textColor),
+          style: TextStyle(fontSize: screenHeight * 0.015, color: textColor),
         ),
       ],
     );
   }
 
-  Widget _buildExpBar() {
+  Widget _buildExpBar(BuildContext context) {
+
     final local = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             local.expProgress(_exp, _maxExp),
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: screenWidth * 0.02),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: screenHeight * 0.01),
           LinearProgressIndicator(
             value: _exp / _maxExp,
-            minHeight: 10,
+            minHeight: screenHeight * 0.01,
             backgroundColor: Colors.grey.shade300,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.indigoAccent),
           ),
@@ -215,20 +229,23 @@ class _OptionPageState extends State<OptionPage> {
   }
 
   Widget _buildOptionCard(
+    BuildContext context,
     IconData icon,
     String title,
     VoidCallback onTap,
     Color textColor,
   ) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.03)),
+      margin: EdgeInsets.symmetric(vertical: screenWidth * 0.005),
       elevation: 2,
       color: Theme.of(context).cardColor,
       child: ListTile(
-        leading: Icon(icon, color: Colors.indigo),
-        title: Text(title, style: TextStyle(color: textColor)),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: textColor),
+        leading: Icon(icon, color: Colors.indigo, size: screenWidth * 0.06,),
+        title: Text(title, style: TextStyle(color: textColor,fontSize: screenWidth * 0.025)),
+        trailing: Icon(Icons.arrow_forward_ios, size: screenWidth * 0.025, color: textColor),
         onTap: onTap,
       ),
     );
