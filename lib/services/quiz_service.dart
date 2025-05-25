@@ -13,31 +13,40 @@ class QuizService {
   int _quizCount = 0;
   final int reviewInterval = 5; // 5턴마다 복습문제
 
-  String extractStem(String verb) {
-    // 기본형이 '…다'로 끝나는 동사 또는 형용사
-    if (verb.endsWith('하다')) {
-      // '공부하다' → '공부'
-      return verb.substring(0, verb.length - 2); // '하다' 제거
-    } else if (verb.endsWith('가다') || verb.endsWith('오다')) {
-      // '떠나가다' → '떠나가', '돌아오다' → '돌아오'
-      return verb.substring(0, verb.length - 1); // '다'만 제거
-    } else if (verb.endsWith('다')) {
-      return verb.substring(0, verb.length - 1); // 일반적으로 '다' 제거
-    } else {
-      return verb; // 이미 활용형일 경우 그대로 반환
-    }
-  }
-
-
-  // ✅ 밑줄 길이를 정답 글자 수만큼 조정하는 함수
+  /// ✅ 밑줄 길이 조정 함수 (정답의 길이만큼)
   String adjustBlankLength(String question, String answer) {
     final blankRegex = RegExp(r'_+');
     final stem = extractStem(answer);
     return question.replaceAllMapped(blankRegex, (_) => '_' * stem.length);
   }
 
+  /// ✅ 밑줄이 중간에 끊어진 경우 (예: '__ __')를 한 줄로 보정
+  String fixSplitUnderscore(String question) {
+    final multiUnderscoreWithSpace = RegExp(r'_+\s+_+');
+    return question.replaceAllMapped(multiUnderscoreWithSpace, (match) {
+      return match.group(0)!.replaceAll(' ', '');
+    });
+  }
 
-  // 퀴즈를 가져오는 함수
+  /// ✅ 전체 포맷 적용
+  String formatQuestion(String question, String answer) {
+    final adjusted = adjustBlankLength(question, answer);
+    return fixSplitUnderscore(adjusted);
+  }
+
+  /// ✅ 동사의 어간 추출
+  String extractStem(String verb) {
+    if (verb.endsWith('하다')) {
+      return verb.substring(0, verb.length - 2);
+    } else if (verb.endsWith('가다') || verb.endsWith('오다')) {
+      return verb.substring(0, verb.length - 1);
+    } else if (verb.endsWith('다')) {
+      return verb.substring(0, verb.length - 1);
+    } else {
+      return verb;
+    }
+  }
+
   Future<QuizQuestion?> getQuestion() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
@@ -47,14 +56,13 @@ class QuizService {
     _quizCount++;
     final isReviewTurn = _quizCount % reviewInterval == 0;
 
-    // ✅ 1. 복습 문제 출제
     if (isReviewTurn) {
       final reviewWord = await _repository.getRandomIncorrectWord(uid);
       if (reviewWord != null) {
         final question = await _repository.getSavedQuestion(reviewWord);
-        final adjustedQuestion = adjustBlankLength(question.question, question.answer);
+        final formattedQuestion = formatQuestion(question.question, question.answer);
         return QuizQuestion(
-          question: adjustedQuestion,
+          question: formattedQuestion,
           answer: question.answer,
           hint: question.hint,
           distractors: question.distractors,
@@ -65,13 +73,12 @@ class QuizService {
       }
     }
 
-    // ✅ 2. 일반 문제 출제
     final vocab = await _repository.selectWord(uid);
     final saved = await _repository.getSavedQuestion(vocab['어휘']);
-    final adjustedQuestion = adjustBlankLength(saved.question, saved.answer);
+    final formattedQuestion = formatQuestion(saved.question, saved.answer);
 
     return QuizQuestion(
-      question: adjustedQuestion,
+      question: formattedQuestion,
       answer: saved.answer,
       hint: saved.hint,
       distractors: saved.distractors,
@@ -81,7 +88,6 @@ class QuizService {
     );
   }
 
-  // 정답 비교 함수
   Future<AnswerResult> compareAnswer(
       QuizQuestion question,
       String userInput, {
