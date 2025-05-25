@@ -126,7 +126,10 @@ class _DictionaryPageState extends State<DictionaryPage> {
                       color: Colors.black87,
                     ),
                     children: [
-                      if (cat != null && cat.toString().trim().isNotEmpty)
+                      if (cat != null && cat
+                          .toString()
+                          .trim()
+                          .isNotEmpty)
                         TextSpan(
                           text: '「$cat」 ',
                           style: const TextStyle(
@@ -134,7 +137,10 @@ class _DictionaryPageState extends State<DictionaryPage> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      if (pos != null && pos.toString().trim().isNotEmpty)
+                      if (pos != null && pos
+                          .toString()
+                          .trim()
+                          .isNotEmpty)
                         TextSpan(
                           text: '[$pos] ',
                           style: const TextStyle(color: Colors.grey),
@@ -159,65 +165,63 @@ class _DictionaryPageState extends State<DictionaryPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  controller: _ctrl,
-                  decoration: const InputDecoration(
-                    hintText: '검색어를 입력하세요',
-                    border: OutlineInputBorder(),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _ctrl,
+                    decoration: const InputDecoration(
+                      hintText: '검색어를 입력하세요',
+                      border: OutlineInputBorder(),
+                    ),
+                    onSubmitted: _search,
                   ),
-                  onSubmitted: _search,
                 ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => _search(_ctrl.text),
-                child: const Text('검색'),
-              ),
-            ]),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () => _search(_ctrl.text),
+                  child: const Text('검색'),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
             if (_isLoading)
               const CircularProgressIndicator()
-            else if (_error != null)
-              Text(_error!, style: const TextStyle(color: Colors.red))
             else
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_exactMatches.isNotEmpty) ...[
+              if (_error != null)
+                Text(_error!, style: const TextStyle(color: Colors.red))
+              else
+                Expanded(
+                  child: ListView(
+                    children: [
+
+                      /// 정확한 결과
                       const Text(
                         '🔍 정확히 일치하는 단어',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      ..._exactMatches.map((e) => _buildEntryCard(e)),
-                      const Divider(height: 32),
-                    ],
-                    if (_partialMatches.isNotEmpty) ...[
+                      if (_exactMatches.isEmpty)
+                        const Text('일치하는 결과가 없습니다.')
+                      else
+                        ..._exactMatches.map((e) => _buildEntryCard(e)),
+                      const SizedBox(height: 24),
+
+                      /// 포함된 결과
                       const Text(
                         '📃 포함된 단어 결과',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: _partialMatches.length,
-                          itemBuilder: (_, i) =>
-                              _buildEntryCard(_partialMatches[i]),
-                        ),
-                      ),
+                      if (_partialMatches.isEmpty)
+                        const Text('포함된 단어가 없습니다.')
+                      else
+                        ..._partialMatches.map((e) => _buildEntryCard(e)),
                     ],
-                  ],
+                  ),
                 ),
-              ),
           ],
         ),
       ),
