@@ -2,6 +2,7 @@
 import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
+import 'package:eve/utils/attendance_reminder.dart';
 import 'package:eve/viewModel/login_view_model.dart';
 import 'package:eve/views/pages/dictionary_page.dart';
 import 'package:eve/views/pages/wrongNotes_page.dart';
@@ -15,6 +16,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller/quiz_controller.dart';
 import 'views/subpages/weekly_attendance_preview.dart';
@@ -40,6 +42,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  await AttendanceReminder.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: "assets/config/.env");
   final String geminiApiKey = dotenv.env['geminiApiKey'] ?? "";
@@ -165,6 +168,7 @@ class _MainPage extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    AttendanceReminder.checkAndNotify();
     _loadUserInfo();
     _loadStats();
     _loadLearningTime();
@@ -522,6 +526,20 @@ class _MainPage extends State<MainPage> {
                       // 출석 달력
                       SizedBox(height: 20),
                       WeeklyAttendancePreview(), // 일주일 출석만 보여줌
+
+
+                      //테스트용 마지막 접속일 3일전으로 설정하고 테스트
+                      ElevatedButton(
+                        child: const Text('⚙️ 테스트: 3일 전으로 설정'),
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          final threeDaysAgo = DateTime.now()
+                              .subtract(const Duration(days: 3));
+                          await prefs.setString(
+                              'lastLoginDate', threeDaysAgo.toIso8601String());
+                          await AttendanceReminder.checkAndNotify();
+                        },
+                      ),
                       SizedBox(height: 20),
                     ],
                   ),

@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 인터넷 권한 (알림 채널 초기화, SharedPreferences 등) -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Android 13 이상에서 알림 권한 요청이 필요하다면 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="eve"
         android:name="${applicationName}"
