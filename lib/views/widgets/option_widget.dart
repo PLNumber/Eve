@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/gen_l10n/app_localizations.dart';
 import '../../provider/audio_provider.dart';
 import '../../provider/local_provider.dart';
+import '../../provider/quiz_mode_provider.dart';
 import '../../provider/theme_provider.dart';
 import 'nav_util.dart';
 import '../../viewModel/option_view_model.dart';

@@ -514,10 +514,6 @@ class _MainPage extends State<MainPage> {
                                   builder: (_) => const DictionaryPage(),
                                 ),
                               );
-                              /*
-                            * 네이버 사전 api 이나 우리말 샘 api를 사용하여 단어를 검색하게 하기
-                            *  아니면 그냥 네이버 사전으로 접속하게 하여 검색유도하기 (이건 날먹인거 같아서 2차적으로 고민을 해야할 듯)
-                            * */
                             },
                           ),
                         ],

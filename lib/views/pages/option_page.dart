@@ -78,15 +78,18 @@ class _OptionPageState extends State<OptionPage> {
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: AppBar(
-        title: Text(local.settings, style: TextStyle(color: textColor, fontSize: screenWidth * 0.055)),
+        title: Text(
+          local.settings,
+          style: TextStyle(color: textColor, fontSize: screenWidth * 0.055),
+        ),
         centerTitle: true,
         backgroundColor: isDark ? Colors.grey[900] : Colors.indigoAccent,
         iconTheme: IconThemeData(color: textColor),
       ),
       body: Column(
         children: [
-          SizedBox(height: screenHeight*0.03),
-          _buildProfileSection(context,textColor, subTextColor!),
+          SizedBox(height: screenHeight * 0.03),
+          _buildProfileSection(context, textColor, subTextColor!),
           SizedBox(height: screenHeight * 0.001),
           _buildExpBar(context),
           SizedBox(height: screenHeight * 0.02),
@@ -101,34 +104,40 @@ class _OptionPageState extends State<OptionPage> {
                   () => SoundDialog.show(context),
                   textColor,
                 ),
-                _buildOptionCard(context,Icons.restore, local.reset_history, () async {
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder:
-                        (ctx) => AlertDialog(
-                          title: Text(local.resetDialogTitle),
-                          content: Text(local.resetDialogContent),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text(local.cancel),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text(local.reset_history),
-                            ),
-                          ],
-                        ),
-                  );
-
-                  if (confirm == true && uid != null) {
-                    await optionViewModel.resetUserStats(uid);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(local.historyCleared)),
+                _buildOptionCard(
+                  context,
+                  Icons.restore,
+                  local.reset_history,
+                  () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder:
+                          (ctx) => AlertDialog(
+                            title: Text(local.resetDialogTitle),
+                            content: Text(local.resetDialogContent),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: Text(local.cancel),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: Text(local.reset_history),
+                              ),
+                            ],
+                          ),
                     );
-                    _loadUserInfo();
-                  }
-                }, textColor),
+
+                    if (confirm == true && uid != null) {
+                      await optionViewModel.resetUserStats(uid);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(local.historyCleared)),
+                      );
+                      _loadUserInfo();
+                    }
+                  },
+                  textColor,
+                ),
                 _buildOptionCard(
                   context,
                   Icons.brightness_6,
@@ -150,7 +159,14 @@ class _OptionPageState extends State<OptionPage> {
                   () => NicknameDialog.show(context),
                   textColor,
                 ),
-                _buildOptionCard(context,Icons.logout, local.logout, () {
+                // _buildOptionCard(
+                //   context,
+                //   Icons.quiz_rounded,
+                //   '퀴즈 생성 규칙',
+                //   () => QuizModeDialog.show(context),
+                //   textColor,
+                // ),
+                _buildOptionCard(context, Icons.logout, local.logout, () {
                   showConfirmDialog(
                     context,
                     title: local.logout,
@@ -166,7 +182,11 @@ class _OptionPageState extends State<OptionPage> {
     );
   }
 
-  Widget _buildProfileSection(BuildContext context,Color textColor, Color subTextColor) {
+  Widget _buildProfileSection(
+    BuildContext context,
+    Color textColor,
+    Color subTextColor,
+  ) {
     final local = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -177,7 +197,7 @@ class _OptionPageState extends State<OptionPage> {
           duration: const Duration(milliseconds: 400),
           child: CircleAvatar(
             key: ValueKey<int>(_level),
-            radius: screenWidth*0.1,
+            radius: screenWidth * 0.1,
             backgroundImage: AssetImage(getProfileImage(_level)),
           ),
         ),
@@ -191,7 +211,10 @@ class _OptionPageState extends State<OptionPage> {
           ),
         ),
         SizedBox(height: screenHeight * 0.001),
-        Text(_email, style: TextStyle(color: subTextColor, fontSize: screenWidth * 0.02)),
+        Text(
+          _email,
+          style: TextStyle(color: subTextColor, fontSize: screenWidth * 0.02),
+        ),
         SizedBox(height: screenHeight * 0.04),
         Text(
           local.levelLabel(_level),
@@ -202,7 +225,6 @@ class _OptionPageState extends State<OptionPage> {
   }
 
   Widget _buildExpBar(BuildContext context) {
-
     final local = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -238,14 +260,23 @@ class _OptionPageState extends State<OptionPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenWidth * 0.03)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(screenWidth * 0.03),
+      ),
       margin: EdgeInsets.symmetric(vertical: screenWidth * 0.005),
       elevation: 2,
       color: Theme.of(context).cardColor,
       child: ListTile(
-        leading: Icon(icon, color: Colors.indigo, size: screenWidth * 0.06,),
-        title: Text(title, style: TextStyle(color: textColor,fontSize: screenWidth * 0.025)),
-        trailing: Icon(Icons.arrow_forward_ios, size: screenWidth * 0.025, color: textColor),
+        leading: Icon(icon, color: Colors.indigo, size: screenWidth * 0.06),
+        title: Text(
+          title,
+          style: TextStyle(color: textColor, fontSize: screenWidth * 0.025),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: screenWidth * 0.025,
+          color: textColor,
+        ),
         onTap: onTap,
       ),
     );

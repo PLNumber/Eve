@@ -13,8 +13,31 @@ class QuizService {
   int _quizCount = 0;
   final int reviewInterval = 5; // 5턴마다 복습문제
 
-  //퀴즈를 가져오는 함수인 getQuestion 함수를 구현 해야함
-  // 퀴즈 요청
+  String extractStem(String verb) {
+    // 기본형이 '…다'로 끝나는 동사 또는 형용사
+    if (verb.endsWith('하다')) {
+      // '공부하다' → '공부'
+      return verb.substring(0, verb.length - 2); // '하다' 제거
+    } else if (verb.endsWith('가다') || verb.endsWith('오다')) {
+      // '떠나가다' → '떠나가', '돌아오다' → '돌아오'
+      return verb.substring(0, verb.length - 1); // '다'만 제거
+    } else if (verb.endsWith('다')) {
+      return verb.substring(0, verb.length - 1); // 일반적으로 '다' 제거
+    } else {
+      return verb; // 이미 활용형일 경우 그대로 반환
+    }
+  }
+
+
+  // ✅ 밑줄 길이를 정답 글자 수만큼 조정하는 함수
+  String adjustBlankLength(String question, String answer) {
+    final blankRegex = RegExp(r'_+');
+    final stem = extractStem(answer);
+    return question.replaceAllMapped(blankRegex, (_) => '_' * stem.length);
+  }
+
+
+  // 퀴즈를 가져오는 함수
   Future<QuizQuestion?> getQuestion() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
@@ -29,8 +52,9 @@ class QuizService {
       final reviewWord = await _repository.getRandomIncorrectWord(uid);
       if (reviewWord != null) {
         final question = await _repository.getSavedQuestion(reviewWord);
+        final adjustedQuestion = adjustBlankLength(question.question, question.answer);
         return QuizQuestion(
-          question: question.question,
+          question: adjustedQuestion,
           answer: question.answer,
           hint: question.hint,
           distractors: question.distractors,
@@ -44,9 +68,10 @@ class QuizService {
     // ✅ 2. 일반 문제 출제
     final vocab = await _repository.selectWord(uid);
     final saved = await _repository.getSavedQuestion(vocab['어휘']);
+    final adjustedQuestion = adjustBlankLength(saved.question, saved.answer);
 
     return QuizQuestion(
-      question: saved.question,
+      question: adjustedQuestion,
       answer: saved.answer,
       hint: saved.hint,
       distractors: saved.distractors,
@@ -56,22 +81,20 @@ class QuizService {
     );
   }
 
-  //compareAnswer 함수를 통해 정답과 사용자가 제출한 답안을 비교하는 함수
+  // 정답 비교 함수
   Future<AnswerResult> compareAnswer(
-    QuizQuestion question,
-    String userInput, {
-    required bool hasAlreadySubmitted,
-  }) async {
+      QuizQuestion question,
+      String userInput, {
+        required bool hasAlreadySubmitted,
+      }) async {
     final isCorrect = userInput == question.answer;
     final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    // 첫 제출일 때만 total 증가
     if (!hasAlreadySubmitted && uid != null) {
       await _repository.incrementTotalSolved(uid);
     }
 
     if (isCorrect) {
-      // 정답은 반드시 hasAlreadySubmitted가 false일 때만 기록
       if (!hasAlreadySubmitted && uid != null) {
         await _repository.incrementCorrectSolved(uid);
         await _repository.updateStatsOnCorrect(
@@ -80,11 +103,9 @@ class QuizService {
           question.difficulty,
         );
       }
-
       return AnswerResult(isCorrect: true);
     }
 
-    // 오답 처리
     if (isClearlyInvalidWord(userInput)) {
       return AnswerResult(
         isCorrect: false,
@@ -116,18 +137,10 @@ class QuizService {
   bool isClearlyInvalidWord(String input) {
     for (int i = 0; i < input.length; i++) {
       final code = input.codeUnitAt(i);
-
       final isCho = code >= 0x3131 && code <= 0x314E; // 자음
       final isJung = code >= 0x314F && code <= 0x3163; // 모음
-
-      if (isCho || isJung) return true; // 자음/모음만 단독 존재 시 ❌
+      if (isCho || isJung) return true;
     }
-
     return false;
   }
-
-  /*===================================================*/
-  //TODO: checkAnswer 함수를 통해 해당하는 문제의 정답을 확인하는 함수를 구현 해야함 x
-
-  //TODO : 이후에 사용자의 통계를 갱신하는 함수인 updateStat 함수를 구현 해야함
 }
