@@ -293,7 +293,7 @@ class _MainPage extends State<MainPage> {
                 _notificationsEnabled
                     ? Icons.notifications_active
                     : Icons.notifications_off,
-                size: screenWidth*0.08,
+                size: screenWidth * 0.08,
               ),
               onPressed: () {
                 setState(() {
@@ -321,7 +321,7 @@ class _MainPage extends State<MainPage> {
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    margin: EdgeInsets.all(screenWidth*0.04),
+                    margin: EdgeInsets.all(screenWidth * 0.04),
                     padding: EdgeInsets.all(screenWidth * 0.04),
                     decoration: BoxDecoration(
                       color: cardColor,
@@ -353,7 +353,10 @@ class _MainPage extends State<MainPage> {
                     child: Center(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.quiz),
-                        label: Text("퀴즈 시작하기", style: TextStyle(fontSize: screenWidth * 0.04)),
+                        label: Text(
+                          "퀴즈 시작하기",
+                          style: TextStyle(fontSize: screenWidth * 0.04),
+                        ),
                         onPressed: () async {
                           final popped = await Navigator.push<bool>(
                             context,
@@ -391,7 +394,7 @@ class _MainPage extends State<MainPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.all(screenWidth*0.04),
+                          padding: EdgeInsets.all(screenWidth * 0.04),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -411,16 +414,36 @@ class _MainPage extends State<MainPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("총 푼 횟수: $totalSolved",style: TextStyle(fontSize: screenWidth * 0.03)),
-                                      Text("맞춘 횟수: $correctSolved",style: TextStyle(fontSize: screenWidth * 0.03)),
-                                      Text("플레이 시간: $learningTime",style: TextStyle(fontSize: screenWidth * 0.03)),
+                                      Text(
+                                        "총 푼 횟수: $totalSolved",
+                                        style: TextStyle(
+                                          fontSize: screenWidth * 0.03,
+                                        ),
+                                      ),
+                                      Text(
+                                        "맞춘 횟수: $correctSolved",
+                                        style: TextStyle(
+                                          fontSize: screenWidth * 0.03,
+                                        ),
+                                      ),
+                                      Text(
+                                        "플레이 시간: $learningTime",
+                                        style: TextStyle(
+                                          fontSize: screenWidth * 0.03,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   CircularPercentIndicator(
                                     radius: screenWidth * 0.08,
                                     lineWidth: screenWidth * 0.03,
                                     percent: accuracyPercent.clamp(0.0, 1.0),
-                                    center: Text(accuracy, style: TextStyle(fontSize: screenWidth * 0.025),),
+                                    center: Text(
+                                      accuracy,
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.025,
+                                      ),
+                                    ),
                                     progressColor: Colors.green,
                                   ),
                                 ],
@@ -438,7 +461,7 @@ class _MainPage extends State<MainPage> {
                               Text(
                                 "레벨 $_level ($_exp / $_maxExp)",
                                 style: TextStyle(
-                                  fontSize: screenWidth*0.02,
+                                  fontSize: screenWidth * 0.02,
                                   color: textColor,
                                 ),
                               ),
@@ -526,17 +549,18 @@ class _MainPage extends State<MainPage> {
                       // 출석 달력
                       SizedBox(height: 20),
                       WeeklyAttendancePreview(), // 일주일 출석만 보여줌
-
-
                       //테스트용 마지막 접속일 3일전으로 설정하고 테스트
                       ElevatedButton(
                         child: const Text('⚙️ 테스트: 3일 전으로 설정'),
                         onPressed: () async {
                           final prefs = await SharedPreferences.getInstance();
-                          final threeDaysAgo = DateTime.now()
-                              .subtract(const Duration(days: 3));
+                          final threeDaysAgo = DateTime.now().subtract(
+                            const Duration(days: 3),
+                          );
                           await prefs.setString(
-                              'lastLoginDate', threeDaysAgo.toIso8601String());
+                            'lastLoginDate',
+                            threeDaysAgo.toIso8601String(),
+                          );
                           await AttendanceReminder.checkAndNotify();
                         },
                       ),
@@ -555,7 +579,7 @@ class _MainPage extends State<MainPage> {
 
 // 위젯
 Widget _buildFeatureButton(
-    BuildContext context,
+  BuildContext context,
   String title,
   IconData icon, {
   required VoidCallback onTap,
@@ -575,7 +599,13 @@ Widget _buildFeatureButton(
           children: [
             Icon(icon, size: screenWidth * 0.1),
             SizedBox(height: screenWidth * 0.03),
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold,fontSize: screenWidth * 0.04)),
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: screenWidth * 0.04,
+              ),
+            ),
           ],
         ),
       ),
