@@ -299,6 +299,13 @@ class _MainPage extends State<MainPage> {
                 setState(() {
                   _notificationsEnabled = !_notificationsEnabled;
                 });
+                if (_notificationsEnabled) {
+                  // 알림 켜기: 즉시 체크 & 알림 스케줄(또는 즉시 알림)
+                  AttendanceReminder.checkAndNotify();
+                } else {
+                  // 알림 끄기: 예약된 알림 모두 취소
+                  AttendanceReminder.cancelAll();
+                }
               },
             ),
           ],

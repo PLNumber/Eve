@@ -61,4 +61,9 @@ class AttendanceReminder {
       details,
     );
   }
+
+  /// 예약된 모든 알림을 취소합니다.
+  static Future<void> cancelAll() async {
+    await _notifications.cancelAll();
+  }
 }
