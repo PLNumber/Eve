@@ -60,7 +60,10 @@ class QuizService {
       final reviewWord = await _repository.getRandomIncorrectWord(uid);
       if (reviewWord != null) {
         final question = await _repository.getSavedQuestion(reviewWord);
-        final formattedQuestion = formatQuestion(question.question, question.answer);
+        final formattedQuestion = formatQuestion(
+          question.question,
+          question.answer,
+        );
         return QuizQuestion(
           question: formattedQuestion,
           answer: question.answer,
@@ -89,10 +92,10 @@ class QuizService {
   }
 
   Future<AnswerResult> compareAnswer(
-      QuizQuestion question,
-      String userInput, {
-        required bool hasAlreadySubmitted,
-      }) async {
+    QuizQuestion question,
+    String userInput, {
+    required bool hasAlreadySubmitted,
+  }) async {
     final isCorrect = userInput == question.answer;
     final uid = FirebaseAuth.instance.currentUser?.uid;
 

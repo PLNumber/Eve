@@ -14,7 +14,6 @@ void showSavedSnackBar(BuildContext context, {String? message}) {
   );
 }
 
-
 /// 커스텀 다이얼로그 (옵션)
 Future<void> showConfirmDialog(
   BuildContext context, {
@@ -26,24 +25,32 @@ Future<void> showConfirmDialog(
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
 
-
   showDialog(
     context: context,
     builder:
         (context) => AlertDialog(
-          title: Text(title, style: TextStyle(fontSize: screenWidth * 0.05),),
-          content: Text(content,style: TextStyle(fontSize: screenWidth * 0.03),),
+          title: Text(title, style: TextStyle(fontSize: screenWidth * 0.05)),
+          content: Text(
+            content,
+            style: TextStyle(fontSize: screenWidth * 0.03),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(local.cancel,style: TextStyle(fontSize: screenWidth * 0.03),),
+              child: Text(
+                local.cancel,
+                style: TextStyle(fontSize: screenWidth * 0.03),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 onConfirm();
               },
-              child: Text(local.confirm,style: TextStyle(fontSize: screenWidth * 0.03),),
+              child: Text(
+                local.confirm,
+                style: TextStyle(fontSize: screenWidth * 0.03),
+              ),
             ),
           ],
         ),
@@ -63,22 +70,25 @@ Future<void> showContinueOrEndDialog(
     context: context,
     builder:
         (_) => AlertDialog(
-          title: Text('정답입니다!', style: TextStyle(fontSize: screenWidth * 0.05),),
-          content: Text('다음 문제를 계속 푸시겠습니까? 아니면 종료하시겠습니까?', style: TextStyle(fontSize: screenWidth * 0.03),),
+          title: Text('정답입니다!', style: TextStyle(fontSize: screenWidth * 0.05)),
+          content: Text(
+            '다음 문제를 계속 푸시겠습니까? 아니면 종료하시겠습니까?',
+            style: TextStyle(fontSize: screenWidth * 0.03),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 onEnd();
               },
-              child: Text('종료', style: TextStyle(fontSize: screenWidth * 0.03),),
+              child: Text('종료', style: TextStyle(fontSize: screenWidth * 0.03)),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
                 onContinue();
               },
-              child: Text('계속', style: TextStyle(fontSize: screenWidth * 0.03),),
+              child: Text('계속', style: TextStyle(fontSize: screenWidth * 0.03)),
             ),
           ],
         ),

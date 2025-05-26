@@ -6,8 +6,6 @@ import '../../viewModel/login_view_model.dart';
 import 'set_name_page.dart';
 import '../../main.dart';
 
-
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -48,10 +46,11 @@ class LoginPage extends StatelessWidget {
                       final userCredential = await viewModel.signInWithGoogle();
                       if (userCredential != null) {
                         final uid = userCredential.user?.uid;
-                        final userDoc = await FirebaseFirestore.instance
-                            .collection("users")
-                            .doc(uid)
-                            .get();
+                        final userDoc =
+                            await FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(uid)
+                                .get();
                         final nickname = userDoc.data()?['nickname'];
                         if (nickname == null ||
                             nickname == uid ||

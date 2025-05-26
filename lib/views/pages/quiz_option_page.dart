@@ -46,7 +46,6 @@ class _QuizOptionPageState extends State<QuizOptionPage> {
                 Navigator.pop(context);
               });
             },
-
           ),
         ],
       ),

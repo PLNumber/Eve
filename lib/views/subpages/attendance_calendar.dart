@@ -21,12 +21,15 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     });
   }
 
-
   Future<void> _loadAttendance() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
 
-    final doc = await FirebaseFirestore.instance.collection('attendance').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('attendance')
+            .doc(uid)
+            .get();
     if (doc.exists && doc.data() != null && doc.data()!['dates'] is Map) {
       setState(() {
         _attendanceMap = Map<String, bool>.from(doc.data()!['dates']);
@@ -56,6 +59,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     final dateStr = _formatDate(day);
     return _attendanceMap[dateStr] ?? false;
   }
+
   int _consecutiveDays = 0;
   double _monthlyAttendanceRate = 0.0;
 
@@ -93,18 +97,22 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     setState(() {});
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const SizedBox(height: 16),
-        Text("✅ 연속 출석: $_consecutiveDays일",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text("📅 ${DateTime.now().month}월 출석률: ${(_monthlyAttendanceRate * 100).toStringAsFixed(1)}%",
-            style: TextStyle(fontSize: 16)),
+        Text(
+          "✅ 연속 출석: $_consecutiveDays일",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          "📅 ${DateTime.now().month}월 출석률: ${(_monthlyAttendanceRate * 100).toStringAsFixed(1)}%",
+          style: TextStyle(fontSize: 16),
+        ),
         const SizedBox(height: 16),
-        Expanded( // 🟩 TableCalendar가 남은 영역 차지하게
+        Expanded(
+          // 🟩 TableCalendar가 남은 영역 차지하게
           child: TableCalendar(
             focusedDay: DateTime.now(),
             firstDay: DateTime.utc(2025, 1, 1),
@@ -112,7 +120,11 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, day, _) {
                 if (_isPresent(day)) {
-                  return Icon(Icons.check_circle, color: Colors.green, size: 16);
+                  return Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 16,
+                  );
                 }
                 return null;
               },
@@ -122,7 +134,4 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
       ],
     );
   }
-
 }
-
-

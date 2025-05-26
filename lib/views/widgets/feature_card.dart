@@ -80,7 +80,8 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
     final prefs = await SharedPreferences.getInstance();
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
       final data = doc.data();
       if (data != null && data['vocab_date'] == _todayKey) {
         await prefs.setInt('vocab_completed', data['vocab_completed'] ?? 0);
@@ -143,9 +144,19 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
           radius: screenWidth * 0.08,
           lineWidth: screenWidth * 0.03,
           percent: percent.clamp(0.0, 1.0),
-          center: isComplete
-              ? Text("완료!", style: TextStyle(fontSize: screenWidth * 0.025,fontWeight: FontWeight.bold))
-              : Text("${(percent * 100).toInt()}%", style: TextStyle(fontSize: screenWidth * 0.025)),
+          center:
+              isComplete
+                  ? Text(
+                    "완료!",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.025,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                  : Text(
+                    "${(percent * 100).toInt()}%",
+                    style: TextStyle(fontSize: screenWidth * 0.025),
+                  ),
           progressColor: Colors.blueAccent,
           backgroundColor: Colors.grey.shade300,
         ),
@@ -153,16 +164,33 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("일일 학습", style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold)),
+            Text(
+              "일일 학습",
+              style: TextStyle(
+                fontSize: screenWidth * 0.04,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             Row(
               children: [
-                Text("하루 목표: ", style: TextStyle(fontSize: screenWidth * 0.025)),
+                Text(
+                  "하루 목표: ",
+                  style: TextStyle(fontSize: screenWidth * 0.025),
+                ),
                 DropdownButton<int>(
                   value: _goal,
-                  items: _goalOptions.map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text("$value개",style: TextStyle(fontSize: screenWidth * 0.025)),
-                  )).toList(),
+                  items:
+                      _goalOptions
+                          .map(
+                            (value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(
+                                "$value개",
+                                style: TextStyle(fontSize: screenWidth * 0.025),
+                              ),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       _changeGoal(value);
@@ -171,7 +199,10 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
                 ),
               ],
             ),
-            Text("오늘 푼 단어: $_completed개",style: TextStyle(fontSize: screenWidth * 0.025)),
+            Text(
+              "오늘 푼 단어: $_completed개",
+              style: TextStyle(fontSize: screenWidth * 0.025),
+            ),
             // const SizedBox(height: 6),
             // ElevatedButton(
             //   onPressed: isComplete ? null : _increaseCompleted,

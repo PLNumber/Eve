@@ -4,7 +4,8 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class AttendanceReminder {
-  static final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
   static const String _prefKey = 'lastLoginDate';
 
   /// 앱 시작 시 한 번만 호출하여 알림 플러그인 초기화
@@ -13,9 +14,10 @@ class AttendanceReminder {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initSettings =
-    InitializationSettings(android: androidSettings);
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidSettings,
+    );
 
     await _notifications.initialize(initSettings);
   }
@@ -43,16 +45,17 @@ class AttendanceReminder {
   /// n일 동안 미접속 알림 띄우기
   static Future<void> _showNotification(int daysAway) async {
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
-      'attendance_channel',
-      '출석 알림',
-      channelDescription: '오랜 미접속 사용자에게 알림을 보냅니다.',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
+        AndroidNotificationDetails(
+          'attendance_channel',
+          '출석 알림',
+          channelDescription: '오랜 미접속 사용자에게 알림을 보냅니다.',
+          importance: Importance.high,
+          priority: Priority.high,
+        );
 
-    const NotificationDetails details =
-    NotificationDetails(android: androidDetails);
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+    );
 
     await _notifications.show(
       0,

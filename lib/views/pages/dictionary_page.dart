@@ -34,11 +34,11 @@ class _DictionaryPageState extends State<DictionaryPage> {
       final apiKey = dotenv.env['OURMALSAEM_API_KEY']!;
       final uri = Uri.parse(
         'https://opendict.korean.go.kr/api/search'
-            '?key=$apiKey'
-            '&q=${Uri.encodeComponent(cleanQuery)}'
-            '&req_type=json'
-            '&num=50'
-            '&part=word',
+        '?key=$apiKey'
+        '&q=${Uri.encodeComponent(cleanQuery)}'
+        '&req_type=json'
+        '&num=50'
+        '&part=word',
       );
 
       final res = await http.get(uri);
@@ -46,15 +46,17 @@ class _DictionaryPageState extends State<DictionaryPage> {
         final body = json.decode(res.body);
         final items = body['channel']['item'] as List<dynamic>? ?? [];
 
-        _exactMatches = items.where((e) {
-          final word = (e['word'] ?? '').replaceAll(RegExp(r'[\^\-]'), '');
-          return word == cleanQuery;
-        }).toList();
+        _exactMatches =
+            items.where((e) {
+              final word = (e['word'] ?? '').replaceAll(RegExp(r'[\^\-]'), '');
+              return word == cleanQuery;
+            }).toList();
 
-        _partialMatches = items.where((e) {
-          final word = (e['word'] ?? '').replaceAll(RegExp(r'[\^\-]'), '');
-          return word.contains(cleanQuery) && word != cleanQuery;
-        }).toList();
+        _partialMatches =
+            items.where((e) {
+              final word = (e['word'] ?? '').replaceAll(RegExp(r'[\^\-]'), '');
+              return word.contains(cleanQuery) && word != cleanQuery;
+            }).toList();
 
         if (_exactMatches.isEmpty && _partialMatches.isEmpty) {
           _error = '검색 결과가 없습니다.';
@@ -86,9 +88,10 @@ class _DictionaryPageState extends State<DictionaryPage> {
   Widget _buildEntryCard(Map<String, dynamic> item) {
     final word = formatWordForDisplay(item['word'] ?? '');
     final rawSense = item['sense'];
-    final senses = (rawSense is List)
-        ? rawSense.cast<Map<String, dynamic>>()
-        : [rawSense as Map<String, dynamic>];
+    final senses =
+        (rawSense is List)
+            ? rawSense.cast<Map<String, dynamic>>()
+            : [rawSense as Map<String, dynamic>];
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -108,10 +111,12 @@ class _DictionaryPageState extends State<DictionaryPage> {
             const SizedBox(height: 8),
             ...senses.map((sense) {
               final rawDef = sense['definition'] ?? '';
-              final def = _unescape.convert(rawDef)
-                  .replaceAll(RegExp(r'<\/?FL>'), '') // <FL> 또는 </FL> 제거
-                  .replaceAll('?', '')
-                  .trim();
+              final def =
+                  _unescape
+                      .convert(rawDef)
+                      .replaceAll(RegExp(r'<\/?FL>'), '') // <FL> 또는 </FL> 제거
+                      .replaceAll('?', '')
+                      .trim();
 
               final pos = sense['pos'];
               final cat = sense['cat'];
@@ -126,10 +131,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
                       color: Colors.black87,
                     ),
                     children: [
-                      if (cat != null && cat
-                          .toString()
-                          .trim()
-                          .isNotEmpty)
+                      if (cat != null && cat.toString().trim().isNotEmpty)
                         TextSpan(
                           text: '「$cat」 ',
                           style: const TextStyle(
@@ -137,10 +139,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      if (pos != null && pos
-                          .toString()
-                          .trim()
-                          .isNotEmpty)
+                      if (pos != null && pos.toString().trim().isNotEmpty)
                         TextSpan(
                           text: '[$pos] ',
                           style: const TextStyle(color: Colors.grey),
@@ -187,41 +186,43 @@ class _DictionaryPageState extends State<DictionaryPage> {
             const SizedBox(height: 16),
             if (_isLoading)
               const CircularProgressIndicator()
+            else if (_error != null)
+              Text(_error!, style: const TextStyle(color: Colors.red))
             else
-              if (_error != null)
-                Text(_error!, style: const TextStyle(color: Colors.red))
-              else
-                Expanded(
-                  child: ListView(
-                    children: [
-
-                      /// 정확한 결과
-                      const Text(
-                        '🔍 정확히 일치하는 단어',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+              Expanded(
+                child: ListView(
+                  children: [
+                    /// 정확한 결과
+                    const Text(
+                      '🔍 정확히 일치하는 단어',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 8),
-                      if (_exactMatches.isEmpty)
-                        const Text('일치하는 결과가 없습니다.')
-                      else
-                        ..._exactMatches.map((e) => _buildEntryCard(e)),
-                      const SizedBox(height: 24),
+                    ),
+                    const SizedBox(height: 8),
+                    if (_exactMatches.isEmpty)
+                      const Text('일치하는 결과가 없습니다.')
+                    else
+                      ..._exactMatches.map((e) => _buildEntryCard(e)),
+                    const SizedBox(height: 24),
 
-                      /// 포함된 결과
-                      const Text(
-                        '📃 포함된 단어 결과',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                    /// 포함된 결과
+                    const Text(
+                      '📃 포함된 단어 결과',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 8),
-                      if (_partialMatches.isEmpty)
-                        const Text('포함된 단어가 없습니다.')
-                      else
-                        ..._partialMatches.map((e) => _buildEntryCard(e)),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (_partialMatches.isEmpty)
+                      const Text('포함된 단어가 없습니다.')
+                    else
+                      ..._partialMatches.map((e) => _buildEntryCard(e)),
+                  ],
                 ),
+              ),
           ],
         ),
       ),

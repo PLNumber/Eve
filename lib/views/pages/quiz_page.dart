@@ -40,16 +40,17 @@ class _QuizPageState extends State<QuizPage> {
     _quizStartTime = DateTime.now();
     _loadQuiz();
     _loadUserLevel();
-    _answerFocusNode = FocusNode();                   // ⚡ 추가
+    _answerFocusNode = FocusNode(); // ⚡ 추가
     // 위젯 빌드 완료 후에 포커스 요청
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _answerFocusNode.requestFocus();
       SystemChannels.textInput.invokeMethod('TextInput.show'); // 키보드 강제 표시
     });
   }
+
   @override
   void dispose() {
-    _answerFocusNode.dispose();                       // ⚡ 추가
+    _answerFocusNode.dispose(); // ⚡ 추가
     _answerCtrl.dispose();
     super.dispose();
   }
@@ -157,14 +158,13 @@ class _QuizPageState extends State<QuizPage> {
       final initialHint = _extractInitialHint(currentQuestion!.answer);
       setState(() => answerHintText = initialHint);
     }
-
-
   }
 
   Future<void> _increaseDailyVocabCount() async {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
-    final todayKey = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    final todayKey =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
@@ -186,8 +186,6 @@ class _QuizPageState extends State<QuizPage> {
       'vocab_date': todayKey,
     }, SetOptions(merge: true));
   }
-
-
 
   void _showFeedbackDialog(String message) {
     final local = AppLocalizations.of(context)!;
@@ -257,15 +255,16 @@ class _QuizPageState extends State<QuizPage> {
         );
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,//변경
+        resizeToAvoidBottomInset: false, //변경
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: ()=> Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => QuizOptionPage()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuizOptionPage()),
+                ),
           ),
           actions: [
             IconButton(
@@ -315,7 +314,8 @@ class _QuizPageState extends State<QuizPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -328,7 +328,9 @@ class _QuizPageState extends State<QuizPage> {
                                           color: getDifficultyColor(
                                             quiz?.difficulty ?? 0,
                                           ),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: Text(
                                           local.difficultyBadge(
@@ -386,14 +388,13 @@ class _QuizPageState extends State<QuizPage> {
                               //   ),
                               // ),
                               // const SizedBox(height: 8),
-
                               Row(
                                 children: [
                                   Expanded(
                                     child: TextField(
                                       controller: _answerCtrl,
-                                      focusNode: _answerFocusNode,//
-                                      autofocus: true,//
+                                      focusNode: _answerFocusNode, //
+                                      autofocus: true, //
                                       decoration: InputDecoration(
                                         hintText: answerHintText,
                                         border: OutlineInputBorder(
@@ -457,4 +458,3 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
-
