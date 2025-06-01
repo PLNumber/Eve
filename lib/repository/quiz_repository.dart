@@ -90,7 +90,7 @@ class QuizRepository {
 
   // 만약 존재하지 않을 경우, 해당 단어로 문제를 만드는 함수인 generateQuestion 함수를 구현
   // ✅ 3. 문제 생성 (Gemini 사용)
-  Future<QuizQuestion> generateQuestion(Map<String, dynamic> vocabData) async {
+  Future<QuizQuestion> generateQuestion(Map<String, dynamic> vocabData, {int maxAttempts = 3}) async {
     final promptTemplate = '''
 당신은 한국어 문해력 평가용 퀴즈 문제를 출제하는 전문가입니다.
 
@@ -108,14 +108,14 @@ class QuizRepository {
 1. 문제는 반드시 **2문장 이상**으로 구성하여 문맥을 충분히 제공합니다.
 
 2. 정답이 사용된 자리는 **정답에서 가려질 부분의 글자 수만큼 연속된 밑줄(_)** 로 가리세요.
-   - 예: 정답 "책임감" → "___", 정답 "강" → "_"
+   - 예: 정답 "책임감" → "______", 정답 "강" → "_"
    - ❗ 공백 없이 연속된 밑줄만 사용하고, 나눠 쓰지 마세요. (예: "___ ___" ❌)
 
 3. **동사인 경우**, **어간만 가리고 어미는 그대로** 둡니다.
    - 예: "보다" → "_고", "달리다" → "__고 있었다"
 
 4. 밑줄 수는 반드시 가려진 글자 수와 정확히 일치해야 합니다.
-   - 예: "가능성" → "___", "의심하다" → "___다"
+   - 예: "가능성" → "____", "의심하다" → "_____다"
 
 5. 문맥상 **정답 외 단어는 들어갈 수 없도록** 만드세요.
 
@@ -138,15 +138,11 @@ class QuizRepository {
 - 각 오답이 **문맥에 왜 어울리지 않는지** 구체적으로 설명하세요.
 - ❗ 절대 정답을 직접 언급하거나 유추할 수 있게 설명하지 마세요.
 
-예:
-- 오답: "기쁘다" → 피드백: "이 문장은 당황하거나 혼란스러운 상황으로, 긍정적인 감정 표현은 어울리지 않습니다."
-
 ---
 
 📌 [힌트(hint)] 조건:
 
 - 정답을 직접 언급하지 말고, **문맥적 힌트**를 자연스럽게 제시하세요.
-- 힌트는 문제 맥락을 간접적으로 설명하며 독자가 유추할 수 있도록 합니다.
 
 ---
 
@@ -169,6 +165,8 @@ class QuizRepository {
   "feedbacks": ["오답1 피드백", "오답2 피드백", "오답3 피드백"],
   "difficulty": {등급숫자}
 }
+```
+
 ❗ 반드시 지켜야 할 금지사항:
 
 정답을 노출하거나 유추 가능하게 설명하지 마세요.
@@ -178,18 +176,43 @@ class QuizRepository {
 출력 형식 외의 문장이나 설명은 포함하지 마세요.
 ''';
 
-    final quiz = await geminiService.generateQuizQuestion(
-      vocabData,
-      promptTemplate,
-    );
-    if (quiz == null) throw Exception("Gemini 퀴즈 생성 실패");
-    await saveQuiz(vocabData['어휘'], quiz);
-    return quiz;
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      final quiz = await geminiService.generateQuizQuestion(
+        vocabData,
+        promptTemplate,
+      );
+
+      if (quiz != null && _isValidQuiz(quiz, vocabData['어휘'])) {
+        await saveQuiz(vocabData['어휘'], quiz);
+        return quiz;
+      }
+    }
+
+    throw Exception("퀴즈 생성 실패: $maxAttempts회 시도했지만 유효한 문제를 만들지 못했습니다.");
   }
+
+  bool _isValidQuiz(QuizQuestion quiz, String word) {
+    final question = quiz.question?.trim() ?? '';
+    final answer = quiz.answer?.trim() ?? '';
+    final hint = quiz.hint?.trim() ?? '';
+    final distractors = quiz.distractors;
+    final feedbacks = quiz.feedbacks;
+
+    if (question.isEmpty || answer.isEmpty || hint.isEmpty) return false;
+    if (!question.contains('_')) return false;
+    if (distractors == null || distractors.length != 3) return false;
+    if (feedbacks == null || feedbacks.length != 3) return false;
+    if (distractors.contains(word)) return false;
+    if (answer != word) return false;
+
+    return true;
+  }
+
 
   // 해당 문제를 만든 후 저장하는 함수인 saveQuiz 함수를 구현
   // ✅ 4. 문제 저장
   Future<void> saveQuiz(String word, QuizQuestion quiz) async {
+    
     await _firestore.collection('quizzes').doc(word).set(quiz.toMap());
   }
 

@@ -2,7 +2,10 @@
 import 'package:flutter/material.dart';
 
 /// 퀴즈 생성 방식 Enum 정의
-enum QuizGenerationMode { gemini, urimalsaem }
+enum QuizGenerationMode {
+  gemini,
+  urimalsaem,
+}
 
 /// 퀴즈 생성 방식 Provider
 class QuizModeProvider with ChangeNotifier {

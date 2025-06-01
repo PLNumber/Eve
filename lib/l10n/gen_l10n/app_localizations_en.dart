@@ -66,8 +66,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nickname_change => 'Change Nickname';
 
   @override
-  String get nickname_invalid =>
-      'Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.';
+  String get nickname_invalid => 'Nickname must be 2-10 characters long and can include Korean, English letters, and numbers.';
 
   @override
   String get nickname_taken => 'This nickname is already taken.';
@@ -146,8 +145,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quizPageTitle => 'Take Quiz';
 
   @override
-  String get quizErrorFetch =>
-      'Failed to generate question: cannot reach server.';
+  String get quizErrorFetch => 'Failed to generate question: cannot reach server.';
 
   @override
   String get quizErrorNext => 'Unable to load the next question.';
@@ -185,8 +183,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exampleNickname => 'e.g., VocabularyKing123';
 
   @override
-  String get invalidNicknameFormat =>
-      'Nickname must be 2–10 chars, Korean/letters/numbers only.';
+  String get invalidNicknameFormat => 'Nickname must be 2–10 chars, Korean/letters/numbers only.';
 
   @override
   String get nicknameDuplicateExists => 'This nickname is already in use.';
