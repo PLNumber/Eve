@@ -168,5 +168,111 @@
   "startWithGoogle": "구글로 시작하기",
   "@startWithGoogle": {
     "description": "구글 로그인 버튼 레이블"
+  },
+
+
+  "welcomeUser": "{nickname}님 환영합니다!",
+  "@welcomeUser": {
+    "description": "앱에 로그인한 사용자에게 환영 인사",
+    "placeholders": {
+      "nickname": {
+        "type": "Object"
+      }
+    }
+  },
+
+  "dailyLearning": "일일 학습",
+  "dailyGoal": "하루 목표 : ",
+  "goalCountUnit": "{count}개",
+  "@goalCountUnit": {
+    "description": "하루 목표 수량 (한국어 개 단위)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "todayLearnedWords": "오늘 푼 단어: {count}개",
+  "@todayLearnedWords": {
+    "description": "오늘 푼 단어 개수 표시",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+
+  "startQuiz": "퀴즈 시작하기",
+  "myStats": "나의 통계",
+  "totalSolved": "총 푼 횟수",
+  "correctSolved": "맞춘 횟수",
+  "learningTime": "플레이 시간",
+  "days": "{count}일",
+  "hours": "{count}시간",
+  "minutes": "{count}분",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@hours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+
+  "levelInfo": "레벨 {level} ({exp} / {maxExp})",
+  "@levelInfo": {
+    "placeholders": {
+      "level": {"type": "Object"}, "exp": {"type": "Object"}, "maxExp": {"type": "Object"}
+    }
+  },
+
+  "questionGrade": "출제 등급",
+
+  "gradeMappingText": "레벨 1 ~ 9   : 1등급\n레벨 10 ~ 24 : 2등급\n레벨 25 ~ 49 : 3등급\n레벨 50 ~ 74 : 4등급\n레벨 75 ~ 100: 5등급",
+  "@gradeMappingText": {
+    "description": "레벨별 등급 설명 텍스트"
+  },
+
+  "wrongNote": "오답 노트",
+  "dictionary": "단어 사전",
+  "weeklyAttendance": "이번 주 출석",
+  "testSet3DaysAgo": "⚙️ 테스트: 3일 전으로 설정",
+
+  "consecutiveAttendance": "✅ 연속 출석: {days}일",
+  "@consecutiveAttendance": {
+    "description": "연속 출석 일수를 표시",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyAttendanceRate": "📅 {month}월 출석률: {rate}%",
+  "@monthlyAttendanceRate": {
+    "description": "월별 출석률을 %로 표시",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
   }
 }

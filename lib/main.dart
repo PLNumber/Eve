@@ -176,14 +176,10 @@ class _MainPage extends State<MainPage> {
 
   // 해당 등급의 텍스트
   String getGradeMappingText() {
-    return '''
-레벨 1 ~ 9   : 1등급
-레벨 10 ~ 24 : 2등급
-레벨 25 ~ 49 : 3등급
-레벨 50 ~ 74 : 4등급
-레벨 75 ~ 100: 5등급
-''';
+    final local = AppLocalizations.of(context)!;
+    return local.gradeMappingText;
   }
+
 
   Future<void> _loadUserInfo() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -222,28 +218,34 @@ class _MainPage extends State<MainPage> {
   Future<void> _loadLearningTime() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
+
+    final local = AppLocalizations.of(context)!;
+
     setState(() {
       final days = secs ~/ 86400;
       final remAfterDays = secs % 86400;
       final hours = remAfterDays ~/ 3600;
       final remAfterHours = remAfterDays % 3600;
       final minutes = remAfterHours ~/ 60;
+
+      final parts = <String>[];
+
       if (days > 0) {
-        learningTime = [
-          "$days일",
-          if (hours > 0) "${hours}시간",
-          if (minutes > 0) "${minutes}분",
-        ].join(' ');
-      } else if (hours > 0) {
-        learningTime = ["${hours}시간", if (minutes > 0) "${minutes}분"].join(' ');
-      } else {
-        learningTime = "$minutes분";
+        parts.add(local.days(days));
       }
+      if (hours > 0) {
+        parts.add(local.hours(hours));
+      }
+      if (minutes > 0 || parts.isEmpty) {
+        parts.add(local.minutes(minutes));
+      }
+
+      learningTime = parts.join(' ');
     });
   }
+
 
   String getProfileImage(int level) {
     return 'assets/images/profile_level_$level.png';
@@ -283,7 +285,7 @@ class _MainPage extends State<MainPage> {
                 ),
           ),
           title: Text(
-            "$nickname님 환영합니다!",
+            local.welcomeUser(nickname),
             style: TextStyle(fontSize: screenWidth * 0.045),
           ),
           centerTitle: true,
@@ -361,7 +363,7 @@ class _MainPage extends State<MainPage> {
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.quiz),
                         label: Text(
-                          "퀴즈 시작하기",
+                          local.startQuiz,
                           style: TextStyle(fontSize: screenWidth * 0.04),
                         ),
                         onPressed: () async {
@@ -406,7 +408,7 @@ class _MainPage extends State<MainPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                "나의 통계",
+                                local.myStats,
                                 style: TextStyle(
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.bold,
@@ -422,19 +424,19 @@ class _MainPage extends State<MainPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "총 푼 횟수: $totalSolved",
+                                        "${local.totalSolved}: $totalSolved",
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.03,
                                         ),
                                       ),
                                       Text(
-                                        "맞춘 횟수: $correctSolved",
+                                          "${local.correctSolved}: $correctSolved",
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.03,
                                         ),
                                       ),
                                       Text(
-                                        "플레이 시간: $learningTime",
+                                        "${local.learningTime}: $learningTime",
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.03,
                                         ),
@@ -466,7 +468,7 @@ class _MainPage extends State<MainPage> {
                               ),
                               SizedBox(height: screenHeight * 0.01),
                               Text(
-                                "레벨 $_level ($_exp / $_maxExp)",
+                                local.levelInfo(_level.toString(), _exp.toString(), _maxExp.toString()),
                                 style: TextStyle(
                                   fontSize: screenWidth * 0.02,
                                   color: textColor,
@@ -488,7 +490,7 @@ class _MainPage extends State<MainPage> {
                                         context: context,
                                         builder:
                                             (ctx) => AlertDialog(
-                                              title: const Text("출제 등급"),
+                                              title: Text(local.questionGrade),
                                               content: Text(
                                                 getGradeMappingText(),
                                               ),
@@ -496,7 +498,7 @@ class _MainPage extends State<MainPage> {
                                                 TextButton(
                                                   onPressed:
                                                       () => Navigator.pop(ctx),
-                                                  child: const Text("닫기"),
+                                                  child: Text(local.close),
                                                 ),
                                               ],
                                             ),
@@ -504,7 +506,7 @@ class _MainPage extends State<MainPage> {
                                     },
 
                                     child: Text(
-                                      "출제 등급",
+                                      local.questionGrade,
                                       style: TextStyle(
                                         color: Colors.indigo,
                                         decoration: TextDecoration.underline,
@@ -523,7 +525,7 @@ class _MainPage extends State<MainPage> {
                         children: [
                           _buildFeatureButton(
                             context,
-                            "오답 노트",
+                            local.wrongNote,
                             Icons.edit_note,
                             onTap: () {
                               Navigator.push(
@@ -537,7 +539,7 @@ class _MainPage extends State<MainPage> {
 
                           _buildFeatureButton(
                             context,
-                            "단어 사전",
+                            local.dictionary,
                             Icons.menu_book,
                             onTap: () {
                               Navigator.push(
@@ -556,7 +558,7 @@ class _MainPage extends State<MainPage> {
                       WeeklyAttendancePreview(), // 일주일 출석만 보여줌
                       //테스트용 마지막 접속일 3일전으로 설정하고 테스트
                       ElevatedButton(
-                        child: const Text('⚙️ 테스트: 3일 전으로 설정'),
+                        child: Text(local.testSet3DaysAgo),
                         onPressed: () async {
                           final prefs = await SharedPreferences.getInstance();
                           final threeDaysAgo = DateTime.now().subtract(

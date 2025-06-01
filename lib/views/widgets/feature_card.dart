@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
+import '../../l10n/gen_l10n/app_localizations.dart';
+
 //어휘 학습 카드
 class DailyVocabProgress extends StatefulWidget {
   @override
@@ -83,6 +85,7 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     double percent = _completed / _goal;
@@ -115,7 +118,7 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "일일 학습",
+              local.dailyLearning,
               style: TextStyle(
                 fontSize: screenWidth * 0.04,
                 fontWeight: FontWeight.bold,
@@ -124,9 +127,10 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
             Row(
               children: [
                 Text(
-                  "하루 목표: ",
+                  local.dailyGoal,
                   style: TextStyle(fontSize: screenWidth * 0.025),
                 ),
+                SizedBox(width: screenWidth * 0.01),
                 DropdownButton<int>(
                   value: _goal,
                   items:
@@ -135,9 +139,10 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
                             (value) => DropdownMenuItem(
                               value: value,
                               child: Text(
-                                "$value개",
+                                local.goalCountUnit(value),
                                 style: TextStyle(fontSize: screenWidth * 0.025),
                               ),
+
                             ),
                           )
                           .toList(),
@@ -150,14 +155,9 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
               ],
             ),
             Text(
-              "오늘 푼 단어: $_completed개",
+              local.todayLearnedWords(_completed),
               style: TextStyle(fontSize: screenWidth * 0.025),
             ),
-            // const SizedBox(height: 6),
-            // ElevatedButton(
-            //   onPressed: isComplete ? null : _increaseCompleted,
-            //   child: const Text("단어 풀기 +1 (테스트용)"),
-            // ),
           ],
         ),
       ],

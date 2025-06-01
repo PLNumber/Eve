@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../l10n/gen_l10n/app_localizations.dart';
+
 class AttendanceCalendar extends StatefulWidget {
   @override
   _AttendanceCalendarState createState() => _AttendanceCalendarState();
@@ -96,13 +98,19 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Column(
       children: [
         const SizedBox(height: 16),
-        Text("✅ 연속 출석: $_consecutiveDays일",
+        Text(local.consecutiveAttendance(_consecutiveDays),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text("📅 ${DateTime.now().month}월 출석률: ${(_monthlyAttendanceRate * 100).toStringAsFixed(1)}%",
-            style: TextStyle(fontSize: 16)),
+        Text(
+          local.monthlyAttendanceRate(
+            DateTime.now().month.toString(),
+            (_monthlyAttendanceRate * 100).toStringAsFixed(1),
+          ),
+          style: TextStyle(fontSize: 16),
+        ),
         const SizedBox(height: 16),
         Expanded( // 🟩 TableCalendar가 남은 영역 차지하게
           child: TableCalendar(

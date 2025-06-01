@@ -205,4 +205,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startWithGoogle => 'Start with Google';
+
+  @override
+  String welcomeUser(Object nickname) {
+    return 'Welcome, $nickname!';
+  }
+
+  @override
+  String get dailyLearning => 'Daily Learning';
+
+  @override
+  String get dailyGoal => 'Daily Goal : ';
+
+  @override
+  String goalCountUnit(int count) {
+    return '$count words';
+  }
+
+  @override
+  String todayLearnedWords(int count) {
+    return 'Words Solved Today: $count';
+  }
+
+  @override
+  String get startQuiz => 'Start Quiz';
+
+  @override
+  String get myStats => 'My Stats';
+
+  @override
+  String get totalSolved => 'Total Solved';
+
+  @override
+  String get correctSolved => 'Correct Answers';
+
+  @override
+  String get learningTime => 'Play Time';
+
+  @override
+  String days(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String hours(int count) {
+    return '${count}h';
+  }
+
+  @override
+  String minutes(int count) {
+    return '${count}m';
+  }
+
+  @override
+  String levelInfo(Object level, Object exp, Object maxExp) {
+    return 'Level $level ($exp / $maxExp)';
+  }
+
+  @override
+  String get questionGrade => 'Question Grade';
+
+  @override
+  String get gradeMappingText => 'Level 1 ~ 9   : Grade 1\nLevel 10 ~ 24 : Grade 2\nLevel 25 ~ 49 : Grade 3\nLevel 50 ~ 74 : Grade 4\nLevel 75 ~ 100: Grade 5';
+
+  @override
+  String get wrongNote => 'Wrong Note';
+
+  @override
+  String get dictionary => 'Dictionary';
+
+  @override
+  String get weeklyAttendance => 'Weekly Attendance';
+
+  @override
+  String get testSet3DaysAgo => '⚙️ Test: Set date to 3 days ago';
+
+  @override
+  String consecutiveAttendance(int days) {
+    return '✅ Consecutive attendance: $days days';
+  }
+
+  @override
+  String monthlyAttendanceRate(String month, String rate) {
+    return '📅 Attendance rate in month $month: $rate%';
+  }
 }

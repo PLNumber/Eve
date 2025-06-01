@@ -205,4 +205,88 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get startWithGoogle => '구글로 시작하기';
+
+  @override
+  String welcomeUser(Object nickname) {
+    return '$nickname님 환영합니다!';
+  }
+
+  @override
+  String get dailyLearning => '일일 학습';
+
+  @override
+  String get dailyGoal => '하루 목표 : ';
+
+  @override
+  String goalCountUnit(int count) {
+    return '$count개';
+  }
+
+  @override
+  String todayLearnedWords(int count) {
+    return '오늘 푼 단어: $count개';
+  }
+
+  @override
+  String get startQuiz => '퀴즈 시작하기';
+
+  @override
+  String get myStats => '나의 통계';
+
+  @override
+  String get totalSolved => '총 푼 횟수';
+
+  @override
+  String get correctSolved => '맞춘 횟수';
+
+  @override
+  String get learningTime => '플레이 시간';
+
+  @override
+  String days(int count) {
+    return '$count일';
+  }
+
+  @override
+  String hours(int count) {
+    return '$count시간';
+  }
+
+  @override
+  String minutes(int count) {
+    return '$count분';
+  }
+
+  @override
+  String levelInfo(Object level, Object exp, Object maxExp) {
+    return '레벨 $level ($exp / $maxExp)';
+  }
+
+  @override
+  String get questionGrade => '출제 등급';
+
+  @override
+  String get gradeMappingText => '레벨 1 ~ 9   : 1등급\n레벨 10 ~ 24 : 2등급\n레벨 25 ~ 49 : 3등급\n레벨 50 ~ 74 : 4등급\n레벨 75 ~ 100: 5등급';
+
+  @override
+  String get wrongNote => '오답 노트';
+
+  @override
+  String get dictionary => '단어 사전';
+
+  @override
+  String get weeklyAttendance => '이번 주 출석';
+
+  @override
+  String get testSet3DaysAgo => '⚙️ 테스트: 3일 전으로 설정';
+
+  @override
+  String consecutiveAttendance(int days) {
+    return '✅ 연속 출석: $days일';
+  }
+
+  @override
+  String monthlyAttendanceRate(String month, String rate) {
+    return '📅 $month월 출석률: $rate%';
+  }
 }

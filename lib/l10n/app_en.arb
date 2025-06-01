@@ -168,5 +168,109 @@
   "startWithGoogle": "Start with Google",
   "@startWithGoogle": {
     "description": "Label for the Google sign-in button"
+  },
+  "welcomeUser": "Welcome, {nickname}!",
+  "@welcomeUser": {
+    "description": "Greeting the logged-in user",
+    "placeholders": {
+      "nickname": {
+        "type": "Object"
+      }
+    }
+  },
+
+  "dailyLearning": "Daily Learning",
+  "dailyGoal": "Daily Goal : ",
+  "goalCountUnit": "{count} words",
+  "@goalCountUnit": {
+    "description": "Daily goal in word units",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "todayLearnedWords": "Words Solved Today: {count}",
+  "@todayLearnedWords": {
+    "description": "Shows number of words solved today",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+
+  "startQuiz": "Start Quiz",
+  "myStats": "My Stats",
+  "totalSolved": "Total Solved",
+  "correctSolved": "Correct Answers",
+  "learningTime": "Play Time",
+  "days": "{count}d",
+  "hours": "{count}h",
+  "minutes": "{count}m",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@hours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+
+  "levelInfo": "Level {level} ({exp} / {maxExp})",
+  "@levelInfo": {
+    "placeholders": {
+      "level": {"type": "Object"}, "exp": {"type": "Object"}, "maxExp": {"type": "Object"}
+    }
+  },
+
+  "questionGrade": "Question Grade",
+  "gradeMappingText": "Level 1 ~ 9   : Grade 1\nLevel 10 ~ 24 : Grade 2\nLevel 25 ~ 49 : Grade 3\nLevel 50 ~ 74 : Grade 4\nLevel 75 ~ 100: Grade 5",
+  "@gradeMappingText": {
+    "description": "Description for level-based grading"
+  },
+
+
+  "wrongNote": "Wrong Note",
+  "dictionary": "Dictionary",
+  "weeklyAttendance": "Weekly Attendance",
+  "testSet3DaysAgo": "⚙️ Test: Set date to 3 days ago",
+
+  "consecutiveAttendance": "✅ Consecutive attendance: {days} days",
+  "@consecutiveAttendance": {
+    "description": "Shows number of consecutive attendance days",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyAttendanceRate": "📅 Attendance rate in month {month}: {rate}%",
+  "@monthlyAttendanceRate": {
+    "description": "Monthly attendance rate with percentage",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
   }
 }

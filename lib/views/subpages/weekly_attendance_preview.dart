@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
+import '../../l10n/gen_l10n/app_localizations.dart';
 import 'attendance_calendar.dart';
 
 class WeeklyAttendancePreview extends StatefulWidget {
@@ -58,6 +59,7 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final today = DateTime.now();
@@ -91,7 +93,7 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("📆 이번 주 출석",
+            Text("📆 ${local.weeklyAttendance}",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 12),
             Row(

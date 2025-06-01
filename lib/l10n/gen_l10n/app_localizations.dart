@@ -478,6 +478,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start with Google'**
   String get startWithGoogle;
+
+  /// Greeting the logged-in user
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {nickname}!'**
+  String welcomeUser(Object nickname);
+
+  /// No description provided for @dailyLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Learning'**
+  String get dailyLearning;
+
+  /// No description provided for @dailyGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Goal : '**
+  String get dailyGoal;
+
+  /// Daily goal in word units
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words'**
+  String goalCountUnit(int count);
+
+  /// Shows number of words solved today
+  ///
+  /// In en, this message translates to:
+  /// **'Words Solved Today: {count}'**
+  String todayLearnedWords(int count);
+
+  /// No description provided for @startQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Quiz'**
+  String get startQuiz;
+
+  /// No description provided for @myStats.
+  ///
+  /// In en, this message translates to:
+  /// **'My Stats'**
+  String get myStats;
+
+  /// No description provided for @totalSolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Solved'**
+  String get totalSolved;
+
+  /// No description provided for @correctSolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answers'**
+  String get correctSolved;
+
+  /// No description provided for @learningTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Time'**
+  String get learningTime;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d'**
+  String days(int count);
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h'**
+  String hours(int count);
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m'**
+  String minutes(int count);
+
+  /// No description provided for @levelInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level} ({exp} / {maxExp})'**
+  String levelInfo(Object level, Object exp, Object maxExp);
+
+  /// No description provided for @questionGrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Question Grade'**
+  String get questionGrade;
+
+  /// Description for level-based grading
+  ///
+  /// In en, this message translates to:
+  /// **'Level 1 ~ 9   : Grade 1\nLevel 10 ~ 24 : Grade 2\nLevel 25 ~ 49 : Grade 3\nLevel 50 ~ 74 : Grade 4\nLevel 75 ~ 100: Grade 5'**
+  String get gradeMappingText;
+
+  /// No description provided for @wrongNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong Note'**
+  String get wrongNote;
+
+  /// No description provided for @dictionary.
+  ///
+  /// In en, this message translates to:
+  /// **'Dictionary'**
+  String get dictionary;
+
+  /// No description provided for @weeklyAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Attendance'**
+  String get weeklyAttendance;
+
+  /// No description provided for @testSet3DaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'⚙️ Test: Set date to 3 days ago'**
+  String get testSet3DaysAgo;
+
+  /// Shows number of consecutive attendance days
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Consecutive attendance: {days} days'**
+  String consecutiveAttendance(int days);
+
+  /// Monthly attendance rate with percentage
+  ///
+  /// In en, this message translates to:
+  /// **'📅 Attendance rate in month {month}: {rate}%'**
+  String monthlyAttendanceRate(String month, String rate);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
