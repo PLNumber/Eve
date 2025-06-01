@@ -58,6 +58,8 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final today = DateTime.now();
     final weekDays = List<Map<String, dynamic>>.generate(7, (i) {
       final day = today.subtract(Duration(days: today.weekday - 1 - i));
@@ -72,15 +74,15 @@ class _WeeklyAttendancePreviewState extends State<WeeklyAttendancePreview> {
         showDialog(
           context: context,
           builder: (_) => Dialog(
-            insetPadding: EdgeInsets.all(16),
+            insetPadding: EdgeInsets.all(screenWidth * 0.04),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: SizedBox(height: 500, child: AttendanceCalendar()),
           ),
         );
       },
       child: Container(
-        padding: EdgeInsets.all(16),
-        margin: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.all(screenWidth * 0.04),
+        margin: EdgeInsets.symmetric(horizontal: screenHeight * 0.005),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),

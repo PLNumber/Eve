@@ -519,9 +519,8 @@ class _MainPage extends State<MainPage> {
                       ),
                       SizedBox(height: screenHeight * 0.01),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          //
                           _buildFeatureButton(
                             context,
                             "오답 노트",
@@ -541,7 +540,6 @@ class _MainPage extends State<MainPage> {
                             "단어 사전",
                             Icons.menu_book,
                             onTap: () {
-                              // TODO: 단어 사전 페이지 이동
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -598,9 +596,9 @@ Widget _buildFeatureButton(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 4,
       child: Container(
-        width: screenWidth * 0.35,
-        height: screenWidth * 0.35,
-        padding: EdgeInsets.all(12),
+        width: screenWidth * 0.43,
+        height: screenWidth * 0.30,
+        padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
