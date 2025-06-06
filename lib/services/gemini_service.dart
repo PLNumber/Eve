@@ -59,12 +59,18 @@ class GeminiService {
         print('📭 Gemini 응답 text 없음: $word');
         return null;
       }
-      //
-      // print('[Gemini 응답 원문: $word] → $text');
 
-      final cleaned = text.replaceAll(RegExp(r'^```json|```'), '').trim();
-      final safeCleaned = cleaned.replaceAll(r"\'", "'"); // ← 이 줄 추가
-      final map = jsonDecode(safeCleaned);
+      //print('[Gemini 응답 원문: $word] → $text');
+
+// ✅ 불필요한 escape 문자 제거
+      final cleaned = text
+          .replaceAll(RegExp(r'^```json|```'), '')
+          .replaceAll(r"\'", "'")
+          .replaceAll(r'\_', '_') // ← 이 줄 추가!
+          .trim();
+
+      final map = jsonDecode(cleaned);
+
 
       map['difficulty'] ??= extractLevelNumber(level);
       return QuizQuestion.fromJson(map);
@@ -109,7 +115,10 @@ class GeminiService {
       }
 
 // ✅ 이스케이프 문자 정리
-      final safeCleaned = cleaned.replaceAll(r"\'", "'");
+      final safeCleaned = cleaned
+          .replaceAll(r"\'", "'")
+          .replaceAll(r'\_', '_'); // ← 여기도 동일하게!
+
 
       final map = jsonDecode(safeCleaned);
 
