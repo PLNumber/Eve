@@ -1,0 +1,14 @@
+@startuml
+actor User
+
+participant "OptionWidget" as Widget
+participant "OptionViewModel" as ViewModel
+
+User -> Widget: 닉네임 입력 또는 설정 변경
+Widget -> ViewModel: checkNicknameAvailable(nickname)
+ViewModel --> Widget: 중복 여부 응답
+Widget -> ViewModel: saveSettings()
+ViewModel --> Widget: 저장 결과 응답
+Widget --> User: 저장 완료 UI 표시
+
+@enduml

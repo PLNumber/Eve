@@ -1,0 +1,74 @@
+@startuml
+actor User
+
+participant "MainPage" as Main
+participant "LoginPage" as Login
+participant "LoginViewModel" as LoginVM
+participant "QuizOptionPage" as QuizOption
+participant "QuizPage" as QuizPage
+participant "QuizController" as Controller
+participant "QuizService" as Service
+participant "GeminiService" as Gemini
+participant "QuizRepository" as QuizRepo
+participant "WrongNotesPage" as WrongNotes
+participant "DictionaryPage" as Dictionary
+participant "OptionWidget" as OptionWidget
+participant "OptionViewModel" as OptionVM
+participant "AttendanceReminder" as Reminder
+participant "LeaderboardWidget" as Leaderboard
+
+== 앱 시작 및 로그인 ==
+
+User -> Main: 앱 실행
+Main -> Login: 로그인 페이지 이동
+Login -> LoginVM: signInWithGoogle()
+LoginVM --> Login: 로그인 완료
+
+== 퀴즈 시작 및 생성 ==
+
+User -> QuizOption: 모드 선택 및 시작
+QuizOption -> Controller: startQuiz()
+Controller -> Service: generateQuestion(vocabData)
+Service -> Gemini: generateQuizPrompt()
+Gemini -> Gemini: requestToGemini(prompt)
+Gemini --> Service: JSON 응답 (문제 데이터)
+Service --> Controller: QuizQuestion 객체
+Controller -> QuizRepo: saveQuizResult()
+Controller --> QuizPage: 퀴즈 전달
+
+== 문제 풀이 및 정답 제출 ==
+
+User -> QuizPage: 문제 풀이
+QuizPage -> Controller: submitAnswer(answer)
+Controller -> Service: submitAnswer(answer)
+Service --> Controller: 처리 결과
+Controller -> QuizRepo: saveQuizResult()
+
+== 오답 노트 보기 ==
+
+User -> WrongNotes: 오답 보기 요청
+WrongNotes -> QuizRepo: getIncorrectWords()
+QuizRepo --> WrongNotes: 오답 리스트 반환
+
+== 사전 검색 ==
+
+User -> Dictionary: 단어 검색
+Dictionary -> ExternalAPI: 검색 API 호출
+ExternalAPI --> Dictionary: 결과 반환
+
+== 옵션 설정 ==
+
+User -> OptionWidget: 설정 변경
+OptionWidget -> OptionVM: 변경 저장
+
+== 출석 알림 ==
+
+Reminder -> LocalProvider: 언어 기반 출석 검사
+
+== 리더보드 조회 ==
+
+User -> Leaderboard: 랭킹 확인
+Leaderboard -> QuizRepo: 데이터 조회
+QuizRepo --> Leaderboard: 결과 반환
+
+@enduml

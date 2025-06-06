@@ -1,0 +1,12 @@
+@startuml
+actor User
+
+participant "LeaderboardWidget" as Leaderboard
+participant "QuizRepository" as Repo
+
+User -> Leaderboard: 리더보드 보기
+Leaderboard -> Repo: 사용자 점수 순으로 가져오기
+Repo --> Leaderboard: 유저 랭킹 데이터
+Leaderboard --> User: 리더보드 UI 표시
+
+@enduml

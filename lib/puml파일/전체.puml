@@ -1,0 +1,159 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class AttendanceCalendar {
+  + void initState()
+  + bool _isPresent(DateTime day)
+  + Widget build(BuildContext context)
+}
+
+class WeeklyAttendancePreview {
+  + void initState()
+  + Widget build(BuildContext context)
+}
+
+class WrongNotesPage {
+  + Widget build(BuildContext context)
+}
+
+class QuizPage {
+  + void initState()
+  + void dispose()
+  + Color getDifficultyColor(int level)
+  - void _showFeedbackDialog(String message)
+  - String _extractInitialHint(String text)
+  + Widget build(BuildContext context)
+}
+
+class SetNamePage {
+  - bool _validateNickname(String nickname)
+  + Widget build(BuildContext context)
+}
+
+class FeatureCard {
+  + Widget build(BuildContext context)
+}
+
+class Main {
+  + Widget build(BuildContext context)
+}
+
+class LeaderboardWidget {
+  + Widget build(BuildContext context)
+}
+
+class OptionWidget {
+  + Widget build(BuildContext context)
+}
+
+class NavUtil {
+  + void navigateTo(BuildContext context, Widget page)
+}
+
+class QuizOptionPage {
+  + Widget build(BuildContext context)
+}
+
+class OptionPage {
+  + Widget build(BuildContext context)
+}
+
+class LoginPage {
+  + Widget build(BuildContext context)
+}
+
+class DictionaryPage {
+  + Widget build(BuildContext context)
+  + Future<void> _search(String query)
+}
+
+class OptionViewModel {
+  + Future<void> saveSettings()
+  + Future<String?> checkNicknameAvailable(String nickname)
+}
+
+class LoginViewModel {
+  + Future<void> signInWithGoogle()
+  + void signOut()
+}
+
+class AttendanceReminder {
+  + Future<void> remindIfAbsent()
+}
+
+class QuizService {
+  + Future<QuizQuestion> generateQuestion(Map vocabData)
+  + Future<void> submitAnswer(String answer)
+}
+
+class GeminiService {
+  + String generateQuizPrompt(Map vocabData)
+  + Future<String> requestToGemini(String prompt)
+}
+
+class AuthService {
+  + Future<void> signInWithGoogle()
+  + Future<void> signOut()
+}
+
+class QuizRepository {
+  + Future<void> saveQuizResult(QuizQuestion quiz)
+  + Future<List<QuizQuestion>> getIncorrectWords()
+}
+
+class AuthRepository {
+  + Future<void> saveUserData(String uid, Map data)
+  + Future<Map> getUserData(String uid)
+}
+
+class Quiz {
+  + String question
+  + String answer
+  + String hint
+  + List<String> distractors
+  + List<String> feedbacks
+  + int difficulty
+}
+
+class QuizController {
+  + void startQuiz()
+  + void submitAnswer(String answer)
+}
+
+class AudioProvider {
+  + void play()
+  + void stop()
+}
+
+class ThemeProvider {
+  + void toggleTheme()
+}
+
+class LocalProvider {
+  + void changeLocale()
+}
+
+class QuizModeProvider {
+  + void setMode(String mode)
+}
+
+Main --> AudioProvider
+Main --> ThemeProvider
+Main --> LocalProvider
+Main --> LoginViewModel
+LoginPage --> LoginViewModel
+QuizPage --> QuizController
+QuizOptionPage --> QuizController
+QuizController --> QuizService
+QuizController --> QuizRepository
+QuizService --> GeminiService
+QuizService --> Quiz
+QuizRepository --> Quiz
+SetNamePage --> OptionViewModel
+OptionWidget --> OptionViewModel
+DictionaryPage --> ExternalAPI
+WrongNotesPage --> QuizRepository
+LeaderboardWidget --> QuizRepository
+AttendanceReminder --> LocalProvider
+
+@enduml

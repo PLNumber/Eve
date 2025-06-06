@@ -1,0 +1,16 @@
+@startuml
+actor User
+
+participant "QuizPage" as QuizPage
+participant "QuizController" as Controller
+participant "QuizService" as QuizService
+participant "QuizRepository" as Repo
+
+User -> QuizPage: 정답 제출
+QuizPage -> Controller: submitAnswer(answer)
+Controller -> QuizService: submitAnswer(answer)
+QuizService --> Controller: isCorrect
+Controller -> Repo: saveQuizResult(정답 여부)
+Controller --> QuizPage: 정답 여부 + 피드백 표시
+
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+actor User
+
+participant "WrongNotesPage" as Notes
+participant "QuizRepository" as Repo
+
+User -> Notes: 오답 노트 진입
+Notes -> Repo: getIncorrectWords()
+Repo --> Notes: List<QuizQuestion>
+Notes --> User: 오답 노트 리스트 표시
+
+@enduml

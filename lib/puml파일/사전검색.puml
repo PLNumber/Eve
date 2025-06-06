@@ -1,0 +1,12 @@
+@startuml
+actor User
+
+participant "DictionaryPage" as Dictionary
+participant "ExternalDictionaryAPI" as API
+
+User -> Dictionary: 단어 입력 및 검색
+Dictionary -> API: GET /search?query=word
+API --> Dictionary: 검색 결과 반환
+Dictionary --> User: 단어 뜻 및 관련 정보 표시
+
+@enduml

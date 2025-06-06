@@ -574,7 +574,7 @@ class _MainPage extends State<MainPage> {
                           // ✅ 1등급 단어 가져오기
                           final vocabSnapshot = await firestore
                               .collection('vocab2')
-                              .where('등급', isEqualTo: '3등급')
+                              .where('등급', isEqualTo: '4등급')
                               .get();
                           final vocabList = vocabSnapshot.docs.map((doc) => doc.data()).toList();
 

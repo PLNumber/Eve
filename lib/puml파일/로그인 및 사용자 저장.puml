@@ -1,0 +1,23 @@
+@startuml
+actor User
+
+participant "LoginPage" as Login
+participant "LoginViewModel" as ViewModel
+participant "AuthService" as Auth
+participant "AuthRepository" as Repo
+participant "Firebase" as Firebase
+
+User -> Login: Google 로그인 버튼 클릭
+Login -> ViewModel: signInWithGoogle()
+ViewModel -> Auth: signInWithGoogle()
+Auth -> Firebase: Firebase Auth 로그인
+Firebase --> Auth: 사용자 인증 정보 반환
+Auth --> ViewModel: 로그인 성공
+
+ViewModel -> Repo: saveUserData(uid, userInfo)
+Repo -> Firebase: Firestore 저장
+Firebase --> Repo: 저장 완료
+Repo --> ViewModel: 저장 완료
+ViewModel --> Login: 로그인 완료 처리
+
+@enduml
