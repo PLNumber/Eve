@@ -328,4 +328,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPartialMatch => 'No related words found.';
+
+  @override
+  String get leaderboard => 'Leaderboard';
+
+  @override
+  String get rank => 'Rank';
+
+  @override
+  String get userId => 'User ID';
+
+  @override
+  String get correctSolved2 => 'Correct Solved';
+
+  @override
+  String get totalSolved2 => 'Total Solved';
+
+  @override
+  String get accuracyRate => 'Accuracy Rate';
 }

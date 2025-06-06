@@ -287,5 +287,34 @@
   "exactMatchTitle": "🔍 Exact Match",
   "noExactMatch": "No exact matches found.",
   "partialMatchTitle": "📃 Related Words",
-  "noPartialMatch": "No related words found."
+  "noPartialMatch": "No related words found.",
+
+
+
+   "leaderboard": "Leaderboard",
+    "@leaderboard": {
+      "description": "Title for the leaderboard section"
+    },
+    "rank": "Rank",
+    "@rank": {
+      "description": "Column title for rank in leaderboard"
+    },
+    "userId": "User ID",
+    "@userId": {
+      "description": "Column title for user nickname/ID in leaderboard"
+    },
+    "correctSolved2": "Correct Solved",
+    "@correctSolved2": {
+      "description": "Column title for number of correct answers in leaderboard"
+    },
+    "totalSolved2": "Total Solved",
+    "@totalSolved2": {
+      "description": "Column title for total number of submissions in leaderboard"
+    },
+    "accuracyRate": "Accuracy Rate",
+    "@accuracyRate": {
+      "description": "Column title for percentage accuracy in leaderboard"
+    }
+
+
 }

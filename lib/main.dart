@@ -7,6 +7,7 @@ import 'package:eve/viewModel/login_view_model.dart';
 import 'package:eve/views/pages/dictionary_page.dart';
 import 'package:eve/views/pages/wrongNotes_page.dart';
 import 'package:eve/views/widgets/feature_card.dart';
+import 'package:eve/views/widgets/leaderboard_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -556,6 +557,10 @@ class _MainPage extends State<MainPage> {
                       // 출석 달력
                       SizedBox(height: 20),
                       WeeklyAttendancePreview(), // 일주일 출석만 보여줌
+
+                      SizedBox(height: 20),
+                      const LeaderboardSection(),//리더보드
+
                       //테스트용 마지막 접속일 3일전으로 설정하고 테스트
                       ElevatedButton(
                         child: Text(local.testSet3DaysAgo),

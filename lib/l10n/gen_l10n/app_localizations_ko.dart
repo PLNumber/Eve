@@ -328,4 +328,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noPartialMatch => '포함된 단어가 없습니다.';
+
+  @override
+  String get leaderboard => '리더보드';
+
+  @override
+  String get rank => '순위';
+
+  @override
+  String get userId => '아이디';
+
+  @override
+  String get correctSolved2 => '맞은문제';
+
+  @override
+  String get totalSolved2 => '제출';
+
+  @override
+  String get accuracyRate => '정답비율';
 }
