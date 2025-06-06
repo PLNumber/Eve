@@ -4,12 +4,11 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eve/model/quiz.dart';
-import '../Services/gemini_service.dart';
+import '../services/gemini_service.dart';
 import 'package:http/http.dart' as http; // 추가 필요
 
 class QuizRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   final GeminiService geminiService;
 
   QuizRepository(this.geminiService);
@@ -27,7 +26,7 @@ class QuizRepository {
     // ✅ vocab4에서 등급 + history 제외 필터
     final vocabSnap =
         await _firestore
-            .collection('vocab')
+            .collection('vocab2')
             .where('등급', whereIn: levelRange)
             .get();
 
@@ -92,14 +91,18 @@ class QuizRepository {
   // ✅ 3. 문제 생성 (Gemini 사용)
   Future<QuizQuestion> generateQuestion(Map<String, dynamic> vocabData, {int maxAttempts = 3}) async {
     final promptTemplate = '''
-당신은 한국어 문해력 평가용 퀴즈 문제를 출제하는 전문가입니다.
+너는 한국어 문해력 평가용 퀴즈 문제를 만드는 AI야.
 
-다음 단어 정보를 참고해, 문맥이 명확한 단답형 퀴즈 문제를 아래 조건에 맞게 작성하세요:
+다음 단어 정보를 참고하여, 실제 **책/신문/시험 문제**에서 따온 것처럼 보이는 문맥 속 문장을 만들고, 해당 단어가 빈칸으로 가려지는 문제를 생성해줘.
 
+---
+
+📌 [단어 정보]
 - 단어: "{단어}"
 - 품사: {품사}
 - 의미: "{의미}"
 - 난이도: {등급}
+- 난이도 숫자: {등급숫자}
 
 ---
 
@@ -107,35 +110,44 @@ class QuizRepository {
 
 1. 문제는 반드시 **2문장 이상**으로 구성하여 문맥을 충분히 제공합니다.
 
-2. 정답이 사용된 자리는 **정답에서 가려질 부분의 글자 수만큼 연속된 밑줄(_)** 로 가리세요.
-   - 예: 정답 "책임감" → "______", 정답 "강" → "_"
+2. 정답이 사용된 자리는 **정답에서 가려질 부분의 글자 수만큼 정확히 연속된 밑줄(_)**로 가리세요.
+   - 예: "책임감" → "___", "강" → "_"
    - ❗ 공백 없이 연속된 밑줄만 사용하고, 나눠 쓰지 마세요. (예: "___ ___" ❌)
 
-3. **동사인 경우**, **어간만 가리고 어미는 그대로** 둡니다.
-   - 예: "보다" → "_고", "달리다" → "__고 있었다"
+3. **동사인 경우**, 문장에서는 활용형(예: -는, -고 있는)을 사용하되,
+-   밑줄은 **동사의 어간만 가리도록 처리하세요**.
+-   - 예: "보다" → "_고 있다", "통과하다" → "___하는"
+-   - 즉, 어간만 밑줄로 처리하고 어미는 남겨야 합니다.
++   밑줄은 **정답 단어의 어간**에만 적용되도록 하세요.
++   - 예: 정답이 "보다"이면 → "_고 있다", 정답이 "통과하다"이면 → "___하는"
++   - 예: 정답이 "썩다"이고 문장에서는 "썩어나는"으로 쓰였으면 → "_어나는"으로 처리
++   - 즉, 문장에 사용된 형태에서 **정답의 어간에 해당하는 부분만** 밑줄로 가리고, 나머지 어미는 그대로 남겨야 합니다.
 
-4. 밑줄 수는 반드시 가려진 글자 수와 정확히 일치해야 합니다.
-   - 예: "가능성" → "____", "의심하다" → "_____다"
+4. 밑줄 수는 **정확히 가려진 부분의 글자 수**와 일치해야 합니다.
 
-5. 문맥상 **정답 외 단어는 들어갈 수 없도록** 만드세요.
+5. 문맥상 **정답 외 단어는 들어갈 수 없도록** 문제를 구성하세요.
+
+6. 정답 단어가 **문장 내 실제로 사용된 형태**에서 **밑줄 처리**되도록 하세요.
+   - 예: 단어가 "짧다"라면 → 문장에서 "짧은", "짧아서" 등 활용형 사용 후 어간만 밑줄 처리
 
 ---
 
 📌 [정답(answer)] 조건:
 
-- 반드시 **기본형(원형)**으로 작성하세요.
+- 반드시 **기본형(원형)** 으로 작성하세요.
+  - 예: "보다", "달리다"
 
 ---
 
 📌 [오답(distractors)] 조건:
 
-- 정답과 형태나 의미가 유사하지만, **문맥상 부적절한 단어** 3개를 제시하세요.
+- 정답과 **형태 또는 의미가 유사하지만**, **문맥상 어울리지 않는 단어** 3개를 제시하세요.
 
 ---
 
 📌 [피드백(feedbacks)] 조건:
 
-- 각 오답이 **문맥에 왜 어울리지 않는지** 구체적으로 설명하세요.
+- 각 오답이 **문맥에서 왜 적절하지 않은지** 구체적으로 설명하세요.
 - ❗ 절대 정답을 직접 언급하거나 유추할 수 있게 설명하지 마세요.
 
 ---
@@ -154,66 +166,58 @@ class QuizRepository {
 
 📌 [출력 형식]
 
-다음 형식의 JSON만 출력하세요. 그 외 텍스트는 절대 포함하지 마세요:
+반드시 아래 JSON 형식만 출력하세요. 그 외의 설명이나 텍스트는 절대 포함하지 마세요:
 
 ```json
 {
-  "question": "문맥 기반 문장 (정답의 글자 수만큼 밑줄 포함)",
+  "question": "문맥 기반 문장 (정답 밑줄 처리 포함)",
   "answer": "{단어}", 
   "hint": "문맥을 유추할 수 있는 힌트",
   "distractors": ["혼동어1", "혼동어2", "혼동어3"],
   "feedbacks": ["오답1 피드백", "오답2 피드백", "오답3 피드백"],
   "difficulty": {등급숫자}
 }
-```
 
-❗ 반드시 지켜야 할 금지사항:
-
-정답을 노출하거나 유추 가능하게 설명하지 마세요.
-
-밑줄은 항상 정답 글자 수 또는 어간 글자 수와 정확히 일치해야 합니다.
-
-출력 형식 외의 문장이나 설명은 포함하지 마세요.
 ''';
 
     for (int attempt = 0; attempt < maxAttempts; attempt++) {
-      final quiz = await geminiService.generateQuizQuestion(
-        vocabData,
-        promptTemplate,
-      );
+      final quiz = await geminiService.generateQuizQuestion(vocabData, promptTemplate);
+
+      if (quiz != null) {
+        print('📦 [시도 $attempt] Gemini 원본 문제 JSON:\n${jsonEncode(quiz.toJson())}');
+        print("🔍 정답 비교: quiz.answer = '\${quiz.answer}', 기대값 = '\${vocabData['어휘']}'");
+      } else {
+        print('❌ [시도 $attempt] Gemini 문제가 null임');
+      }
 
       if (quiz != null && _isValidQuiz(quiz, vocabData['어휘'])) {
-        await saveQuiz(vocabData['어휘'], quiz);
-        return quiz;
+        final fixed = await geminiService.reviewAndFixQuiz(quiz.toJson(), vocabData);
+
+        if (fixed != null && _isValidQuiz(fixed, vocabData['어휘'])) {
+          print('🛠 [시도 $attempt] 수정된 문제 JSON:\n${jsonEncode(fixed.toJson())}');
+          await saveQuiz(vocabData['어휘'], fixed);
+          return fixed;
+        } else if (fixed == null) {
+          // ✅ 수정이 필요 없다고 판단되었을 때 원본 사용
+          print('✅ [시도 $attempt] 수정 불필요, 원본 문제 채택');
+          await saveQuiz(vocabData['어휘'], quiz);
+          return quiz;
+        } else {
+          print('⚠️ [시도 $attempt] 수정된 문제가 유효하지 않음');
+        }
       }
+
     }
 
     throw Exception("퀴즈 생성 실패: $maxAttempts회 시도했지만 유효한 문제를 만들지 못했습니다.");
   }
 
   bool _isValidQuiz(QuizQuestion quiz, String word) {
-    final question = quiz.question?.trim() ?? '';
-    final answer = quiz.answer?.trim() ?? '';
-    final hint = quiz.hint?.trim() ?? '';
-    final distractors = quiz.distractors;
-    final feedbacks = quiz.feedbacks;
-
-    if (question.isEmpty || answer.isEmpty || hint.isEmpty) return false;
-    if (!question.contains('_')) return false;
-    if (distractors == null || distractors.length != 3) return false;
-    if (feedbacks == null || feedbacks.length != 3) return false;
-    if (distractors.contains(word)) return false;
-    if (answer != word) return false;
-
-    return true;
+    return quiz.answer == word && quiz.question.contains('_');
   }
 
-
-  // 해당 문제를 만든 후 저장하는 함수인 saveQuiz 함수를 구현
-  // ✅ 4. 문제 저장
   Future<void> saveQuiz(String word, QuizQuestion quiz) async {
-    
-    await _firestore.collection('quizzes').doc(word).set(quiz.toMap());
+    await _firestore.collection('quizzes').doc(word).set(quiz.toJson());
   }
 
   // ✅ 5. 저장된 문제 불러오기\

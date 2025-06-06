@@ -370,7 +370,10 @@ class _QuizPageState extends State<QuizPage> {
                               Expanded(
                                 child: SingleChildScrollView(
                                   child: Text(
-                                    quiz!.question,
+                                    quiz!.question.replaceAllMapped(
+                                      RegExp(r'_+'),
+                                          (match) => '▁' * match.group(0)!.length, // ex: ___ → ▁▁▁
+                                    ),
                                     style: const TextStyle(fontSize: 20),
                                     textAlign: TextAlign.center,
                                   ),
@@ -378,16 +381,6 @@ class _QuizPageState extends State<QuizPage> {
                               ),
                               const SizedBox(height: 12),
 
-                              // Align(
-                              //   alignment: Alignment.centerLeft,
-                              //   child: IconButton(
-                              //     icon: const Icon(Icons.lightbulb_outline),
-                              //     tooltip: local.hint,
-                              //     onPressed:
-                              //         () => _showFeedbackDialog(quiz.hint),
-                              //   ),
-                              // ),
-                              // const SizedBox(height: 8),
                               Row(
                                 children: [
                                   Expanded(

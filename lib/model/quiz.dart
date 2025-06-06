@@ -30,4 +30,26 @@ class QuizQuestion {
       "difficulty": difficulty,
     };
   }
+
+  factory QuizQuestion.fromJson(Map<String, dynamic> json) {
+    return QuizQuestion(
+      question: json['question'],
+      answer: json['answer'],
+      hint: json['hint'],
+      distractors: List<String>.from(json['distractors']),
+      feedbacks: List<String>.from(json['feedbacks']),
+      difficulty: json['difficulty'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'question': question,
+      'answer': answer,
+      'hint': hint,
+      'distractors': distractors,
+      'feedbacks': feedbacks,
+      'difficulty': difficulty,
+    };
+  }
 }

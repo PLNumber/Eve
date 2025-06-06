@@ -29,7 +29,7 @@ import 'views/pages/option_page.dart';
 import 'views/pages/set_name_page.dart';
 import 'views/widgets/nav_util.dart';
 
-import 'Services/gemini_service.dart';
+import 'services/gemini_service.dart';
 import 'services/quiz_service.dart';
 import 'repository/quiz_repository.dart';
 

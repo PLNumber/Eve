@@ -25,7 +25,7 @@ class WrongNotePage extends StatelessWidget {
   Future<Map<String, dynamic>?> fetchWordDetail(String word) async {
     final snapshot =
         await FirebaseFirestore.instance
-            .collection('vocab')
+            .collection('vocab2')
             .where('어휘', isEqualTo: word)
             .limit(1)
             .get();
