@@ -54,9 +54,18 @@ class GeminiService {
       final response = await http.post(url, headers: headers, body: body);
       final json = jsonDecode(response.body);
       final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
-      if (text == null) return null;
+
+      if (text == null) {
+        print('📭 Gemini 응답 text 없음: $word');
+        return null;
+      }
+      //
+      // print('[Gemini 응답 원문: $word] → $text');
+
       final cleaned = text.replaceAll(RegExp(r'^```json|```'), '').trim();
-      final map = jsonDecode(cleaned);
+      final safeCleaned = cleaned.replaceAll(r"\'", "'"); // ← 이 줄 추가
+      final map = jsonDecode(safeCleaned);
+
       map['difficulty'] ??= extractLevelNumber(level);
       return QuizQuestion.fromJson(map);
     } catch (e) {

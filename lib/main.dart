@@ -1,4 +1,6 @@
 //lib/main.dart (Fitness UI 스타일 적용된 MainPage 포함)
+import 'dart:math';
+
 import 'package:eve/provider/audio_provider.dart';
 import 'package:eve/provider/local_provider.dart';
 import 'package:eve/provider/theme_provider.dart';
@@ -563,19 +565,59 @@ class _MainPage extends State<MainPage> {
 
                       //테스트용 마지막 접속일 3일전으로 설정하고 테스트
                       ElevatedButton(
-                        child: Text(local.testSet3DaysAgo),
+                        child: Text('1등급 문제 생성 (중복 방지)'),
                         onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          final threeDaysAgo = DateTime.now().subtract(
-                            const Duration(days: 3),
-                          );
-                          await prefs.setString(
-                            'lastLoginDate',
-                            threeDaysAgo.toIso8601String(),
-                          );
-                          await AttendanceReminder.checkAndNotify();
+                          final firestore = FirebaseFirestore.instance;
+                          final geminiService = GeminiService(apiKey: dotenv.env['geminiApiKey']!); // 👉 필요시 apiKey 포함 생성
+                          final quizRepo = QuizRepository(geminiService);
+
+                          // ✅ 1등급 단어만 가져오기
+                          final vocabSnapshot = await firestore
+                              .collection('vocab2')
+                              .where('등급', isEqualTo: '1등급')
+                              .get();
+
+                          final vocabList = vocabSnapshot.docs.map((doc) => doc.data()).toList();
+
+                          int successCount = 0;
+                          int skipCount = 0;
+                          int failCount = 0;
+
+                          for (final vocab in vocabList) {
+                            final word = vocab['어휘'];
+                            final meanings = List<String>.from(vocab['의미']);
+                            final selectedMeaning = meanings[Random().nextInt(meanings.length)];
+                            final partsOfSpeech = List<String>.from(vocab['품사']).join(', ');
+                            final level = vocab['등급'];
+
+                            try {
+                              // ✅ 이미 존재하는 문제인지 확인
+                              final alreadyExists = await quizRepo.isExist(word);
+                              if (alreadyExists) {
+                                print('⏩ 건너뜀(이미 존재): $word');
+                                skipCount++;
+                                continue;
+                              }
+
+                              final quiz = await quizRepo.generateQuestion({
+                                '어휘': word,
+                                '의미': selectedMeaning,
+                                '품사': partsOfSpeech,
+                                '등급': level,
+                              });
+
+                              print('✅ 생성 완료: $word');
+                              successCount++;
+                            } catch (e) {
+                              print('❌ 실패: $word - $e');
+                              failCount++;
+                            }
+                          }
+
+                          print('🎯 완료: 성공 $successCount개 / 중복 $skipCount개 / 실패 $failCount개');
                         },
                       ),
+
                       SizedBox(height: 20),
                     ],
                   ),
