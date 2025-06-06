@@ -289,6 +289,34 @@
   "exactMatchTitle": "🔍 정확히 일치하는 단어",
   "noExactMatch": "일치하는 결과가 없습니다.",
   "partialMatchTitle": "📃 포함된 단어 결과",
-  "noPartialMatch": "포함된 단어가 없습니다."
+  "noPartialMatch": "포함된 단어가 없습니다.",
+
+
+
+
+  "leaderboard": "리더보드",
+    "@leaderboard": {
+      "description": "리더보드 섹션 제목"
+    },
+    "rank": "순위",
+    "@rank": {
+      "description": "리더보드 순위 열 제목"
+    },
+    "userId": "아이디",
+    "@userId": {
+      "description": "리더보드 아이디 열 제목"
+    },
+    "correctSolved2": "맞은문제",
+    "@correctSolved2": {
+      "description": "리더보드 맞은 문제 수 열 제목"
+    },
+    "totalSolved2": "제출",
+    "@totalSolved2": {
+      "description": "리더보드 제출(전체 푼) 열 제목"
+    },
+    "accuracyRate": "정답비율",
+    "@accuracyRate": {
+      "description": "리더보드 정답 비율 열 제목"
+    }
 
 }

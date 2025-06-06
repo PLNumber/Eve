@@ -248,6 +248,19 @@ class LeaderboardSection extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+
+    //
+
+    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
+    // (기본 폰트 크기)
+    final baseHeaderFontSize = screenWidth * 0.038;
+    // (영어일 때만 조금 작게)
+    final engHeaderFontSize = screenWidth * 0.032;
+    // 실제로 사용할 헤더 폰트 크기
+    final actualHeaderFontSize =
+    isEnglish ? engHeaderFontSize : baseHeaderFontSize;
+    //
+
     // 컬럼 폭 비율: 아이디 · 맞은문제 · 제출 · 정확도
     // 화면이 좁을 때 글씨가 잘리는 걸 막기 위해, 가중치(flex)를 적절히 분배했습니다.
     const idFlex = 3;
@@ -260,7 +273,7 @@ class LeaderboardSection extends StatelessWidget {
       children: [
         // ─── “리더보드” 제목 ───────────────────────────────────────────
         Text(
-          "랭킹",
+          local.leaderboard,
           style: TextStyle(
             fontSize: screenWidth * 0.05,
             fontWeight: FontWeight.bold,
@@ -281,55 +294,55 @@ class LeaderboardSection extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Text(
-                  "순위",
+                  local.rank,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.038,
+                    fontSize: actualHeaderFontSize,
                   ),
                 ),
               ),
               Expanded(
                 flex: idFlex,
                 child: Text(
-                  "아이디",
+                  local.userId,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.038,
+                    fontSize: actualHeaderFontSize,
                   ),
                 ),
               ),
               Expanded(
                 flex: solvedFlex,
                 child: Text(
-                  "맞은문제",
+                  local.correctSolved2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.038,
+                    fontSize: actualHeaderFontSize,
                   ),
                 ),
               ),
               Expanded(
                 flex: totalFlex,
                 child: Text(
-                  "제출",
+                  local.totalSolved2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.038,
+                    fontSize: actualHeaderFontSize,
                   ),
                 ),
               ),
               Expanded(
                 flex: accFlex,
                 child: Text(
-                  "정답비율",
+                  local.accuracyRate,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.038,
+                    fontSize: actualHeaderFontSize,
                   ),
                 ),
               ),

@@ -688,6 +688,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No related words found.'**
   String get noPartialMatch;
+
+  /// Title for the leaderboard section
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get leaderboard;
+
+  /// Column title for rank in leaderboard
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get rank;
+
+  /// Column title for user nickname/ID in leaderboard
+  ///
+  /// In en, this message translates to:
+  /// **'User ID'**
+  String get userId;
+
+  /// Column title for number of correct answers in leaderboard
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Solved'**
+  String get correctSolved2;
+
+  /// Column title for total number of submissions in leaderboard
+  ///
+  /// In en, this message translates to:
+  /// **'Total Solved'**
+  String get totalSolved2;
+
+  /// Column title for percentage accuracy in leaderboard
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy Rate'**
+  String get accuracyRate;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
