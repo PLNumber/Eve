@@ -289,4 +289,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String monthlyAttendanceRate(String month, String rate) {
     return '📅 Attendance rate in month $month: $rate%';
   }
+
+  @override
+  String get noWrongAnswers => 'No saved wrong answers.';
+
+  @override
+  String get noWordInfo => 'No word information available.';
+
+  @override
+  String get partOfSpeechNone => 'No part of speech';
+
+  @override
+  String get dictionaryTitle => 'Korean Dictionary';
+
+  @override
+  String get searchHint => 'Enter search term';
+
+  @override
+  String get searchButton => 'Search';
+
+  @override
+  String get noResults => 'No search results.';
+
+  @override
+  String get apiError => 'API Error';
+
+  @override
+  String get networkError => 'Network Error';
+
+  @override
+  String get exactMatchTitle => '🔍 Exact Match';
+
+  @override
+  String get noExactMatch => 'No exact matches found.';
+
+  @override
+  String get partialMatchTitle => '📃 Related Words';
+
+  @override
+  String get noPartialMatch => 'No related words found.';
 }

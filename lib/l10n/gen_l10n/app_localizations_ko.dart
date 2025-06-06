@@ -289,4 +289,43 @@ class AppLocalizationsKo extends AppLocalizations {
   String monthlyAttendanceRate(String month, String rate) {
     return '📅 $month월 출석률: $rate%';
   }
+
+  @override
+  String get noWrongAnswers => '저장된 오답이 없습니다.';
+
+  @override
+  String get noWordInfo => '단어 정보가 없습니다.';
+
+  @override
+  String get partOfSpeechNone => '품사 없음';
+
+  @override
+  String get dictionaryTitle => '우리말샘 사전';
+
+  @override
+  String get searchHint => '검색어를 입력하세요';
+
+  @override
+  String get searchButton => '검색';
+
+  @override
+  String get noResults => '검색 결과가 없습니다.';
+
+  @override
+  String get apiError => 'API 오류';
+
+  @override
+  String get networkError => '네트워크 오류';
+
+  @override
+  String get exactMatchTitle => '🔍 정확히 일치하는 단어';
+
+  @override
+  String get noExactMatch => '일치하는 결과가 없습니다.';
+
+  @override
+  String get partialMatchTitle => '📃 포함된 단어 결과';
+
+  @override
+  String get noPartialMatch => '포함된 단어가 없습니다.';
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../l10n/gen_l10n/app_localizations.dart';
+
 class WrongNotePage extends StatelessWidget {
   const WrongNotePage({super.key});
 
@@ -34,8 +36,10 @@ class WrongNotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('오답노트')),
+      appBar: AppBar(title: Text(local.wrongNote)),
       body: FutureBuilder<List<String>>(
         future: _loadIncorrectWords(),
         builder: (context, snapshot) {
@@ -45,7 +49,7 @@ class WrongNotePage extends StatelessWidget {
 
           final words = snapshot.data ?? [];
           if (words.isEmpty) {
-            return const Center(child: Text('저장된 오답이 없습니다.'));
+            return Center(child: Text(local.noWrongAnswers));
           }
 
           return ListView.builder(
@@ -62,11 +66,11 @@ class WrongNotePage extends StatelessWidget {
                       builder:
                           (_) => AlertDialog(
                             title: Text(word),
-                            content: Text("단어 정보가 없습니다."),
+                            content: Text(local.noWordInfo),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: Text('닫기'),
+                                child: Text(local.close),
                               ),
                             ],
                           ),
@@ -84,7 +88,7 @@ class WrongNotePage extends StatelessWidget {
                     builder:
                         (_) => AlertDialog(
                           title: Text(
-                            '$word (${pos.isNotEmpty ? pos.first : '품사 없음'})',
+                            '$word (${pos.isNotEmpty ? pos.first : local.partOfSpeechNone})',
                           ),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -97,7 +101,7 @@ class WrongNotePage extends StatelessWidget {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text('닫기'),
+                              child: Text(local.close),
                             ),
                           ],
                         ),

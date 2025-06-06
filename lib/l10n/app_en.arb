@@ -272,5 +272,20 @@
         "type": "String"
       }
     }
-  }
+  },
+
+  "noWrongAnswers": "No saved wrong answers.",
+  "noWordInfo": "No word information available.",
+  "partOfSpeechNone": "No part of speech",
+
+  "dictionaryTitle": "Korean Dictionary",
+  "searchHint": "Enter search term",
+  "searchButton": "Search",
+  "noResults": "No search results.",
+  "apiError": "API Error",
+  "networkError": "Network Error",
+  "exactMatchTitle": "🔍 Exact Match",
+  "noExactMatch": "No exact matches found.",
+  "partialMatchTitle": "📃 Related Words",
+  "noPartialMatch": "No related words found."
 }

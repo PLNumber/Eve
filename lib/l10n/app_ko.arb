@@ -274,5 +274,21 @@
         "type": "String"
       }
     }
-  }
+  },
+
+  "noWrongAnswers": "저장된 오답이 없습니다.",
+  "noWordInfo": "단어 정보가 없습니다.",
+  "partOfSpeechNone": "품사 없음",
+
+  "dictionaryTitle": "우리말샘 사전",
+  "searchHint": "검색어를 입력하세요",
+  "searchButton": "검색",
+  "noResults": "검색 결과가 없습니다.",
+  "apiError": "API 오류",
+  "networkError": "네트워크 오류",
+  "exactMatchTitle": "🔍 정확히 일치하는 단어",
+  "noExactMatch": "일치하는 결과가 없습니다.",
+  "partialMatchTitle": "📃 포함된 단어 결과",
+  "noPartialMatch": "포함된 단어가 없습니다."
+
 }

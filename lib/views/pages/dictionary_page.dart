@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:html_unescape/html_unescape.dart';
 
+import '../../l10n/gen_l10n/app_localizations.dart';
+
 class DictionaryPage extends StatefulWidget {
   const DictionaryPage({Key? key}) : super(key: key);
 
@@ -158,8 +160,9 @@ class _DictionaryPageState extends State<DictionaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('우리말샘 사전')),
+      appBar: AppBar(title: Text(local.dictionaryTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -169,9 +172,9 @@ class _DictionaryPageState extends State<DictionaryPage> {
                 Expanded(
                   child: TextField(
                     controller: _ctrl,
-                    decoration: const InputDecoration(
-                      hintText: '검색어를 입력하세요',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintText: local.searchHint,
+                      border: const OutlineInputBorder(),
                     ),
                     onSubmitted: _search,
                   ),
@@ -179,7 +182,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () => _search(_ctrl.text),
-                  child: const Text('검색'),
+                  child: Text(local.searchButton),
                 ),
               ],
             ),
@@ -193,31 +196,31 @@ class _DictionaryPageState extends State<DictionaryPage> {
                 child: ListView(
                   children: [
                     /// 정확한 결과
-                    const Text(
-                      '🔍 정확히 일치하는 단어',
-                      style: TextStyle(
+                    Text(
+                      local.exactMatchTitle,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
                     if (_exactMatches.isEmpty)
-                      const Text('일치하는 결과가 없습니다.')
+                      Text(local.noExactMatch)
                     else
                       ..._exactMatches.map((e) => _buildEntryCard(e)),
                     const SizedBox(height: 24),
 
                     /// 포함된 결과
-                    const Text(
-                      '📃 포함된 단어 결과',
-                      style: TextStyle(
+                    Text(
+                      local.partialMatchTitle,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
                     if (_partialMatches.isEmpty)
-                      const Text('포함된 단어가 없습니다.')
+                      Text(local.noPartialMatch)
                     else
                       ..._partialMatches.map((e) => _buildEntryCard(e)),
                   ],

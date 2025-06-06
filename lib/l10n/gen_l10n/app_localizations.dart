@@ -610,6 +610,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'📅 Attendance rate in month {month}: {rate}%'**
   String monthlyAttendanceRate(String month, String rate);
+
+  /// No description provided for @noWrongAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved wrong answers.'**
+  String get noWrongAnswers;
+
+  /// No description provided for @noWordInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No word information available.'**
+  String get noWordInfo;
+
+  /// No description provided for @partOfSpeechNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No part of speech'**
+  String get partOfSpeechNone;
+
+  /// No description provided for @dictionaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Korean Dictionary'**
+  String get dictionaryTitle;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter search term'**
+  String get searchHint;
+
+  /// No description provided for @searchButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchButton;
+
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No search results.'**
+  String get noResults;
+
+  /// No description provided for @apiError.
+  ///
+  /// In en, this message translates to:
+  /// **'API Error'**
+  String get apiError;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Network Error'**
+  String get networkError;
+
+  /// No description provided for @exactMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🔍 Exact Match'**
+  String get exactMatchTitle;
+
+  /// No description provided for @noExactMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No exact matches found.'**
+  String get noExactMatch;
+
+  /// No description provided for @partialMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'📃 Related Words'**
+  String get partialMatchTitle;
+
+  /// No description provided for @noPartialMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No related words found.'**
+  String get noPartialMatch;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
