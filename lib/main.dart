@@ -251,7 +251,11 @@ class _MainPage extends State<MainPage> {
 
 
   String getProfileImage(int level) {
-    return 'assets/images/profile_level_$level.png';
+    if (level <= 9) return 'assets/images/profile_level_1.png';
+    else if (level >= 10 && level <= 24) return 'assets/images/profile_level_2.png';
+    else if (level >= 25 && level <= 49) return 'assets/images/profile_level_3.png';
+    else if (level >= 50 && level <= 74) return 'assets/images/profile_level_4.png';
+    else return 'assets/images/profile_level_5.png';
   }
 
   @override

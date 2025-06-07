@@ -57,7 +57,17 @@ class GeminiService {
 
       if (text == null) {
         print('📭 Gemini 응답 text 없음: $word');
-        return null;
+        // ✅ 응답 없으면 즉시 임시 문제 생성
+        return QuizQuestion(
+          question: "아래 뜻에 맞는 단어를 입력하세요:\n\n📚 '${vocabData['의미']}'",
+          answer: word,
+          distractors: [],
+          feedbacks: [],
+          hint: "등급: ${vocabData['등급']}, 품사: ${vocabData['품사']}",
+          difficulty: extractLevelNumber(level),
+        );
+
+        //return null;  // 이전 방법임
       }
 
       //print('[Gemini 응답 원문: $word] → $text');

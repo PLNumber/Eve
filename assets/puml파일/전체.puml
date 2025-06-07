@@ -1,159 +1,157 @@
 @startuml
-skinparam classAttributeIconSize 0
+skinparam sequenceMessageAlign center
 
-class AttendanceCalendar {
-  + void initState()
-  + bool _isPresent(DateTime day)
-  + Widget build(BuildContext context)
-}
 
-class WeeklyAttendancePreview {
-  + void initState()
-  + Widget build(BuildContext context)
-}
+' ✅ 1. 로그인
+actor User
+participant "LoginPage"
+participant "LoginViewModel"
+participant "AuthService"
+participant "GoogleSignIn"
+participant "FirebaseAuth"
 
-class WrongNotesPage {
-  + Widget build(BuildContext context)
-}
+User -> LoginPage: 로그인 버튼 클릭
+LoginPage -> LoginViewModel: signInWithGoogle()
+LoginViewModel -> AuthService: signInWithGoogle()
+AuthService -> GoogleSignIn: signIn()
+GoogleSignIn --> AuthService: GoogleSignInAccount
+AuthService -> GoogleSignIn: getAuthentication()
+GoogleSignIn --> AuthService: GoogleSignInAuthentication
+AuthService -> FirebaseAuth: signInWithCredential()
+FirebaseAuth --> AuthService: UserCredential
+AuthService --> LoginViewModel: UserCredential
+LoginViewModel --> LoginPage: UserCredential
+LoginPage -> MainPage: 이동
 
-class QuizPage {
-  + void initState()
-  + void dispose()
-  + Color getDifficultyColor(int level)
-  - void _showFeedbackDialog(String message)
-  - String _extractInitialHint(String text)
-  + Widget build(BuildContext context)
-}
+' ✅ 2. 퀴즈 시작
+participant "QuizOptionPage"
+participant "QuizController"
+participant "QuizService"
+participant "QuizRepository"
+participant "GeminiService"
 
-class SetNamePage {
-  - bool _validateNickname(String nickname)
-  + Widget build(BuildContext context)
-}
+User -> QuizOptionPage: 학습 목표 선택 후 시작
+QuizOptionPage -> QuizController: startQuiz()
+QuizController -> QuizService: getQuestion()
+QuizService -> QuizRepository: selectWord(uid)
+QuizRepository -> QuizRepository: isExist(word)
+alt 문제 존재
+  QuizRepository -> QuizRepository: getSavedQuestion(word)
+else 문제 없음
+  QuizRepository -> GeminiService: generateQuizQuestion()
+  GeminiService --> QuizRepository: 퀴즈 생성 결과
+  QuizRepository -> QuizRepository: saveQuiz()
+end
+QuizRepository --> QuizService: QuizQuestion
+QuizService --> QuizController: QuizQuestion
+QuizController --> QuizPage: 퀴즈 표시
 
-class FeatureCard {
-  + Widget build(BuildContext context)
-}
+' ✅ 3. 정답 제출
+participant "QuizPage"
 
-class Main {
-  + Widget build(BuildContext context)
-}
+User -> QuizPage: 정답 제출
+QuizPage -> QuizController: checkAnswer(userInput)
+QuizController -> QuizService: compareAnswer()
 
-class LeaderboardWidget {
-  + Widget build(BuildContext context)
-}
+alt 정답
+  QuizService --> QuizController: AnswerResult(correct)
+  QuizController --> QuizPage: 다음 문제 안내
+else 오답
+  QuizService -> QuizRepository: generateFeedBack()
+  alt 피드백 없음
+    QuizRepository -> GeminiService: reviewAndFixQuiz()
+    GeminiService --> QuizRepository: 피드백 생성
+  end
+  QuizRepository -> QuizRepository: appendFeedback()
+  QuizRepository --> QuizService: 저장 완료
+  QuizService --> QuizController: AnswerResult(feedback)
+  QuizController --> QuizPage: 피드백 및 재도전 안내
+end
 
-class OptionWidget {
-  + Widget build(BuildContext context)
-}
+' ✅ 4. 오답 노트
+participant "WrongNotePage"
+participant "DictionaryAPI"
 
-class NavUtil {
-  + void navigateTo(BuildContext context, Widget page)
-}
+User -> WrongNotePage: 진입
+WrongNotePage -> QuizRepository: incorrectWords 가져오기
+QuizRepository -> Firestore: attendance/{uid}
+alt 없음
+  Firestore --> WrongNotePage: []
+else 있음
+  Firestore --> WrongNotePage: [단어 목록]
+  User -> WrongNotePage: 단어 선택
+  WrongNotePage -> DictionaryAPI: fetchWordDetail()
+  DictionaryAPI --> WrongNotePage: 의미 반환
+end
 
-class QuizOptionPage {
-  + Widget build(BuildContext context)
-}
+' ✅ 5. 단어 사전 검색
+participant "DictionaryPage"
+participant "UriHTTP"
 
-class OptionPage {
-  + Widget build(BuildContext context)
-}
+User -> DictionaryPage: 진입
+User -> DictionaryPage: 검색어 입력
+DictionaryPage -> UriHTTP: 요청 생성
+UriHTTP -> OurMalsaemAPI: API 호출
+OurMalsaemAPI --> UriHTTP: 결과
+UriHTTP --> DictionaryPage: 검색 결과
+DictionaryPage -> User: 리스트 표시
 
-class LoginPage {
-  + Widget build(BuildContext context)
-}
+' ✅ 6. 설정 변경
+participant "OptionPage"
+participant "SoundDialog"
+participant "BackgroundDialog"
+participant "LanguageDialog"
+participant "NicknameDialog"
+participant "OptionViewModel"
+participant "AudioProvider"
+participant "ThemeProvider"
+participant "LocaleProvider"
 
-class DictionaryPage {
-  + Widget build(BuildContext context)
-  + Future<void> _search(String query)
-}
+User -> OptionPage: 설정 열기
+OptionPage -> SoundDialog: show()
+SoundDialog -> AudioProvider: setVolume()
 
-class OptionViewModel {
-  + Future<void> saveSettings()
-  + Future<String?> checkNicknameAvailable(String nickname)
-}
+OptionPage -> BackgroundDialog: show()
+BackgroundDialog -> ThemeProvider: setTheme()
 
-class LoginViewModel {
-  + Future<void> signInWithGoogle()
-  + void signOut()
-}
+OptionPage -> LanguageDialog: show()
+LanguageDialog -> LocaleProvider: setLocale()
 
-class AttendanceReminder {
-  + Future<void> remindIfAbsent()
-}
+OptionPage -> NicknameDialog: show()
+NicknameDialog -> OptionViewModel: checkNicknameAvailable()
 
-class QuizService {
-  + Future<QuizQuestion> generateQuestion(Map vocabData)
-  + Future<void> submitAnswer(String answer)
-}
+OptionPage -> OptionViewModel: signOutAndExit()
+OptionViewModel -> AuthService: signOutAndExit()
 
-class GeminiService {
-  + String generateQuizPrompt(Map vocabData)
-  + Future<String> requestToGemini(String prompt)
-}
+OptionPage -> QuizRepository: resetUserStats()
 
-class AuthService {
-  + Future<void> signInWithGoogle()
-  + Future<void> signOut()
-}
+' ✅ 7. 출석 확인
+participant "WeeklyAttendancePreview"
+participant "AttendanceCalendar"
+participant "AttendanceReminder"
 
-class QuizRepository {
-  + Future<void> saveQuizResult(QuizQuestion quiz)
-  + Future<List<QuizQuestion>> getIncorrectWords()
-}
+User -> MainPage: 진입
+MainPage -> WeeklyAttendancePreview: 표시
+WeeklyAttendancePreview -> Firestore: attendance/{uid} 로딩
 
-class AuthRepository {
-  + Future<void> saveUserData(String uid, Map data)
-  + Future<Map> getUserData(String uid)
-}
+User -> WeeklyAttendancePreview: 달력 클릭
+WeeklyAttendancePreview -> AttendanceCalendar: 전달
+AttendanceCalendar -> Firestore: 상태 확인
+AttendanceCalendar -> User: 날짜 표시
 
-class Quiz {
-  + String question
-  + String answer
-  + String hint
-  + List<String> distractors
-  + List<String> feedbacks
-  + int difficulty
-}
+MainPage -> AttendanceReminder: checkAndNotify()
+AttendanceReminder -> Firestore: 오늘 출석 기록
+alt 미출석
+  AttendanceReminder -> User: 알림 표시
+end
 
-class QuizController {
-  + void startQuiz()
-  + void submitAnswer(String answer)
-}
+' ✅ 8. 리더보드
+participant "LeaderboardWidget"
 
-class AudioProvider {
-  + void play()
-  + void stop()
-}
-
-class ThemeProvider {
-  + void toggleTheme()
-}
-
-class LocalProvider {
-  + void changeLocale()
-}
-
-class QuizModeProvider {
-  + void setMode(String mode)
-}
-
-Main --> AudioProvider
-Main --> ThemeProvider
-Main --> LocalProvider
-Main --> LoginViewModel
-LoginPage --> LoginViewModel
-QuizPage --> QuizController
-QuizOptionPage --> QuizController
-QuizController --> QuizService
-QuizController --> QuizRepository
-QuizService --> GeminiService
-QuizService --> Quiz
-QuizRepository --> Quiz
-SetNamePage --> OptionViewModel
-OptionWidget --> OptionViewModel
-DictionaryPage --> ExternalAPI
-WrongNotesPage --> QuizRepository
-LeaderboardWidget --> QuizRepository
-AttendanceReminder --> LocalProvider
+User -> MainPage: 리더보드 진입
+MainPage -> LeaderboardWidget: 빌드
+LeaderboardWidget -> Firestore: users 쿼리
+Firestore --> LeaderboardWidget: 랭킹 정보
+LeaderboardWidget -> User: 순위 표시
 
 @enduml
