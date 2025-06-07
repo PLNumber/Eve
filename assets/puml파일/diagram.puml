@@ -1,0 +1,812 @@
+@startuml
+set namespaceSeparator ::
+
+class "eve::controller::quiz_controller.dart::QuizController" {
+  -QuizService _service
+  +dynamic generateQuiz()
+  +dynamic checkAnswer()
+  +dynamic nextQuestion()
+  +void endQuiz()
+}
+
+"eve::controller::quiz_controller.dart::QuizController" o-- "eve::services::quiz_service.dart::QuizService"
+
+class "eve::controller::quiz_controller.dart::AnswerResult" {
+  +bool isCorrect
+  +String? feedback
+}
+
+class "eve::firebase_options.dart::DefaultFirebaseOptions" {
+  {static} +FirebaseOptions android
+  {static} +FirebaseOptions currentPlatform
+}
+
+"eve::firebase_options.dart::DefaultFirebaseOptions" o-- "firebase_core_platform_interface::firebase_core_platform_interface.dart::FirebaseOptions"
+
+abstract class "eve::l10n::gen_l10n::app_localizations.dart::AppLocalizations" {
+  +String localeName
+  {static} +LocalizationsDelegate<AppLocalizations> delegate
+  {static} +List<LocalizationsDelegate<dynamic>> localizationsDelegates
+  {static} +List<Locale> supportedLocales
+  +String waiting
+  +String title
+  +String login
+  +String google_login
+  +String settings
+  +String sound
+  +String sound_settings
+  +String sound_on
+  +String volume_level
+  +String select_music
+  +String reset_history
+  +String change_background
+  +String default_background
+  +String dark_background
+  +String change_language
+  +String language_selection
+  +String korean
+  +String english
+  +String nickname_change
+  +String nickname_invalid
+  +String nickname_taken
+  +String nickname_available
+  +String check_duplicate
+  +String change_nickname
+  +String nickname_placeholder
+  +String nickname_success
+  +String nickname_check_prompt
+  +String logout
+  +String confirm_logout
+  +String saved_message
+  +String close
+  +String exit
+  +String confirm_exit_quiz
+  +String confirm_exit
+  +String noNickname
+  +String noEmail
+  +String resetDialogTitle
+  +String resetDialogContent
+  +String cancel
+  +String historyCleared
+  +String levelUpMessage
+  +String quizPageTitle
+  +String quizErrorFetch
+  +String quizErrorNext
+  +String feedbackTitle
+  +String confirm
+  +String hint
+  +String submit
+  +String reviewBadge
+  +String answerHintDefault
+  +String setNicknameTitle
+  +String promptEnterNickname
+  +String exampleNickname
+  +String invalidNicknameFormat
+  +String nicknameDuplicateExists
+  +String nicknameAvailable
+  +String nicknameCheckError
+  +String nicknameSaved
+  +String saveAndStart
+  +String next_question
+  +String startWithGoogle
+  +String dailyLearning
+  +String dailyGoal
+  +String startQuiz
+  +String myStats
+  +String totalSolved
+  +String correctSolved
+  +String learningTime
+  +String questionGrade
+  +String gradeMappingText
+  +String wrongNote
+  +String dictionary
+  +String weeklyAttendance
+  +String testSet3DaysAgo
+  +String noWrongAnswers
+  +String noWordInfo
+  +String partOfSpeechNone
+  +String dictionaryTitle
+  +String searchHint
+  +String searchButton
+  +String noResults
+  +String apiError
+  +String networkError
+  +String exactMatchTitle
+  +String noExactMatch
+  +String partialMatchTitle
+  +String noPartialMatch
+  +String leaderboard
+  +String rank
+  +String userId
+  +String correctSolved2
+  +String totalSolved2
+  +String accuracyRate
+  {static} +AppLocalizations? of()
+  +String levelLabel()
+  +String expProgress()
+  +String difficultyBadge()
+  +String welcomeUser()
+  +String goalCountUnit()
+  +String todayLearnedWords()
+  +String days()
+  +String hours()
+  +String minutes()
+  +String levelInfo()
+  +String consecutiveAttendance()
+  +String monthlyAttendanceRate()
+}
+
+"eve::l10n::gen_l10n::app_localizations.dart::AppLocalizations" o-- "flutter::src::widgets::localizations.dart::LocalizationsDelegate<AppLocalizations>"
+
+class "eve::l10n::gen_l10n::app_localizations.dart::_AppLocalizationsDelegate" {
+  +dynamic load()
+  +bool isSupported()
+  +bool shouldReload()
+}
+
+"flutter::src::widgets::localizations.dart::LocalizationsDelegate" <|-- "eve::l10n::gen_l10n::app_localizations.dart::_AppLocalizationsDelegate"
+
+class "eve::l10n::gen_l10n::app_localizations_en.dart::AppLocalizationsEn" {
+  +String waiting
+  +String title
+  +String login
+  +String google_login
+  +String settings
+  +String sound
+  +String sound_settings
+  +String sound_on
+  +String volume_level
+  +String select_music
+  +String reset_history
+  +String change_background
+  +String default_background
+  +String dark_background
+  +String change_language
+  +String language_selection
+  +String korean
+  +String english
+  +String nickname_change
+  +String nickname_invalid
+  +String nickname_taken
+  +String nickname_available
+  +String check_duplicate
+  +String change_nickname
+  +String nickname_placeholder
+  +String nickname_success
+  +String nickname_check_prompt
+  +String logout
+  +String confirm_logout
+  +String saved_message
+  +String close
+  +String exit
+  +String confirm_exit_quiz
+  +String confirm_exit
+  +String noNickname
+  +String noEmail
+  +String resetDialogTitle
+  +String resetDialogContent
+  +String cancel
+  +String historyCleared
+  +String levelUpMessage
+  +String quizPageTitle
+  +String quizErrorFetch
+  +String quizErrorNext
+  +String feedbackTitle
+  +String confirm
+  +String hint
+  +String submit
+  +String reviewBadge
+  +String answerHintDefault
+  +String setNicknameTitle
+  +String promptEnterNickname
+  +String exampleNickname
+  +String invalidNicknameFormat
+  +String nicknameDuplicateExists
+  +String nicknameAvailable
+  +String nicknameCheckError
+  +String nicknameSaved
+  +String saveAndStart
+  +String next_question
+  +String startWithGoogle
+  +String dailyLearning
+  +String dailyGoal
+  +String startQuiz
+  +String myStats
+  +String totalSolved
+  +String correctSolved
+  +String learningTime
+  +String questionGrade
+  +String gradeMappingText
+  +String wrongNote
+  +String dictionary
+  +String weeklyAttendance
+  +String testSet3DaysAgo
+  +String noWrongAnswers
+  +String noWordInfo
+  +String partOfSpeechNone
+  +String dictionaryTitle
+  +String searchHint
+  +String searchButton
+  +String noResults
+  +String apiError
+  +String networkError
+  +String exactMatchTitle
+  +String noExactMatch
+  +String partialMatchTitle
+  +String noPartialMatch
+  +String leaderboard
+  +String rank
+  +String userId
+  +String correctSolved2
+  +String totalSolved2
+  +String accuracyRate
+  +String levelLabel()
+  +String expProgress()
+  +String difficultyBadge()
+  +String welcomeUser()
+  +String goalCountUnit()
+  +String todayLearnedWords()
+  +String days()
+  +String hours()
+  +String minutes()
+  +String levelInfo()
+  +String consecutiveAttendance()
+  +String monthlyAttendanceRate()
+}
+
+"eve::l10n::gen_l10n::app_localizations.dart::AppLocalizations" <|-- "eve::l10n::gen_l10n::app_localizations_en.dart::AppLocalizationsEn"
+
+class "eve::l10n::gen_l10n::app_localizations_ko.dart::AppLocalizationsKo" {
+  +String waiting
+  +String title
+  +String login
+  +String google_login
+  +String settings
+  +String sound
+  +String sound_settings
+  +String sound_on
+  +String volume_level
+  +String select_music
+  +String reset_history
+  +String change_background
+  +String default_background
+  +String dark_background
+  +String change_language
+  +String language_selection
+  +String korean
+  +String english
+  +String nickname_change
+  +String nickname_invalid
+  +String nickname_taken
+  +String nickname_available
+  +String check_duplicate
+  +String change_nickname
+  +String nickname_placeholder
+  +String nickname_success
+  +String nickname_check_prompt
+  +String logout
+  +String confirm_logout
+  +String saved_message
+  +String close
+  +String exit
+  +String confirm_exit_quiz
+  +String confirm_exit
+  +String noNickname
+  +String noEmail
+  +String resetDialogTitle
+  +String resetDialogContent
+  +String cancel
+  +String historyCleared
+  +String levelUpMessage
+  +String quizPageTitle
+  +String quizErrorFetch
+  +String quizErrorNext
+  +String feedbackTitle
+  +String confirm
+  +String hint
+  +String submit
+  +String reviewBadge
+  +String answerHintDefault
+  +String setNicknameTitle
+  +String promptEnterNickname
+  +String exampleNickname
+  +String invalidNicknameFormat
+  +String nicknameDuplicateExists
+  +String nicknameAvailable
+  +String nicknameCheckError
+  +String nicknameSaved
+  +String saveAndStart
+  +String next_question
+  +String startWithGoogle
+  +String dailyLearning
+  +String dailyGoal
+  +String startQuiz
+  +String myStats
+  +String totalSolved
+  +String correctSolved
+  +String learningTime
+  +String questionGrade
+  +String gradeMappingText
+  +String wrongNote
+  +String dictionary
+  +String weeklyAttendance
+  +String testSet3DaysAgo
+  +String noWrongAnswers
+  +String noWordInfo
+  +String partOfSpeechNone
+  +String dictionaryTitle
+  +String searchHint
+  +String searchButton
+  +String noResults
+  +String apiError
+  +String networkError
+  +String exactMatchTitle
+  +String noExactMatch
+  +String partialMatchTitle
+  +String noPartialMatch
+  +String leaderboard
+  +String rank
+  +String userId
+  +String correctSolved2
+  +String totalSolved2
+  +String accuracyRate
+  +String levelLabel()
+  +String expProgress()
+  +String difficultyBadge()
+  +String welcomeUser()
+  +String goalCountUnit()
+  +String todayLearnedWords()
+  +String days()
+  +String hours()
+  +String minutes()
+  +String levelInfo()
+  +String consecutiveAttendance()
+  +String monthlyAttendanceRate()
+}
+
+"eve::l10n::gen_l10n::app_localizations.dart::AppLocalizations" <|-- "eve::l10n::gen_l10n::app_localizations_ko.dart::AppLocalizationsKo"
+
+class "eve::main.dart::MyApp" {
+  -dynamic _getStartPage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::main.dart::MyApp"
+
+class "eve::main.dart::MainPage" {
+  +_MainPage createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::main.dart::MainPage"
+
+class "eve::main.dart::_MainPage" {
+  +String nickname
+  +String accuracy
+  +String learningTime
+  +int totalSolved
+  +int correctSolved
+  -int _level
+  -int _exp
+  -int _maxExp
+  -bool _notificationsEnabled
+  +void initState()
+  +String getGradeMappingText()
+  -dynamic _loadUserInfo()
+  -dynamic _loadStats()
+  -dynamic _loadLearningTime()
+  +String getProfileImage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::main.dart::_MainPage"
+
+class "eve::model::quiz.dart::QuizQuestion" {
+  +String question
+  +String answer
+  +String hint
+  +List<String> distractors
+  +List<String> feedbacks
+  +int difficulty
+  +bool isReview
+  +Map<String, dynamic> toMap()
+  +Map<String, dynamic> toJson()
+}
+
+class "eve::provider::audio_provider.dart::AudioProvider" {
+  -AudioPlayer _player
+  -List<String> _musicList
+  -bool _isPlaying
+  -double _volume
+  -String _currentMusic
+  +bool isPlaying
+  +double volume
+  +String currentMusic
+  +List<String> musicList
+  -dynamic _initAudio()
+  -dynamic _setMusic()
+  +dynamic togglePlay()
+  +dynamic setVolume()
+  +dynamic changeMusic()
+}
+
+"eve::provider::audio_provider.dart::AudioProvider" o-- "audioplayers::src::audioplayer.dart::AudioPlayer"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::provider::audio_provider.dart::AudioProvider"
+
+class "eve::provider::local_provider.dart::LocaleProvider" {
+  -Locale _locale
+  +Locale locale
+  +dynamic loadLocale()
+  +dynamic setLocale()
+}
+
+"eve::provider::local_provider.dart::LocaleProvider" o-- "dart::ui::Locale"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::provider::local_provider.dart::LocaleProvider"
+
+class "eve::provider::quiz_mode_provider.dart::QuizModeProvider" {
+  -QuizGenerationMode _mode
+  +QuizGenerationMode mode
+  +String modeLabel
+  +void setMode()
+}
+
+"eve::provider::quiz_mode_provider.dart::QuizModeProvider" o-- "eve::provider::quiz_mode_provider.dart::QuizGenerationMode"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::provider::quiz_mode_provider.dart::QuizModeProvider"
+
+class "eve::provider::quiz_mode_provider.dart::QuizGenerationMode" {
+  +int index
+  {static} +List<QuizGenerationMode> values
+  {static} +QuizGenerationMode gemini
+  {static} +QuizGenerationMode urimalsaem
+}
+
+"eve::provider::quiz_mode_provider.dart::QuizGenerationMode" o-- "eve::provider::quiz_mode_provider.dart::QuizGenerationMode"
+"dart::core::Enum" <|-- "eve::provider::quiz_mode_provider.dart::QuizGenerationMode"
+
+class "eve::provider::theme_provider.dart::ThemeProvider" {
+  -ThemeMode _themeMode
+  +ThemeMode themeMode
+  +dynamic loadTheme()
+  +dynamic setTheme()
+}
+
+"eve::provider::theme_provider.dart::ThemeProvider" o-- "flutter::src::material::app.dart::ThemeMode"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::provider::theme_provider.dart::ThemeProvider"
+
+class "eve::repository::auth_repository.dart::AuthRepository" {
+  -FirebaseFirestore _firestore
+  +dynamic getUserDoc()
+  +dynamic createUser()
+  +dynamic updateLastLogin()
+  +dynamic updateNickname()
+  +dynamic getNickname()
+}
+
+"eve::repository::auth_repository.dart::AuthRepository" o-- "cloud_firestore::cloud_firestore.dart::FirebaseFirestore"
+
+class "eve::repository::quiz_repository.dart::QuizRepository" {
+  -FirebaseFirestore _firestore
+  +GeminiService geminiService
+  +dynamic selectWord()
+  +List<String> getGradeRangeFromLevel()
+  +dynamic isExist()
+  +dynamic generateQuestion()
+  -bool _isValidQuiz()
+  +dynamic saveQuiz()
+  +dynamic getSavedQuestion()
+  +dynamic generateFeedBack()
+  +dynamic appendFeedback()
+  +dynamic updateStatsOnCorrect()
+  +dynamic updateStatsOnIncorrect()
+  +dynamic getRandomIncorrectWord()
+  +dynamic incrementTotalSolved()
+  +dynamic incrementCorrectSolved()
+  +dynamic resetUserStats()
+}
+
+"eve::repository::quiz_repository.dart::QuizRepository" o-- "cloud_firestore::cloud_firestore.dart::FirebaseFirestore"
+"eve::repository::quiz_repository.dart::QuizRepository" o-- "eve::services::gemini_service.dart::GeminiService"
+
+class "eve::services::auth_service.dart::AuthService" {
+  -FirebaseAuth _firebaseAuth
+  -FirebaseFirestore _firestore
+  -GoogleSignIn _googleSignIn
+  +dynamic signInWithGoogle()
+  +dynamic updateNickname()
+  +dynamic getNickname()
+  +dynamic signOutAndExit()
+}
+
+"eve::services::auth_service.dart::AuthService" o-- "firebase_auth::firebase_auth.dart::FirebaseAuth"
+"eve::services::auth_service.dart::AuthService" o-- "cloud_firestore::cloud_firestore.dart::FirebaseFirestore"
+"eve::services::auth_service.dart::AuthService" o-- "google_sign_in::google_sign_in.dart::GoogleSignIn"
+
+class "eve::services::gemini_service.dart::GeminiService" {
+  +String apiKey
+  +int extractLevelNumber()
+  +dynamic generateQuizQuestion()
+  +dynamic reviewAndFixQuiz()
+  -String _buildReviewPrompt()
+}
+
+class "eve::services::quiz_service.dart::QuizService" {
+  -QuizRepository _repository
+  -int _quizCount
+  +int reviewInterval
+  +String adjustBlankLength()
+  +String fixSplitUnderscore()
+  +String formatQuestion()
+  +String extractStem()
+  +dynamic getQuestion()
+  +dynamic compareAnswer()
+  +bool isClearlyInvalidWord()
+}
+
+"eve::services::quiz_service.dart::QuizService" o-- "eve::repository::quiz_repository.dart::QuizRepository"
+
+class "eve::utils::attendance_reminder.dart::AttendanceReminder" {
+  {static} -FlutterLocalNotificationsPlugin _notifications
+  {static} -String _prefKey
+  {static} +dynamic init()
+  {static} +dynamic checkAndNotify()
+  {static} -dynamic _showNotification()
+  {static} +dynamic cancelAll()
+}
+
+"eve::utils::attendance_reminder.dart::AttendanceReminder" o-- "flutter_local_notifications::src::flutter_local_notifications_plugin.dart::FlutterLocalNotificationsPlugin"
+
+class "eve::viewModel::login_view_model.dart::LoginViewModel" {
+  -AuthService _authService
+  +bool isLoading
+  +String errorMessage
+  +dynamic signInWithGoogle()
+}
+
+"eve::viewModel::login_view_model.dart::LoginViewModel" o-- "eve::services::auth_service.dart::AuthService"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::viewModel::login_view_model.dart::LoginViewModel"
+
+class "eve::viewModel::option_view_model.dart::OptionViewModel" {
+  -AuthService _authService
+  -QuizRepository _quizRepository
+  +QuizRepository quizRepository
+  +dynamic resetUserStats()
+  +dynamic signOutAndExit()
+  +dynamic updateNickname()
+  +dynamic checkNicknameAvailable()
+}
+
+"eve::viewModel::option_view_model.dart::OptionViewModel" o-- "eve::Services::auth_service.dart::AuthService"
+"eve::viewModel::option_view_model.dart::OptionViewModel" o-- "eve::repository::quiz_repository.dart::QuizRepository"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::viewModel::option_view_model.dart::OptionViewModel"
+
+class "eve::views::pages::dictionary_page.dart::DictionaryPage" {
+  +State<DictionaryPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::dictionary_page.dart::DictionaryPage"
+
+class "eve::views::pages::dictionary_page.dart::_DictionaryPageState" {
+  -TextEditingController _ctrl
+  -HtmlUnescape _unescape
+  -List<dynamic> _exactMatches
+  -List<dynamic> _partialMatches
+  -bool _isLoading
+  -String? _error
+  -dynamic _search()
+  -String _normalizeText()
+  +String formatWordForDisplay()
+  -Widget _buildEntryCard()
+  +Widget build()
+}
+
+"eve::views::pages::dictionary_page.dart::_DictionaryPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"eve::views::pages::dictionary_page.dart::_DictionaryPageState" o-- "html_unescape::html_unescape.dart::HtmlUnescape"
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::dictionary_page.dart::_DictionaryPageState"
+
+class "eve::views::pages::login_page.dart::LoginPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::pages::login_page.dart::LoginPage"
+
+class "eve::views::pages::option_page.dart::OptionPage" {
+  +State<OptionPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::option_page.dart::OptionPage"
+
+class "eve::views::pages::option_page.dart::_OptionPageState" {
+  -String _nickname
+  -String _email
+  -int _level
+  -int _exp
+  -int _maxExp
+  +void initState()
+  -dynamic _loadUserInfo()
+  +String getProfileImage()
+  +Widget build()
+  -Widget _buildProfileSection()
+  -Widget _buildExpBar()
+  -Widget _buildOptionCard()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::option_page.dart::_OptionPageState"
+
+class "eve::views::pages::quiz_option_page.dart::QuizOptionPage" {
+  +State<QuizOptionPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::quiz_option_page.dart::QuizOptionPage"
+
+class "eve::views::pages::quiz_option_page.dart::_QuizOptionPageState" {
+  +void initState()
+  +Widget build()
+  -Widget _buildOptionCard()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::quiz_option_page.dart::_QuizOptionPageState"
+
+class "eve::views::pages::quiz_page.dart::QuizPage" {
+  +State<QuizPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::quiz_page.dart::QuizPage"
+
+class "eve::views::pages::quiz_page.dart::_QuizPageState" {
+  -FocusNode _answerFocusNode
+  +QuizController controller
+  +QuizQuestion? currentQuestion
+  +bool isLoading
+  +String errorMessage
+  +String answerHintText
+  +bool hasSubmitted
+  -int _level
+  -int _exp
+  -int _maxExp
+  -DateTime _quizStartTime
+  -TextEditingController _answerCtrl
+  +void initState()
+  +void dispose()
+  -dynamic _loadUserLevel()
+  +Color getDifficultyColor()
+  -dynamic _endQuiz()
+  -dynamic _loadQuiz()
+  -dynamic _submitAnswer()
+  -dynamic _increaseDailyVocabCount()
+  -void _showFeedbackDialog()
+  -String _extractInitialHint()
+  +Widget build()
+}
+
+"eve::views::pages::quiz_page.dart::_QuizPageState" o-- "flutter::src::widgets::focus_manager.dart::FocusNode"
+"eve::views::pages::quiz_page.dart::_QuizPageState" o-- "eve::controller::quiz_controller.dart::QuizController"
+"eve::views::pages::quiz_page.dart::_QuizPageState" o-- "eve::model::quiz.dart::QuizQuestion"
+"eve::views::pages::quiz_page.dart::_QuizPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::quiz_page.dart::_QuizPageState"
+
+class "eve::views::pages::set_name_page.dart::SetUserPage" {
+  +_SetUserPage createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::set_name_page.dart::SetUserPage"
+
+class "eve::views::pages::set_name_page.dart::_SetUserPage" {
+  -TextEditingController _nicknameController
+  -bool _isSaving
+  -bool? _isDuplicate
+  -String _checkMessage
+  -bool _validateNickname()
+  -dynamic _checkNicknameDuplicate()
+  -dynamic _saveNickname()
+  +Widget build()
+}
+
+"eve::views::pages::set_name_page.dart::_SetUserPage" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::set_name_page.dart::_SetUserPage"
+
+class "eve::views::pages::wrongNotes_page.dart::WrongNotePage" {
+  -dynamic _loadIncorrectWords()
+  +dynamic fetchWordDetail()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::pages::wrongNotes_page.dart::WrongNotePage"
+
+class "eve::views::subpages::attendance_calendar.dart::AttendanceCalendar" {
+  +_AttendanceCalendarState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::subpages::attendance_calendar.dart::AttendanceCalendar"
+
+class "eve::views::subpages::attendance_calendar.dart::_AttendanceCalendarState" {
+  -Map<String, bool> _attendanceMap
+  -int _consecutiveDays
+  -double _monthlyAttendanceRate
+  +void initState()
+  -dynamic _loadAttendance()
+  -dynamic _markTodayAsPresent()
+  -String _formatDate()
+  -bool _isPresent()
+  -dynamic _calculateAttendanceStats()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::subpages::attendance_calendar.dart::_AttendanceCalendarState"
+
+class "eve::views::subpages::weekly_attendance_preview.dart::WeeklyAttendancePreview" {
+  +_WeeklyAttendancePreviewState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::subpages::weekly_attendance_preview.dart::WeeklyAttendancePreview"
+
+class "eve::views::subpages::weekly_attendance_preview.dart::_WeeklyAttendancePreviewState" {
+  -Map<String, bool> _attendanceMap
+  +void initState()
+  -dynamic _loadAttendance()
+  -String _formatDate()
+  -dynamic _markTodayAttendance()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::subpages::weekly_attendance_preview.dart::_WeeklyAttendancePreviewState"
+
+class "eve::views::widgets::feature_card.dart::DailyVocabProgress" {
+  +_DailyVocabProgressState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::widgets::feature_card.dart::DailyVocabProgress"
+
+class "eve::views::widgets::feature_card.dart::_DailyVocabProgressState" {
+  -int _goal
+  -int _completed
+  -String _todayKey
+  -List<int> _goalOptions
+  +void initState()
+  -dynamic _loadData()
+  -dynamic _saveData()
+  -void _increaseCompleted()
+  -void _changeGoal()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::widgets::feature_card.dart::_DailyVocabProgressState"
+
+class "eve::views::widgets::leaderboard_widget.dart::LeaderboardSection" {
+  +int limitCount
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::widgets::leaderboard_widget.dart::LeaderboardSection"
+
+class "eve::views::widgets::option_widget.dart::OptionTile" {
+  +String title
+  +void Function() onTap
+  +Widget build()
+}
+
+"eve::views::widgets::option_widget.dart::OptionTile" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::widgets::option_widget.dart::OptionTile"
+
+class "eve::views::widgets::option_widget.dart::SoundDialog" {
+  {static} +void show()
+  {static} -Widget _dialogHeader()
+}
+
+class "eve::views::widgets::option_widget.dart::LanguageDialog" {
+  {static} +void show()
+  {static} -Widget _dialogHeader()
+  {static} -Widget _languageOption()
+}
+
+class "eve::views::widgets::option_widget.dart::BackgroundDialog" {
+  {static} +void show()
+  {static} -Widget _dialogHeader()
+  {static} -Widget _themeOption()
+}
+
+class "eve::views::widgets::option_widget.dart::NicknameDialog" {
+  {static} +void show()
+  {static} -Widget _dialogHeader()
+}
+
+
+@enduml

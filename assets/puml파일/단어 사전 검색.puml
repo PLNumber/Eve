@@ -1,0 +1,28 @@
+@startuml
+actor User
+participant DictionaryPage
+participant DictionaryState
+participant UriHTTP
+participant OurMalsaemAPI
+
+== 단어 검색 ==
+
+User -> DictionaryPage: 단어 검색 화면 진입
+User -> DictionaryPage: 검색어 입력 후 버튼 클릭
+DictionaryPage -> DictionaryState: _search(query)
+DictionaryState -> UriHTTP: 요청 URL 생성
+UriHTTP -> OurMalsaemAPI: 단어 검색 API 호출
+OurMalsaemAPI --> UriHTTP: JSON 결과 반환
+UriHTTP --> DictionaryState: 응답 결과
+
+alt 정확 일치 있음
+    DictionaryState -> DictionaryPage: exactMatches 리스트 업데이트
+end
+
+alt 부분 일치 있음
+    DictionaryState -> DictionaryPage: partialMatches 리스트 업데이트
+end
+
+DictionaryPage -> User: 검색 결과 표시
+
+@enduml

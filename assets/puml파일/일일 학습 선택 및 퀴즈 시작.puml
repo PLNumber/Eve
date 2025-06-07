@@ -1,0 +1,27 @@
+@startuml
+actor User
+participant QuizOptionPage
+participant QuizController
+participant QuizService
+participant QuizRepository
+participant GeminiService
+
+== 퀴즈 시작 ==
+
+User -> QuizOptionPage: 목표 선택 후 시작 버튼 클릭
+QuizOptionPage -> QuizController: startQuiz()
+QuizController -> QuizService: getQuestion()
+QuizService -> QuizRepository: selectWord(uid)
+QuizRepository -> QuizRepository: isExist(word)
+alt 문제 존재
+    QuizRepository -> QuizRepository: getSavedQuestion(word)
+else 문제 없음
+    QuizRepository -> GeminiService: generateQuizQuestion(vocab)
+    GeminiService --> QuizRepository: 생성된 문제 반환
+    QuizRepository -> QuizRepository: saveQuiz()
+end
+QuizRepository --> QuizService: QuizQuestion 반환
+QuizService --> QuizController: QuizQuestion 반환
+QuizController --> QuizPage: 퀴즈 화면에 표시
+
+@enduml

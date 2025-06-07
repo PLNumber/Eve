@@ -1,0 +1,30 @@
+@startuml
+actor User
+participant QuizPage
+participant QuizController
+participant QuizService
+participant QuizRepository
+participant GeminiService
+
+== 정답 제출 ==
+
+User -> QuizPage: 정답 입력 후 제출
+QuizPage -> QuizController: checkAnswer(userInput)
+QuizController -> QuizService: compareAnswer(question, userInput)
+
+alt 정답인 경우
+    QuizService --> QuizController: AnswerResult(isCorrect=true)
+    QuizController --> QuizPage: 다음 문제 진행 안내
+else 오답인 경우
+    QuizService -> QuizRepository: generateFeedBack(answer, userInput)
+    alt 피드백 없음
+        QuizRepository -> GeminiService: reviewAndFixQuiz(wrongInput)
+        GeminiService --> QuizRepository: 생성된 피드백
+    end
+    QuizRepository -> QuizRepository: appendFeedback(answer, wrongInput, feedback)
+    QuizRepository --> QuizService: feedback 저장됨
+    QuizService --> QuizController: AnswerResult(isCorrect=false, feedback)
+    QuizController --> QuizPage: 피드백 표시 및 재도전 옵션 제공
+end
+
+@enduml

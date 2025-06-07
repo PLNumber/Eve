@@ -1,0 +1,31 @@
+@startuml
+actor User
+participant MainPage
+participant WeeklyAttendancePreview
+participant AttendanceCalendar
+participant AttendanceReminder
+participant Firestore
+
+== 출석 미리보기 ==
+
+User -> MainPage: 메인 진입
+MainPage -> WeeklyAttendancePreview: 빌드
+WeeklyAttendancePreview -> Firestore: attendance/{uid} 문서 로딩
+Firestore --> WeeklyAttendancePreview: 출석 날짜 정보
+
+== 전체 출석 달력 보기 ==
+User -> WeeklyAttendancePreview: 달력 클릭
+WeeklyAttendancePreview -> AttendanceCalendar: 출석 맵 전달
+AttendanceCalendar -> Firestore: 출석 데이터 재조회 (옵션)
+AttendanceCalendar -> User: 일자별 상태 표시
+
+== 자동 출석 기록 ==
+MainPage -> AttendanceReminder: checkAndNotify()
+AttendanceReminder -> Firestore: 오늘 날짜 출석 기록 추가
+
+== 미출석 리마인더 ==
+alt 출석 안함
+    AttendanceReminder -> User: 푸시 알림 표시
+end
+
+@enduml

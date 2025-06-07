@@ -1,12 +1,22 @@
 @startuml
 actor User
+participant MainPage
+participant LeaderboardWidget
+participant FirebaseFirestore
 
-participant "LeaderboardWidget" as Leaderboard
-participant "QuizRepository" as Repo
+== 리더보드 진입 ==
 
-User -> Leaderboard: 리더보드 보기
-Leaderboard -> Repo: 사용자 점수 순으로 가져오기
-Repo --> Leaderboard: 유저 랭킹 데이터
-Leaderboard --> User: 리더보드 UI 표시
+User -> MainPage: 진입 또는 리더보드 위젯 스크롤
+MainPage -> LeaderboardWidget: 빌드 시작
+LeaderboardWidget -> FirebaseFirestore: users 컬렉션 쿼리
+FirebaseFirestore --> LeaderboardWidget: 사용자 목록 with score
+
+alt 정렬 기준: 정답 수
+    LeaderboardWidget -> LeaderboardWidget: totalSolved 기준 정렬
+else 정렬 기준: 정확도
+    LeaderboardWidget -> LeaderboardWidget: accuracyRate 기준 정렬
+end
+
+LeaderboardWidget -> User: 순위 리스트 표시
 
 @enduml

@@ -1,0 +1,45 @@
+@startuml
+actor User
+participant OptionPage
+participant SoundDialog
+participant BackgroundDialog
+participant LanguageDialog
+participant NicknameDialog
+participant OptionViewModel
+participant AudioProvider
+participant ThemeProvider
+participant LocaleProvider
+participant AuthService
+participant QuizRepository
+
+== 소리 설정 ==
+User -> OptionPage: 소리 설정 클릭
+OptionPage -> SoundDialog: show()
+SoundDialog -> AudioProvider: setVolume()
+
+== 배경 설정 ==
+User -> OptionPage: 배경 설정 클릭
+OptionPage -> BackgroundDialog: show()
+BackgroundDialog -> ThemeProvider: setTheme()
+
+== 언어 설정 ==
+User -> OptionPage: 언어 설정 클릭
+OptionPage -> LanguageDialog: show()
+LanguageDialog -> LocaleProvider: setLocale()
+
+== 닉네임 설정 ==
+User -> OptionPage: 닉네임 변경 클릭
+OptionPage -> NicknameDialog: show()
+NicknameDialog -> OptionViewModel: checkNicknameAvailable()
+OptionViewModel -> AuthService: updateNickname()
+
+== 로그아웃 ==
+User -> OptionPage: 로그아웃 클릭
+OptionPage -> OptionViewModel: signOutAndExit()
+OptionViewModel -> AuthService: signOutAndExit()
+
+== 초기화 ==
+User -> OptionPage: 초기화 클릭
+OptionPage -> QuizRepository: resetUserStats()
+
+@enduml
