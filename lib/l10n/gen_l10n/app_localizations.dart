@@ -515,6 +515,12 @@ abstract class AppLocalizations {
   /// **'Start Quiz'**
   String get startQuiz;
 
+  /// No description provided for @loadingQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate Next Quiz...'**
+  String get loadingQuiz;
+
   /// No description provided for @myStats.
   ///
   /// In en, this message translates to:

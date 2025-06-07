@@ -38,7 +38,7 @@ class _QuizPageState extends State<QuizPage> {
     super.initState();
     controller = context.read<QuizController>();
     _quizStartTime = DateTime.now();
-    _loadQuiz();
+    _loadQuiz(isFirst: true); // 첫문제 로딩
     _loadUserLevel();
     _answerFocusNode = FocusNode(); // ⚡ 추가
     // 위젯 빌드 완료 후에 포커스 요청
@@ -95,17 +95,22 @@ class _QuizPageState extends State<QuizPage> {
     controller.endQuiz(context);
   }
 
-  Future<void> _loadQuiz() async {
+  Future<void> _loadQuiz({bool isFirst = false}) async {
     setState(() {
       isLoading = true;
       errorMessage = "";
+      currentQuestion = null;
     });
 
-    final quiz = await controller.generateQuiz();
+    final quiz =
+        isFirst
+            ? await controller.generateQuiz()
+            : await controller.nextQuestion();
+
     if (quiz == null) {
       setState(() {
         errorMessage =
-            "문제 생성 실패: 서버에서 문제를 받아올 수 없습니다.(Failed to generate question: cannot reach server.)";
+            errorMessage = AppLocalizations.of(context)!.quizErrorNext;
         isLoading = false;
       });
       return;
@@ -114,6 +119,9 @@ class _QuizPageState extends State<QuizPage> {
     setState(() {
       currentQuestion = quiz;
       isLoading = false;
+      hasSubmitted = false;
+      _answerCtrl.clear();
+      answerHintText = '답 입력(Enter answer)';
     });
   }
 
@@ -140,6 +148,7 @@ class _QuizPageState extends State<QuizPage> {
       await showContinueOrEndDialog(
         context,
         onContinue: () async {
+          await _loadQuiz();
           final newQuiz = await controller.nextQuestion();
           if (newQuiz != null) {
             setState(() {
@@ -282,13 +291,28 @@ class _QuizPageState extends State<QuizPage> {
         ),
         body: SafeArea(
           child:
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
+              isLoading || currentQuestion == null
+                  ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 20),
+                        Text(
+                          "다음 문제 생성 중...",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                   : errorMessage.isNotEmpty
                   ? Center(
                     child: Text(
                       errorMessage,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: Colors.red),
                     ),
                   )
                   : Column(
@@ -372,7 +396,11 @@ class _QuizPageState extends State<QuizPage> {
                                   child: Text(
                                     quiz!.question.replaceAllMapped(
                                       RegExp(r'_+'),
-                                          (match) => '▁' * match.group(0)!.length, // ex: ___ → ▁▁▁
+                                      (match) =>
+                                          '▁' *
+                                          match
+                                              .group(0)!
+                                              .length, // ex: ___ → ▁▁▁
                                     ),
                                     style: const TextStyle(fontSize: 20),
                                     textAlign: TextAlign.center,

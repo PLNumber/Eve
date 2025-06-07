@@ -205,6 +205,7 @@
 
 
   "startQuiz": "퀴즈 시작하기",
+  "loadingQuiz": "다음 문제 생성 중...",
   "myStats": "나의 통계",
   "totalSolved": "총 푼 횟수",
   "correctSolved": "맞춘 횟수",

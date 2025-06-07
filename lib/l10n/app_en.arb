@@ -203,6 +203,7 @@
 
 
   "startQuiz": "Start Quiz",
+  "loadingQuiz": "Generate Next Quiz...",
   "myStats": "My Stats",
   "totalSolved": "Total Solved",
   "correctSolved": "Correct Answers",

@@ -231,6 +231,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get startQuiz => '퀴즈 시작하기';
 
   @override
+  String get loadingQuiz => '다음 문제 생성 중...';
+
+  @override
   String get myStats => '나의 통계';
 
   @override

@@ -231,6 +231,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startQuiz => 'Start Quiz';
 
   @override
+  String get loadingQuiz => 'Generate Next Quiz...';
+
+  @override
   String get myStats => 'My Stats';
 
   @override
