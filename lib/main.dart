@@ -567,73 +567,73 @@ class _MainPage extends State<MainPage> {
                       SizedBox(height: 20),
                       const LeaderboardSection(),//리더보드
 
-                      //테스트용 마지막 접속일 3일전으로 설정하고 테스트
-                      ElevatedButton(
-                        child: Text('1등급 문제 200개씩 생성'),
-                        onPressed: () async {
-                          final firestore = FirebaseFirestore.instance;
-                          final geminiService = GeminiService(apiKey: dotenv.env['geminiApiKey']!);
-                          final quizRepo = QuizRepository(geminiService);
-
-                          // ✅ 1등급 단어 가져오기
-                          final vocabSnapshot = await firestore
-                              .collection('vocab2')
-                              .where('등급', isEqualTo: '4등급')
-                              .get();
-                          final vocabList = vocabSnapshot.docs.map((doc) => doc.data()).toList();
-
-                          const batchSize = 200;
-                          final failedWords = <String>[];
-
-                          for (int i = 0; i < vocabList.length; i += batchSize) {
-                            final batch = vocabList.skip(i).take(batchSize).toList();
-
-                            print('🚀 [Batch ${i ~/ batchSize + 1}] 시작: ${batch.length}개 단어 처리');
-
-                            for (int j = 0; j < batch.length; j++) {
-                              final vocab = batch[j];
-                              final word = vocab['어휘'];
-                              try {
-                                final meanings = List<String>.from(vocab['의미']);
-                                final selectedMeaning = meanings[Random().nextInt(meanings.length)];
-                                final partsOfSpeech = List<String>.from(vocab['품사']).join(', ');
-                                final level = vocab['등급'];
-
-                                final alreadyExists = await quizRepo.isExist(word);
-                                if (alreadyExists) {
-                                  print('⏭ [${i + j + 1}] 중복 건너뜀: $word');
-                                  continue;
-                                }
-
-                                final quiz = await quizRepo.generateQuestion({
-                                  '어휘': word,
-                                  '의미': selectedMeaning,
-                                  '품사': partsOfSpeech,
-                                  '등급': level,
-                                });
-
-                                print('✅ [${i + j + 1}] 생성 완료: $word');
-                              } catch (e) {
-                                print('❌ [${i + j + 1}] 실패: $word - $e');
-                                failedWords.add(word);
-                                await firestore.collection('generation_failures').add({
-                                  'word': word,
-                                  'timestamp': Timestamp.now(),
-                                  'error': e.toString(),
-                                });
-                              }
-                            }
-
-                            print('🟢 [Batch ${i ~/ batchSize + 1}] 완료. 잠시 대기...');
-                            await Future.delayed(const Duration(seconds: 10));
-                          }
-
-                          print('🎯 전체 완료. 실패한 단어: ${failedWords.length}개');
-                          if (failedWords.isNotEmpty) {
-                            print('❌ 실패 목록: ${failedWords.join(', ')}');
-                          }
-                        },
-                      ),
+                      // //테스트용 마지막 접속일 3일전으로 설정하고 테스트
+                      // ElevatedButton(
+                      //   child: Text('1등급 문제 200개씩 생성'),
+                      //   onPressed: () async {
+                      //     final firestore = FirebaseFirestore.instance;
+                      //     final geminiService = GeminiService(apiKey: dotenv.env['geminiApiKey']!);
+                      //     final quizRepo = QuizRepository(geminiService);
+                      //
+                      //     // ✅ 1등급 단어 가져오기
+                      //     final vocabSnapshot = await firestore
+                      //         .collection('vocab2')
+                      //         .where('등급', isEqualTo: '4등급')
+                      //         .get();
+                      //     final vocabList = vocabSnapshot.docs.map((doc) => doc.data()).toList();
+                      //
+                      //     const batchSize = 200;
+                      //     final failedWords = <String>[];
+                      //
+                      //     for (int i = 0; i < vocabList.length; i += batchSize) {
+                      //       final batch = vocabList.skip(i).take(batchSize).toList();
+                      //
+                      //       print('🚀 [Batch ${i ~/ batchSize + 1}] 시작: ${batch.length}개 단어 처리');
+                      //
+                      //       for (int j = 0; j < batch.length; j++) {
+                      //         final vocab = batch[j];
+                      //         final word = vocab['어휘'];
+                      //         try {
+                      //           final meanings = List<String>.from(vocab['의미']);
+                      //           final selectedMeaning = meanings[Random().nextInt(meanings.length)];
+                      //           final partsOfSpeech = List<String>.from(vocab['품사']).join(', ');
+                      //           final level = vocab['등급'];
+                      //
+                      //           final alreadyExists = await quizRepo.isExist(word);
+                      //           if (alreadyExists) {
+                      //             print('⏭ [${i + j + 1}] 중복 건너뜀: $word');
+                      //             continue;
+                      //           }
+                      //
+                      //           final quiz = await quizRepo.generateQuestion({
+                      //             '어휘': word,
+                      //             '의미': selectedMeaning,
+                      //             '품사': partsOfSpeech,
+                      //             '등급': level,
+                      //           });
+                      //
+                      //           print('✅ [${i + j + 1}] 생성 완료: $word');
+                      //         } catch (e) {
+                      //           print('❌ [${i + j + 1}] 실패: $word - $e');
+                      //           failedWords.add(word);
+                      //           await firestore.collection('generation_failures').add({
+                      //             'word': word,
+                      //             'timestamp': Timestamp.now(),
+                      //             'error': e.toString(),
+                      //           });
+                      //         }
+                      //       }
+                      //
+                      //       print('🟢 [Batch ${i ~/ batchSize + 1}] 완료. 잠시 대기...');
+                      //       await Future.delayed(const Duration(seconds: 10));
+                      //     }
+                      //
+                      //     print('🎯 전체 완료. 실패한 단어: ${failedWords.length}개');
+                      //     if (failedWords.isNotEmpty) {
+                      //       print('❌ 실패 목록: ${failedWords.join(', ')}');
+                      //     }
+                      //   },
+                      // ),
 
                       SizedBox(height: 20),
                     ],
