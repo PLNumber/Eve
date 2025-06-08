@@ -1,8 +1,0 @@
-@startuml
-class NavUtil << (F,orchid) >> {
-  + showSavedSnackBar(BuildContext context, {String? message})
-  + showConfirmDialog(BuildContext context, {required String title, required String content, required VoidCallback onConfirm})
-  + showContinueOrEndDialog(BuildContext context, {required VoidCallback onContinue, required VoidCallback onEnd})
-}
-
-@enduml

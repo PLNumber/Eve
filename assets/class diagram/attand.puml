@@ -1,0 +1,118 @@
+@startuml
+' 💄 시각 정돈용 설정
+skinparam classAttributeIconSize 0
+skinparam ClassFontSize 11
+skinparam ClassAttributeFontSize 10
+skinparam ClassStereotypeFontSize 9
+skinparam BackgroundColor #FAFAFA
+skinparam ArrowColor DarkSlateGray
+skinparam ClassBackgroundColor White
+skinparam Shadowing false
+skinparam dpi 150
+
+' 💡 패키지 단위로 그룹핑
+set namespaceSeparator ::
+
+
+class "eve::main.dart::MyApp" {
+  -dynamic _getStartPage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::main.dart::MyApp"
+
+class "eve::main.dart::MainPage" {
+  +_MainPage createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::main.dart::MainPage"
+
+class "eve::main.dart::_MainPage" {
+  +String nickname
+  +String accuracy
+  +String learningTime
+  +int totalSolved
+  +int correctSolved
+  -int _level
+  -int _exp
+  -int _maxExp
+  -bool _notificationsEnabled
+  +void initState()
+  +String getGradeMappingText()
+  -dynamic _loadUserInfo()
+  -dynamic _loadStats()
+  -dynamic _loadLearningTime()
+  +String getProfileImage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::main.dart::_MainPage"
+
+
+class "eve::viewModel::login_view_model.dart::LoginViewModel" {
+  -AuthService _authService
+  +bool isLoading
+  +String errorMessage
+  +dynamic signInWithGoogle()
+}
+
+"eve::viewModel::login_view_model.dart::LoginViewModel" o-- "eve::services::auth_service.dart::AuthService"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "eve::viewModel::login_view_model.dart::LoginViewModel"
+
+
+class "eve::views::pages::login_page.dart::LoginPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::pages::login_page.dart::LoginPage"
+
+
+class "eve::views::subpages::attendance_calendar.dart::AttendanceCalendar" {
+  +_AttendanceCalendarState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::subpages::attendance_calendar.dart::AttendanceCalendar"
+
+class "eve::views::subpages::attendance_calendar.dart::_AttendanceCalendarState" {
+  -Map<String, bool> _attendanceMap
+  -int _consecutiveDays
+  -double _monthlyAttendanceRate
+  +void initState()
+  -dynamic _loadAttendance()
+  -dynamic _markTodayAsPresent()
+  -String _formatDate()
+  -bool _isPresent()
+  -dynamic _calculateAttendanceStats()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::subpages::attendance_calendar.dart::_AttendanceCalendarState"
+
+class "eve::views::subpages::weekly_attendance_preview.dart::WeeklyAttendancePreview" {
+  +_WeeklyAttendancePreviewState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::subpages::weekly_attendance_preview.dart::WeeklyAttendancePreview"
+
+class "eve::views::subpages::weekly_attendance_preview.dart::_WeeklyAttendancePreviewState" {
+  -Map<String, bool> _attendanceMap
+  +void initState()
+  -dynamic _loadAttendance()
+  -String _formatDate()
+  -dynamic _markTodayAttendance()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::subpages::weekly_attendance_preview.dart::_WeeklyAttendancePreviewState"
+
+
+
+class "eve::views::widgets::leaderboard_widget.dart::LeaderboardSection" {
+  +int limitCount
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::views::widgets::leaderboard_widget.dart::LeaderboardSection"
+
+
+@enduml

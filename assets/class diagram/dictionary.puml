@@ -1,0 +1,76 @@
+@startuml
+' 💄 시각 정돈용 설정
+skinparam classAttributeIconSize 0
+skinparam ClassFontSize 11
+skinparam ClassAttributeFontSize 10
+skinparam ClassStereotypeFontSize 9
+skinparam BackgroundColor #FAFAFA
+skinparam ArrowColor DarkSlateGray
+skinparam ClassBackgroundColor White
+skinparam Shadowing false
+skinparam dpi 150
+
+' 💡 패키지 단위로 그룹핑
+set namespaceSeparator ::
+
+class "eve::main.dart::MyApp" {
+  -dynamic _getStartPage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "eve::main.dart::MyApp"
+
+class "eve::main.dart::MainPage" {
+  +_MainPage createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::main.dart::MainPage"
+
+class "eve::main.dart::_MainPage" {
+  +String nickname
+  +String accuracy
+  +String learningTime
+  +int totalSolved
+  +int correctSolved
+  -int _level
+  -int _exp
+  -int _maxExp
+  -bool _notificationsEnabled
+  +void initState()
+  +String getGradeMappingText()
+  -dynamic _loadUserInfo()
+  -dynamic _loadStats()
+  -dynamic _loadLearningTime()
+  +String getProfileImage()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "eve::main.dart::_MainPage"
+
+
+class "eve::views::pages::dictionary_page.dart::DictionaryPage" {
+  +State<DictionaryPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "eve::views::pages::dictionary_page.dart::DictionaryPage"
+
+class "eve::views::pages::dictionary_page.dart::_DictionaryPageState" {
+  -TextEditingController _ctrl
+  -HtmlUnescape _unescape
+  -List<dynamic> _exactMatches
+  -List<dynamic> _partialMatches
+  -bool _isLoading
+  -String? _error
+  -dynamic _search()
+  -String _normalizeText()
+  +String formatWordForDisplay()
+  -Widget _buildEntryCard()
+  +Widget build()
+}
+
+"eve::views::pages::dictionary_page.dart::_DictionaryPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"eve::views::pages::dictionary_page.dart::_DictionaryPageState" o-- "html_unescape::html_unescape.dart::HtmlUnescape"
+"flutter::src::widgets::framework.dart::State" <|-- "eve::views::pages::dictionary_page.dart::_DictionaryPageState"
+
+
+@enduml
