@@ -1,0 +1,57 @@
+@startuml
+actor User
+participant "QuizPage" as QuizPage
+participant "QuizController" as QuizController
+participant "QuizService" as QuizService
+participant "QuizRepository" as QuizRepository
+participant "GeminiService" as GeminiService
+participant "Firebase" as Firebase
+
+User -> QuizPage : startQuiz()
+QuizPage -> QuizController : startQuiz()
+QuizController -> QuizService : getQuestion()
+
+QuizService -> QuizRepository : getSolvedWords()
+QuizRepository -> Firebase : fetch solved words
+Firebase --> QuizRepository : solvedWords
+QuizRepository --> QuizService : solvedWords
+
+QuizService -> QuizRepository : getVocabListByLevel()
+QuizRepository -> Firebase : fetch vocabs for level
+Firebase --> QuizRepository : vocabList
+QuizRepository --> QuizService : vocabList
+
+QuizService -> QuizRepository : filter unsolved words
+QuizService -> QuizRepository : isExist(word)
+QuizRepository -> Firebase : check quiz by word
+
+alt 문제 있음
+    Firebase --> QuizRepository : quizQuestion
+    QuizRepository --> QuizService : quizQuestion
+else 문제 없음
+    loop 최대 3회
+        QuizService -> GeminiService : generateQuizQuestion(word)
+        GeminiService --> QuizService : quizJson
+
+        QuizService -> GeminiService : reviewAndFixQuiz(quizJson)
+        GeminiService --> QuizService : reviewedJson (valid?)
+
+        alt 검토 통과
+            QuizService -> QuizRepository : saveQuiz(reviewedJson)
+            QuizRepository -> Firebase : save reviewed quiz
+            QuizRepository --> QuizService : success
+            break
+        else 검토 실패
+            QuizService -> QuizService : log failure
+        end
+    end
+
+    alt 모든 생성 실패
+        QuizService -> QuizService : 임시 문제 생성 (단어 정의)
+        QuizService --> QuizController : QuizQuestion (임시 문제)
+    end
+end
+
+QuizService --> QuizController : QuizQuestion
+QuizController --> QuizPage : showQuiz(QuizQuestion)
+@enduml
