@@ -1,0 +1,14 @@
+@startuml
+skinparam classAttributeIconSize 0
+class DailyVocabProgress {
+  + createState()
+}
+class _DailyVocabProgressState {
+  + initState()
+  + _loadData()
+  + _saveData()
+  + _increaseCompleted()
+  + _changeGoal(int newGoal)
+  + build(BuildContext context)
+}
+@enduml

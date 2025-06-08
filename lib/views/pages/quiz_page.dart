@@ -446,25 +446,32 @@ class _QuizPageState extends State<QuizPage> {
                                       icon: const Icon(Icons.skip_next),
                                       tooltip: local.next_question,
                                       onPressed: () async {
-                                        final newQuiz =
-                                            await controller.nextQuestion();
+                                        setState(() {
+                                          isLoading = true;
+                                          errorMessage = '';
+                                        });
+
+                                        final newQuiz = await controller.nextQuestion();
+
                                         if (newQuiz != null) {
                                           setState(() {
                                             currentQuestion = newQuiz;
                                             hasSubmitted = false;
                                             _answerCtrl.clear();
-                                            answerHintText =
-                                                '답 입력(Enter answer)';
+                                            answerHintText = '답 입력(Enter answer)';
                                           });
                                         } else {
-                                          setState(
-                                            () =>
-                                                errorMessage =
-                                                    local.quizErrorNext,
-                                          );
+                                          setState(() {
+                                            errorMessage = local.quizErrorNext;
+                                          });
                                         }
+
+                                        setState(() {
+                                          isLoading = false;
+                                        });
                                       },
                                     ),
+
                                 ],
                               ),
                             ],

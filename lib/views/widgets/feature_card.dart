@@ -68,13 +68,6 @@ class _DailyVocabProgressState extends State<DailyVocabProgress> {
     }
   }
 
-  void _increaseCompleted() {
-    setState(() {
-      _completed++;
-    });
-    _saveData();
-  }
-
   void _changeGoal(int newGoal) {
     setState(() {
       _goal = newGoal;
