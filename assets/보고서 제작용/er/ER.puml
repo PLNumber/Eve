@@ -1,0 +1,54 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+entity "User" as User {
+  * uid : String <<PK>>
+  --
+  email : String
+  nickname : String
+  level : int
+  experience : int
+  timeSpent : int
+  totalSolved : int
+  vocab_completed : int
+  vocab_goal : int
+  vocab_date : Date
+  incorrectWords : List<String>
+  reviewProgress : Map<String, int>
+  wordHistory : List<String>
+  createdAt : Timestamp
+  lastLogin : Timestamp
+}
+
+entity "Quizzes" as Quiz {
+  * vocabId : String <<PK>>
+  --
+  answer : String
+  difficulty : int
+  distractors : List<String>
+  feedbacks : List<String>
+  hint : String
+  question : String
+}
+
+entity "Vocab2" as Vocab2 {
+  * vocabId : String <<PK>>
+  --
+  어휘 : String
+  등급 : String
+  품사 : List<String>
+  의미 : List<String>
+}
+
+entity "Attendance" as Attendance {
+  * uid : String <<PK>>
+  --
+  dates : Map<Date, Boolean>
+}
+
+' 관계 설정
+User ||--o{ Quiz : "solves"
+User ||--|| Attendance : "has"
+Quiz }o--|| Vocab2 : "uses word"
+
+@enduml
