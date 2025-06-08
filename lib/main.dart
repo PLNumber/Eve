@@ -634,6 +634,18 @@ class _MainPage extends State<MainPage> {
                       //     }
                       //   },
                       // ),
+                      // SizedBox(height: 20),
+                      // ElevatedButton(
+                      //   child: const Text('⚙️ 테스트: 3일 전으로 설정'),
+                      //   onPressed: () async {
+                      //     final prefs = await SharedPreferences.getInstance();
+                      //     final threeDaysAgo = DateTime.now()
+                      //         .subtract(const Duration(days: 3));
+                      //     await prefs.setString(
+                      //         'lastLoginDate', threeDaysAgo.toIso8601String());
+                      //     await AttendanceReminder.checkAndNotify();
+                      //   },
+                      // ),
 
                       SizedBox(height: 20),
                     ],

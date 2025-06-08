@@ -149,15 +149,15 @@ class _QuizPageState extends State<QuizPage> {
         context,
         onContinue: () async {
           await _loadQuiz();
-          final newQuiz = await controller.nextQuestion();
-          if (newQuiz != null) {
-            setState(() {
-              currentQuestion = newQuiz;
-              hasSubmitted = false;
-            });
-          } else {
-            setState(() => errorMessage = local.quizErrorNext);
-          }
+          // final newQuiz = await controller.nextQuestion();
+          // if (newQuiz != null) {
+          //   setState(() {
+          //     currentQuestion = newQuiz;
+          //     hasSubmitted = false;
+          //   });
+          // } else {
+          //   setState(() => errorMessage = local.quizErrorNext);
+          // }
         },
         onEnd: () async => await _endQuiz(),
       );
