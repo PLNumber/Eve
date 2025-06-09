@@ -512,6 +512,7 @@ class _MainPage extends State<MainPage> {
                                       );
                                     },
 
+
                                     child: Text(
                                       local.questionGrade,
                                       style: TextStyle(
