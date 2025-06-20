@@ -183,7 +183,6 @@ class _MainPage extends State<MainPage> {
     return local.gradeMappingText;
   }
 
-
   Future<void> _loadUserInfo() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -221,7 +220,8 @@ class _MainPage extends State<MainPage> {
   Future<void> _loadLearningTime() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     final secs = (doc.data()?['timeSpent'] as int?) ?? 0;
 
     final local = AppLocalizations.of(context)!;
@@ -249,13 +249,17 @@ class _MainPage extends State<MainPage> {
     });
   }
 
-
   String getProfileImage(int level) {
-    if (level <= 9) return 'assets/images/profile_level_1.png';
-    else if (level >= 10 && level <= 24) return 'assets/images/profile_level_2.png';
-    else if (level >= 25 && level <= 49) return 'assets/images/profile_level_3.png';
-    else if (level >= 50 && level <= 74) return 'assets/images/profile_level_4.png';
-    else return 'assets/images/profile_level_5.png';
+    if (level <= 9)
+      return 'assets/images/profile_level_1.png';
+    else if (level >= 10 && level <= 24)
+      return 'assets/images/profile_level_2.png';
+    else if (level >= 25 && level <= 49)
+      return 'assets/images/profile_level_3.png';
+    else if (level >= 50 && level <= 74)
+      return 'assets/images/profile_level_4.png';
+    else
+      return 'assets/images/profile_level_5.png';
   }
 
   @override
@@ -437,7 +441,7 @@ class _MainPage extends State<MainPage> {
                                         ),
                                       ),
                                       Text(
-                                          "${local.correctSolved}: $correctSolved",
+                                        "${local.correctSolved}: $correctSolved",
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.03,
                                         ),
@@ -475,7 +479,11 @@ class _MainPage extends State<MainPage> {
                               ),
                               SizedBox(height: screenHeight * 0.01),
                               Text(
-                                local.levelInfo(_level.toString(), _exp.toString(), _maxExp.toString()),
+                                local.levelInfo(
+                                  _level.toString(),
+                                  _exp.toString(),
+                                  _maxExp.toString(),
+                                ),
                                 style: TextStyle(
                                   fontSize: screenWidth * 0.02,
                                   color: textColor,
@@ -511,7 +519,6 @@ class _MainPage extends State<MainPage> {
                                             ),
                                       );
                                     },
-
 
                                     child: Text(
                                       local.questionGrade,
@@ -563,10 +570,13 @@ class _MainPage extends State<MainPage> {
 
                       // 출석 달력
                       SizedBox(height: 20),
-                      WeeklyAttendancePreview(), // 일주일 출석만 보여줌
+                      WeeklyAttendancePreview(),
 
+                      // 일주일 출석만 보여줌
                       SizedBox(height: 20),
-                      const LeaderboardSection(),//리더보드
+                      const LeaderboardSection(),
+
+                      //리더보드
 
                       // //테스트용 마지막 접속일 3일전으로 설정하고 테스트
                       // ElevatedButton(
@@ -647,7 +657,6 @@ class _MainPage extends State<MainPage> {
                       //     await AttendanceReminder.checkAndNotify();
                       //   },
                       // ),
-
                       SizedBox(height: 20),
                     ],
                   ),
